@@ -4,3 +4,10 @@ Did you observe any differences when changing the order of the lines manipulatin
 No, we did not observe any differences when changing the order of the lines manipulating the transformations. 
 This is because, in Three.js, each object's local transformation matrix is automatically updated from its position, rotation and scale properties in a fixed order: M = T * R * S (translation * rotation * scale).
 Differences would only appear if we disabled this behavior by setting the matrixAutoUpdate property to false and manually updated the transformation matrix ourselves, where the multiplication order would then matter.
+
+PW1-B
+What were the differences between setting the rotation property and calling the rotateX() function? Did it behave as it would in WebGL/WebCGF?
+
+When setting the rotation property twice, the object behaved the same as if we had only had it set once, the second assignment simply overwrote the first.
+However, when using the rotateX() function twice, the rotations accumulated, so the object actually rotated twice.
+This behavior matches what happens in WebGL.

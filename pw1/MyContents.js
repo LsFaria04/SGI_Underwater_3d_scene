@@ -41,7 +41,8 @@ class MyContents  {
         this.boxMesh = new THREE.Mesh( box, boxMaterial );
         
         this.boxMesh.position.y = this.boxDisplacement.y;
-        this.boxMesh.rotation.x = Math.PI * 30 / 180 ;
+        this.boxMesh.rotateX(Math.PI * 30 / 180 );
+        this.boxMesh.rotateX(Math.PI * 30 / 180 );
         this.boxMesh.scale.x = 3;
         this.boxMesh.scale.y = 2;
         this.boxMesh.scale.z = 1;
