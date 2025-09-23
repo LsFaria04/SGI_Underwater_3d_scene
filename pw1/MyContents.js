@@ -78,11 +78,38 @@ class MyContents  {
         
         // Create a Plane Mesh with basic material
         
-        let plane = new THREE.PlaneGeometry( 10, 10 );
-        this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
+        let plane = new THREE.PlaneGeometry(10, 10);
+        this.planeMesh = new THREE.Mesh(plane, this.planeMaterial);
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
-        this.app.scene.add( this.planeMesh );
+        this.app.scene.add(this.planeMesh);
+
+        let wallMaterial = new THREE.MeshPhongMaterial({ color: "#ffffff" });
+        let wallHeight = 10;
+        let floorSize = 10;
+
+        //back wall
+        let wall1 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
+        wall1.position.set(0, wallHeight/2, -floorSize/2);
+        this.app.scene.add(wall1);
+
+        //front wall
+        let wall2 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
+        wall2.position.set(0, wallHeight/2, floorSize/2);
+        wall2.rotation.y = Math.PI;
+        this.app.scene.add(wall2);
+
+        //left wall
+        let wall3 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
+        wall3.position.set(-floorSize/2, wallHeight/2, 0);
+        wall3.rotation.y = Math.PI/2;
+        this.app.scene.add(wall3);
+        
+        //right wall
+        let wall4 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
+        wall4.position.set(floorSize/2, wallHeight/2, 0);
+        wall4.rotation.y = -Math.PI/2;
+        this.app.scene.add(wall4);
     }
     
     /**
