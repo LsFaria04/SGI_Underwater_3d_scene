@@ -1,0 +1,6 @@
+PW1-A
+Did you observe any differences when changing the order of the lines manipulating the transformations?
+
+No, we did not observe any differences when changing the order of the lines manipulating the transformations. 
+This is because, in Three.js, each object's local transformation matrix is automatically updated from its position, rotation and scale properties in a fixed order: M = T * R * S (translation * rotation * scale).
+Differences would only appear if we disabled this behavior by setting the matrixAutoUpdate property to false and manually updated the transformation matrix ourselves, where the multiplication order would then matter.
