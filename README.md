@@ -8,7 +8,6 @@
 |Pedro Borges| 202207552 | up202207552@up.pt|
 ----
 
-
 ## Projects
 
 ### [PW1 - ThreeJS Basics](pw1)
