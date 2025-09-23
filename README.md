@@ -1,6 +1,6 @@
 # SGI 2025/2026
 
-## Group T0xG0y
+## Group T03G01
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
 | Lucas Faria        | 202207540 | up202207540@up.pt                |
