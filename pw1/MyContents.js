@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
+import { MyTable } from './MyTable.js';
+
 
 /**
  *  This class contains the contents of out application
@@ -110,6 +112,10 @@ class MyContents  {
         wall4.position.set(floorSize/2, wallHeight/2, 0);
         wall4.rotation.y = -Math.PI/2;
         this.app.scene.add(wall4);
+
+        let table = new MyTable();
+        table.position.set(0, 0, 0);
+        this.app.scene.add(table);
     }
     
     /**
