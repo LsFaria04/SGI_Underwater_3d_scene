@@ -147,7 +147,7 @@ class MyContents  {
         const bookLength = 0.6;
         const bookThickness = 0.1;
         let book = new MyBook(bookLength,bookWidth, bookThickness);
-        book.position.set(-1, tableTopY + bookThickness / 2,0);
+        book.position.set(0, tableTopY + bookThickness / 2,0);
         book.rotateX(- Math.PI / 2);
         this.app.scene.add(book);
         
