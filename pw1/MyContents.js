@@ -3,6 +3,7 @@ import { MyAxis } from './MyAxis.js';
 import { MyTable } from './MyTable.js';
 import {MyLamp} from './MyLamp.js';
 import { MyPencil } from './MyPencil.js';
+import { MyGlobe } from './MyGlobe.js';
 
 
 /**
@@ -127,6 +128,10 @@ class MyContents  {
         pencil.position.set(0.1,1.21,0.5);
         pencil.rotateX(- Math.PI / 2);
         this.app.scene.add(pencil);
+
+        let globe = new MyGlobe(0.25, 0.1, 0.15, 0.05);
+        globe.position.set(-1,1.2,0);
+        this.app.scene.add(globe);
     }
     
     /**
