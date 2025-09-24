@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
 import { MyTable } from './MyTable.js';
+import {MyLamp} from './MyLamp.js';
 
 
 /**
@@ -76,7 +77,7 @@ class MyContents  {
         const ambientLight = new THREE.AmbientLight( 0x555555 );
         this.app.scene.add( ambientLight );
 
-        this.buildBox()
+        //this.buildBox()
         
         // Create a Plane Mesh with basic material
         
@@ -116,6 +117,10 @@ class MyContents  {
         let table = new MyTable();
         table.position.set(0, 0, 0);
         this.app.scene.add(table);
+
+        let lamp = new MyLamp(0.5, 0.6);
+        lamp.position.set(1,1.2,0);
+        this.app.scene.add(lamp);
     }
     
     /**
@@ -162,6 +167,7 @@ class MyContents  {
      * updates are trigered by boxEnabled property changes
      */
     updateBoxIfRequired() {
+        /*
         if (this.boxEnabled !== this.lastBoxEnabled) {
             this.lastBoxEnabled = this.boxEnabled
             if (this.boxEnabled) {
@@ -170,7 +176,7 @@ class MyContents  {
             else {
                 this.app.scene.remove(this.boxMesh)
             }
-        }
+        }*/
     }
 
     /**
@@ -183,9 +189,11 @@ class MyContents  {
         this.updateBoxIfRequired()
 
         // sets the box mesh position based on the displacement vector
+        /*
         this.boxMesh.position.x = this.boxDisplacement.x
         this.boxMesh.position.y = this.boxDisplacement.y
         this.boxMesh.position.z = this.boxDisplacement.z
+        */
         
     }
 
