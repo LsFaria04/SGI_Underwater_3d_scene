@@ -5,6 +5,8 @@ import {MyLamp} from './MyLamp.js';
 import { MyPencil } from './MyPencil.js';
 import { MyBook } from './MyBook.js';
 import { MyGlobe } from './MyGlobe.js';
+import { MyChair } from './MyChair.js';
+import { MyPencilHolder } from './MyPencilHolder.js';
 
 
 /**
@@ -131,14 +133,14 @@ class MyContents  {
 
         //lamp
         let lamp = new MyLamp(0.5, 0.6);
-        lamp.position.set(1,tableTopY,0);
+        lamp.position.set(1.3,tableTopY,-0.5);
         this.app.scene.add(lamp);
 
         //pencil
-        const pencilLenght = 0.2;
+        const pencilLenght = 0.25;
         const pencilWidth = 0.02;
         let pencil = new MyPencil(pencilLenght, pencilWidth);
-        pencil.position.set(0.1,tableTopY + pencilWidth / 2,0.5);
+        pencil.position.set(-0.5,tableTopY + pencilWidth / 2,0.5);
         pencil.rotateX(- Math.PI / 2);
         this.app.scene.add(pencil);
 
@@ -147,13 +149,29 @@ class MyContents  {
         const bookLength = 0.6;
         const bookThickness = 0.1;
         let book = new MyBook(bookLength,bookWidth, bookThickness);
-        book.position.set(0, tableTopY + bookThickness / 2,0);
+        book.position.set(-1, tableTopY + bookThickness / 2, 0.75);
         book.rotateX(- Math.PI / 2);
         this.app.scene.add(book);
         
+        //globe
         let globe = new MyGlobe(0.25, 0.1, 0.15, 0.05);
-        globe.position.set(-1,1.2,0);
+        globe.position.set(-1.3,tableTopY,-0.5);
         this.app.scene.add(globe);
+
+        //chair number 1
+        let chair1 = new MyChair(1, 0.2, 1, 0.05, 0.5, "#8B4513");
+        chair1.position.set(-0.75,-0,1.5);   
+        this.app.scene.add(chair1);
+
+        //chair number 2
+        let chair2 = new MyChair(1, 0.2, 1, 0.05, 0.5, "#8B4513");
+        chair2.position.set(0.75,-0,1.5);   
+        this.app.scene.add(chair2);
+
+        //pencil holder
+        let pencilHolder = new MyPencilHolder(0.10, 0.25, "#00FF00");
+        pencilHolder.position.set(-0.7,tableTopY,-0.5);
+        this.app.scene.add(pencilHolder);
     }
     
     /**
