@@ -6,9 +6,9 @@ import * as THREE from 'three';
 class MyPencil extends THREE.Object3D {
     /**
      * 
-     * @param {number} width Lamp width
-     * @param {number} height Lamp height
-     * @param {string|number} color Table color (hex or string)
+     * @param {number} width Pencil width
+     * @param {number} height Pencil height
+     * @param {string|number} color Pencil color (hex or string)
      */
     constructor(length = 0.2, width = 0.02, color = "#f6ff00") {
         super();
@@ -23,7 +23,6 @@ class MyPencil extends THREE.Object3D {
 
     
         // Pencil Tip
-        
         const tipGeometry = new THREE.ConeGeometry(width / 2, length * 0.2, 6);
         const tipMaterial = new THREE.MeshPhongMaterial({ color: "#000000"});
         const pencilTip = new THREE.Mesh(tipGeometry, tipMaterial);

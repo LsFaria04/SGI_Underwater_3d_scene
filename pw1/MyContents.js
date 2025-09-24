@@ -3,6 +3,7 @@ import { MyAxis } from './MyAxis.js';
 import { MyTable } from './MyTable.js';
 import {MyLamp} from './MyLamp.js';
 import { MyPencil } from './MyPencil.js';
+import { MyBook } from './MyBook.js';
 
 
 /**
@@ -115,18 +116,39 @@ class MyContents  {
         wall4.rotation.y = -Math.PI/2;
         this.app.scene.add(wall4);
 
-        let table = new MyTable();
+        //table
+        const tableWidth = 4;
+        const tableTopHeight = 0.2;
+        const tableDepth = 2;
+        const legRadius = 0.1;
+        const legHeight = 1;
+        let table = new MyTable(tableWidth, tableTopHeight, tableDepth, legRadius, legHeight);
         table.position.set(0, 0, 0);
         this.app.scene.add(table);
 
+        const tableTopY = legHeight + tableTopHeight;
+
+        //lamp
         let lamp = new MyLamp(0.5, 0.6);
-        lamp.position.set(1,1.2,0);
+        lamp.position.set(1,tableTopY,0);
         this.app.scene.add(lamp);
 
-        let pencil = new MyPencil();
-        pencil.position.set(0.1,1.21,0.5);
+        //pencil
+        const pencilLenght = 0.2;
+        const pencilWidth = 0.02;
+        let pencil = new MyPencil(pencilLenght, pencilWidth);
+        pencil.position.set(0.1,tableTopY + pencilWidth / 2,0.5);
         pencil.rotateX(- Math.PI / 2);
         this.app.scene.add(pencil);
+
+        //book
+        const bookWidth = 0.4;
+        const bookLength = 0.6;
+        const bookThickness = 0.1;
+        let book = new MyBook(bookLength,bookWidth, bookThickness);
+        book.position.set(-1, tableTopY + bookThickness / 2,0);
+        book.rotateX(- Math.PI / 2);
+        this.app.scene.add(book);
     }
     
     /**
