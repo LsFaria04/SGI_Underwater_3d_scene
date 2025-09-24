@@ -4,6 +4,7 @@ import { MyTable } from './MyTable.js';
 import {MyLamp} from './MyLamp.js';
 import { MyPencil } from './MyPencil.js';
 import { MyBook } from './MyBook.js';
+import { MyGlobe } from './MyGlobe.js';
 
 
 /**
@@ -149,6 +150,10 @@ class MyContents  {
         book.position.set(-1, tableTopY + bookThickness / 2,0);
         book.rotateX(- Math.PI / 2);
         this.app.scene.add(book);
+        
+        let globe = new MyGlobe(0.25, 0.1, 0.15, 0.05);
+        globe.position.set(-1,1.2,0);
+        this.app.scene.add(globe);
     }
     
     /**
