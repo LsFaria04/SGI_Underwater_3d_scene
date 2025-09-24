@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
 import { MyTable } from './MyTable.js';
 import {MyLamp} from './MyLamp.js';
+import { MyPencil } from './MyPencil.js';
 
 
 /**
@@ -121,6 +122,11 @@ class MyContents  {
         let lamp = new MyLamp(0.5, 0.6);
         lamp.position.set(1,1.2,0);
         this.app.scene.add(lamp);
+
+        let pencil = new MyPencil();
+        pencil.position.set(0.1,1.21,0.5);
+        pencil.rotateX(- Math.PI / 2);
+        this.app.scene.add(pencil);
     }
     
     /**

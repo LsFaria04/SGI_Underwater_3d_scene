@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 
 /**
- * This class represents a table composed of a tabletop and four legs
+ * This class represents a lamp composed of a base, a support and a top
  */
 class MyLamp extends THREE.Object3D {
     /**
      * 
      * @param {number} width Lamp width
      * @param {number} height Lamp height
-     * @param {string|number} color Table color (hex or string)
+     * @param {string|number} color Lamp color (hex or string)
      */
     constructor(width = 1, height = 1, colorBase = "#2e1809", colorSupport = "#000000", colorTop = "#68584d") {
         super();
