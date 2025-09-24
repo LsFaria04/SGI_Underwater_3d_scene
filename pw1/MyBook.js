@@ -83,18 +83,18 @@ class MyBook extends THREE.Object3D {
         const k = 0.5523 * r; 
         // First quarter arc 
         let curve1 = new THREE.CubicBezierCurve3(
-        new THREE.Vector3(0, length, r),          
-        new THREE.Vector3(-k, length, r),         
-        new THREE.Vector3(-r, length, k),         
-        new THREE.Vector3(-r, length, 0)          
+            new THREE.Vector3(0, length, r),          
+            new THREE.Vector3(-k, length, r),         
+            new THREE.Vector3(-r, length, k),         
+            new THREE.Vector3(-r, length, 0)          
         );
 
         // Second quarter arc 
         let curve2 = new THREE.CubicBezierCurve3(
-        new THREE.Vector3(-r, length, 0),         
-        new THREE.Vector3(-r, length, -k),        
-        new THREE.Vector3(-k, length, -r),        
-        new THREE.Vector3(0, length, -r)          
+            new THREE.Vector3(-r, length, 0),         
+            new THREE.Vector3(-r, length, -k),        
+            new THREE.Vector3(-k, length, -r),        
+            new THREE.Vector3(0, length, -r)          
         );
 
         // Combine into a path
@@ -109,18 +109,18 @@ class MyBook extends THREE.Object3D {
         //side bottom edge ---------
         // First quarter arc 
         curve1 = new THREE.CubicBezierCurve3(
-        new THREE.Vector3(0, 0, r),          
-        new THREE.Vector3(-k, 0, r),         
-        new THREE.Vector3(-r, 0, k),         
-        new THREE.Vector3(-r, 0, 0)          
+            new THREE.Vector3(0, 0, r),          
+            new THREE.Vector3(-k, 0, r),         
+            new THREE.Vector3(-r, 0, k),         
+            new THREE.Vector3(-r, 0, 0)          
         );
 
         // Second quarter arc 
         curve2 = new THREE.CubicBezierCurve3(
-        new THREE.Vector3(-r, 0, 0),         
-        new THREE.Vector3(-r, 0, -k),        
-        new THREE.Vector3(-k, 0, -r),        
-        new THREE.Vector3(0, 0, -r)          
+            new THREE.Vector3(-r, 0, 0),         
+            new THREE.Vector3(-r, 0, -k),        
+            new THREE.Vector3(-k, 0, -r),        
+            new THREE.Vector3(0, 0, -r)          
         );
 
         // Combine into a path
