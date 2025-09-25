@@ -42,6 +42,7 @@ class MyGuiInterface  {
         const data = {  
             'diffuse color': this.contents.diffusePlaneColor,
             'specular color': this.contents.specularPlaneColor,
+            'spotlight color': '#ffffff'
         };
 
         // adds a folder to the gui interface for the plane
@@ -57,6 +58,27 @@ class MyGuiInterface  {
         // note that we are using a property from the app 
         cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("x coord")
         cameraFolder.open()
+
+        const lightFolder = this.datgui.addFolder('Light')
+        lightFolder.add(this.contents, 'spotlightEnabled', true).name("enabled").onChange( (value) => { this.contents.toggleSpotlight(value) } );
+        lightFolder.addColor( data, 'spotlight color' ).onChange( (value) => { this.contents.updateSpotlightColor(value) } );
+        lightFolder.add(this.contents.spotlight, 'intensity', 0, 1000).name("intensity");
+        lightFolder.add(this.contents.spotlight, 'distance', 0, 100).name("distance");
+        const initialAngleRad = (this.contents.spotlight && this.contents.spotlight.angle !== undefined) ? this.contents.spotlight.angle : (this.contents.angle !== undefined ? this.contents.angle : 0);
+        const angleObj = { angleDeg: initialAngleRad * 180 / Math.PI };
+        lightFolder.add(angleObj, 'angleDeg', 0, 90).name('angle (deg)').onChange((deg) => {
+            const rad = deg * Math.PI / 180;
+            if (this.contents.spotlight) this.contents.spotlight.angle = rad;
+            this.contents.angle = rad;
+        });
+        lightFolder.add(this.contents.spotlight, 'penumbra', 0, 1).name("penumbra");
+        lightFolder.add(this.contents.spotlight, 'decay', 1, 2).name("decay");
+        lightFolder.add(this.contents.spotlight.position, 'y', -20, 20).name("y coord");
+        lightFolder.add(this.contents.spotlight.target.position, 'x', -20, 20).name("x coord target");
+        lightFolder.add(this.contents.spotlight.target.position, 'y', -20, 20).name("y coord target");
+        lightFolder.add(this.contents.spotlight.target.position, 'z', -20, 20).name("z coord target");
+        lightFolder.open();
+
     }
 }
 

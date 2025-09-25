@@ -29,6 +29,13 @@ class MyContents  {
         this.lastBoxEnabled = null
         this.boxDisplacement = new THREE.Vector3(0,2,0)
 
+        this.spotlightEnabled = true;
+        this.intensity = 15;
+        this.lightDistance = 14;
+        this.angle = 30 * Math.PI / 180;
+        this.penumbra = 0;
+        this.decay = 0;
+
         // plane related attributes
 
         //Change plane diffuse and specular color to 50% gray and shiness to 100
@@ -38,6 +45,10 @@ class MyContents  {
         this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, 
             specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
 
+
+        this.spotlight = null
+        this.directionalLight = null
+        
     }
 
     /**
@@ -74,7 +85,10 @@ class MyContents  {
         // add a point light on top of the model
 
         // Change position of light source from (0,20,0) to (0,-20,0)
+
+        // 4.2 Comment code relative to point light and increase ambient light intensity to a value of 0x444444
         
+        /*
         const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
         pointLight.position.set( 0, -20, 0 );
         this.app.scene.add( pointLight );
@@ -83,9 +97,37 @@ class MyContents  {
         const sphereSize = 0.5;
         const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
         this.app.scene.add( pointLightHelper );
+        */
+
+        // create a directional light source
+        const directionalLight = new THREE.DirectionalLight( 0xffffff, 15);
+        directionalLight.position.set( 0, 10, 0);
+        directionalLight.target.position.set(1,0,1);
+        this.app.scene.add( directionalLight );
+        this.directionalLight = directionalLight
+
+        // add a directional light helper for the previous directional light
+
+        const directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight, 0.5);
+        this.app.scene.add( directionalLightHelper );
+
+        // create a spotlight light source
+        
+        const spotlight = new THREE.SpotLight( 0xffffff, this.intensity, this.lightDistance, this.angle, this.penumbra, this.decay);
+        spotlight.position.set( 5, 10, 2);
+        spotlight.target.position.set(1,0,1);
+        this.app.scene.add( spotlight );
+        this.app.scene.add( spotlight.target );
+        this.spotlight = spotlight;
+
+        //spotlight helper
+        const spotlightHelper = new THREE.SpotLightHelper( spotlight );
+        this.app.scene.add( spotlightHelper );
+
+
 
         // add an ambient light and make it pure red
-        const ambientLight = new THREE.AmbientLight( 0xff0000 );
+        const ambientLight = new THREE.AmbientLight( 0x444444 ); // soft white light
         this.app.scene.add( ambientLight );
 
         //this.buildBox()
@@ -229,7 +271,14 @@ class MyContents  {
         this.buildBox();
         this.lastBoxEnabled = null
     }
-    
+
+    updateSpotlightColor(value) {
+        if (this.spotlight) this.spotlight.color.set(value)
+    }
+
+    toggleSpotlight(value) {
+        if (this.spotlight) this.spotlight.visible = value;
+    }
     /**
      * updates the box mesh if required
      * this method is called from the render method of the app

@@ -27,3 +27,13 @@ What changed visually in the scene when the light source was moved? How is that 
 - When the light source was moved from (0, 20, 0) to (0, –20, 0), the entire scene appeared in a red shadow, since the location of the point light was far below the scene.
 This is related to the local illumination model, which combines three components: ambient, which is independent of light or viewer position; diffuse, which depends on the angle between the light direction and the surface normal; and specular, which depends on the viewer position and the reflection direction.
 When the light was overhead, the diffuse and specular terms were significant, but when it was moved below the scene, only the ambient term remained, since the others were zero or negative.
+
+PW1 - D
+
+Were there any unexpected behaviors with any of the requested changes?
+
+- No unexpected behaviours.
+
+Did the light helper behave as expected?
+
+- Mostly, but the helper doesnt automatically follow changes to spotlight target, since its an independent object, it needed a function to be updated when change light target or visibility.
