@@ -129,7 +129,7 @@ class MyContents  {
         table.position.set(0, 0, 0);
         this.app.scene.add(table);
 
-        const tableTopY = legHeight + tableTopHeight;
+        const tableTopY = legHeight + tableTopHeight + 0.01;
 
         //lamp
         let lamp = new MyLamp(0.5, 0.6);
