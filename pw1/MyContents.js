@@ -140,19 +140,31 @@ class MyContents  {
         const pencilLenght = 0.25;
         const pencilWidth = 0.02;
         let pencil = new MyPencil(pencilLenght, pencilWidth);
-        pencil.position.set(-0.5,tableTopY + pencilWidth / 2,0.5);
+        pencil.position.set(-0.4,tableTopY + pencilWidth / 2,0.5);
         pencil.rotateX(- Math.PI / 2);
         this.app.scene.add(pencil);
 
-        //book
+        //book1
         const bookWidth = 0.4;
         const bookLength = 0.6;
         const bookThickness = 0.1;
-        let book = new MyBook(bookLength,bookWidth, bookThickness);
-        book.position.set(-1, tableTopY + bookThickness / 2, 0.75);
-        book.rotateX(- Math.PI / 2);
-        this.app.scene.add(book);
-        
+        let book1 = new MyBook(bookLength,bookWidth, bookThickness);
+        book1.position.set(-0.9, tableTopY + bookThickness / 2, 0.75);
+        book1.rotateX(- Math.PI / 2);
+        this.app.scene.add(book1);
+
+        //book2
+        let book2 = new MyBook(bookLength,bookWidth, bookThickness, "#ff0000");
+        book2.position.set(0.6, tableTopY + bookThickness / 2, 0.75);
+        book2.rotateX(- Math.PI / 2);
+        this.app.scene.add(book2);
+
+        //pencil2
+        let pencil2 = new MyPencil(pencilLenght, pencilWidth);
+        pencil2.position.set(1.15,tableTopY + pencilWidth / 2,0.5);
+        pencil2.rotateX(- Math.PI / 2);
+        this.app.scene.add(pencil2);
+
         //globe
         let globe = new MyGlobe(0.25, 0.1, 0.15, 0.05);
         globe.position.set(-1.3,tableTopY,-0.5);
