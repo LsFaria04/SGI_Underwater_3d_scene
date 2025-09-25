@@ -48,6 +48,7 @@ class MyContents  {
 
         this.spotlight = null
         this.directionalLight = null
+    this.spotlightHelper = null
         
     }
 
@@ -121,8 +122,8 @@ class MyContents  {
         this.spotlight = spotlight;
 
         //spotlight helper
-        const spotlightHelper = new THREE.SpotLightHelper( spotlight );
-        this.app.scene.add( spotlightHelper );
+        this.spotlightHelper = new THREE.SpotLightHelper( spotlight );
+        this.app.scene.add( this.spotlightHelper );
 
 
 
@@ -277,7 +278,12 @@ class MyContents  {
     }
 
     toggleSpotlight(value) {
-        if (this.spotlight) this.spotlight.visible = value;
+        if (this.spotlight) {
+            this.spotlight.visible = value;
+            this.spotlightEnabled = value;
+            if (this.spotlightHelper) this.spotlightHelper.visible = value;
+            if (this.spotlight.target) this.spotlight.target.visible = value;
+        }
     }
     /**
      * updates the box mesh if required
@@ -305,6 +311,9 @@ class MyContents  {
     update() {
         // check if box mesh needs to be updated
         this.updateBoxIfRequired()
+
+        // update spotlight helper to follow the light's position/target
+        if (this.spotlightHelper) this.spotlightHelper.update();
 
         // sets the box mesh position based on the displacement vector
         /*

@@ -59,7 +59,7 @@ class MyGuiInterface  {
         cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("x coord")
         cameraFolder.open()
 
-        const lightFolder = this.datgui.addFolder('Light')
+        const lightFolder = this.datgui.addFolder('SpotLight')
         lightFolder.add(this.contents, 'spotlightEnabled', true).name("enabled").onChange( (value) => { this.contents.toggleSpotlight(value) } );
         lightFolder.addColor( data, 'spotlight color' ).onChange( (value) => { this.contents.updateSpotlightColor(value) } );
         lightFolder.add(this.contents.spotlight, 'intensity', 0, 1000).name("intensity");
