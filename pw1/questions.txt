@@ -11,3 +11,19 @@ What were the differences between setting the rotation property and calling the 
 When setting the rotation property twice, the object behaved the same as if we had only had it set once, the second assignment simply overwrote the first.
 However, when using the rotateX() function twice, the rotations accumulated, so the object actually rotated twice.
 This behavior matches what happens in WebGL.
+
+PW1-C
+
+How does the shininess affect the material components (ambient, diffuse, specular)?
+
+- The shininess affects the specular component of light reflection, controlling the size and sharpness of highlights. The ambient and diffuse components, are not directly affected by shininess.
+
+What were the visual differences between changing the point or the ambient light to red?
+
+- Changing the point light to red added a specific directed red light with shadows and highlights, but when we changed the ambient light to red it adds a general uniform red tint to the whole scene, with no direction or shadows.
+
+What changed visually in the scene when the light source was moved? How is that change connected to the local illumination model?
+
+- When the light source was moved from (0, 20, 0) to (0, –20, 0), the entire scene appeared in a red shadow, since the location of the point light was far below the scene.
+This is related to the local illumination model, which combines three components: ambient, which is independent of light or viewer position; diffuse, which depends on the angle between the light direction and the surface normal; and specular, which depends on the viewer position and the reflection direction.
+When the light was overhead, the diffuse and specular terms were significant, but when it was moved below the scene, only the ambient term remained, since the others were zero or negative.

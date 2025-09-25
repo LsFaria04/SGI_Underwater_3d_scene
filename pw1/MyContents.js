@@ -30,11 +30,14 @@ class MyContents  {
         this.boxDisplacement = new THREE.Vector3(0,2,0)
 
         // plane related attributes
-        this.diffusePlaneColor = "#d4b68e"
-        this.specularPlaneColor = "#777777"
-        this.planeShininess = 30
+
+        //Change plane diffuse and specular color to 50% gray and shiness to 100
+        this.diffusePlaneColor = "#808080"
+        this.specularPlaneColor = "#808080"
+        this.planeShininess = 100
         this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, 
             specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
+
     }
 
     /**
@@ -69,8 +72,11 @@ class MyContents  {
         }
 
         // add a point light on top of the model
+
+        // Change position of light source from (0,20,0) to (0,-20,0)
+        
         const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
-        pointLight.position.set( 0, 20, 0 );
+        pointLight.position.set( 0, -20, 0 );
         this.app.scene.add( pointLight );
 
         // add a point light helper for the previous point light
@@ -78,8 +84,8 @@ class MyContents  {
         const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
         this.app.scene.add( pointLightHelper );
 
-        // add an ambient light
-        const ambientLight = new THREE.AmbientLight( 0x555555 );
+        // add an ambient light and make it pure red
+        const ambientLight = new THREE.AmbientLight( 0xff0000 );
         this.app.scene.add( ambientLight );
 
         //this.buildBox()
