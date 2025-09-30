@@ -232,6 +232,7 @@ class MyContents  {
         let globe = new MyGlobe(0.25, 0.1, 0.15, 0.05);
         globe.position.set(-1.3,tableTopY,-0.5);
         this.app.scene.add(globe);
+        this.myGlobe = globe;
 
         //chair number 1
         let chair1 = new MyChair(1, 0.2, 1, 0.05, 0.5, "#8B4513");
@@ -352,6 +353,10 @@ class MyContents  {
         this.boxMesh.position.y = this.boxDisplacement.y
         this.boxMesh.position.z = this.boxDisplacement.z
         */
+
+        if (this.myGlobe) {
+            this.myGlobe.update(0.005);
+        }
         
     }
 
