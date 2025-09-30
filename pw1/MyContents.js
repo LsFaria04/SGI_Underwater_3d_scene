@@ -102,7 +102,7 @@ class MyContents  {
 
 
         // create a directional light source
-        const directionalLight = new THREE.DirectionalLight( 0xffffff, 5);
+        const directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
         directionalLight.position.set( 0, 10, 0);
         directionalLight.target.position.set(1,0,1);
         this.app.scene.add( directionalLight );
@@ -147,7 +147,7 @@ class MyContents  {
 
         // Create a Plane to use as the floor
         let plane = new THREE.PlaneGeometry(this.floorWidth, this.floorHeight);
-        let material = new THREE.MeshPhongMaterial({map: floorTexture, color: "#ff0000"});
+        let material = new THREE.MeshPhongMaterial({map: floorTexture, color: "#ffffff"});
         this.planeMesh = new THREE.Mesh(plane, material);
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
@@ -157,11 +157,21 @@ class MyContents  {
         let wallHeight = 10;
         let floorSize = 10;
 
+
+        //wall1 texture
+        let wall1Texture = new THREE.TextureLoader().load("./textures/window.jpg");
+        wall1Texture.wrapS = THREE.ClampToEdgeWrapping;
+        wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
+        wall1Texture.repeat.set(2,2);
+        wall1Texture.offset.set( - 0.5  , - 0.5  );
+        
+        
         //back wall
-        let wall1 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
+        let wall1Material = new THREE.MeshPhongMaterial({map: wall1Texture});
+        let wall1 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wall1Material);
         wall1.position.set(0, wallHeight/2, -floorSize/2);
         this.app.scene.add(wall1);
-
+        
         //front wall
         let wall2 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
         wall2.position.set(0, wallHeight/2, floorSize/2);
@@ -245,6 +255,7 @@ class MyContents  {
         let pencilHolder = new MyPencilHolder(0.10, 0.25, "#00FF00");
         pencilHolder.position.set(-0.7,tableTopY,-0.5);
         this.app.scene.add(pencilHolder);
+        
     }
     
     /**
