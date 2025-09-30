@@ -69,6 +69,9 @@ class MyGuiInterface  {
         const lampLight = this.datgui.addFolder('lampLight');
         lampLight.add(this.contents, 'lampEnabled').name("enabled").onChange( (value) => { this.contents.toggleLampLight(value) } );
 
+        const wallFolder = this.datgui.addFolder("Wall");
+        wallFolder.add(this.contents, "wrapMode", ["Repeat", "Clamp to Edge"]).name("Wrap Mode").onChange((value) =>{this.contents.updateWallWrap(value)})
+        wallFolder.open();
 
         const lightFolder = this.datgui.addFolder('SpotLight')
         lightFolder.add(this.contents, 'spotlightEnabled', true).name("enabled").onChange( (value) => { this.contents.toggleSpotlight(value) } );

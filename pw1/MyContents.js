@@ -31,7 +31,9 @@ class MyContents  {
         this.boxMeshSize = 1.0
         this.boxEnabled = true
         this.lastBoxEnabled = null
-        this.boxDisplacement = new THREE.Vector3(0,2,0)
+        this.boxDisplacement = new THREE.Vector3(0,2,0);
+
+        this.wrapMode = "Clamp To Edge";
 
         this.spotlightEnabled = true;
         this.intensity = 15;
@@ -165,18 +167,19 @@ class MyContents  {
 
 
         //wall1 texture
-        let wall1Texture = new THREE.TextureLoader().load("./textures/window.jpg");
-        wall1Texture.wrapS = THREE.ClampToEdgeWrapping;
-        wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
-        wall1Texture.repeat.set(2,2);
-        wall1Texture.offset.set( - 0.5  , - 0.5  );
+        this.wall1Texture = new THREE.TextureLoader().load("./textures/window.jpg");
+        this.wall1Texture.wrapS = THREE.ClampToEdgeWrapping;
+        this.wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
+        this.wall1Texture.repeat.set(2,2);
+       this.wall1Texture.offset.set( - 0.5  , - 0.5  );
+       this.wall1Texture.rotation = Math.PI;
         
         
         //back wall
-        let wall1Material = new THREE.MeshPhongMaterial({map: wall1Texture});
-        let wall1 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wall1Material);
-        wall1.position.set(0, wallHeight/2, -floorSize/2);
-        this.app.scene.add(wall1);
+        let wall1Material = new THREE.MeshPhongMaterial({map: this.wall1Texture});
+        this.wall1 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wall1Material);
+        this.wall1.position.set(0, wallHeight/2, -floorSize/2);
+        this.app.scene.add(this.wall1);
         
         //front wall
         let wall2 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
@@ -288,6 +291,29 @@ class MyContents  {
     updatePlaneShininess(value) {
         this.planeShininess = value
         this.planeMaterial.shininess = this.planeShininess
+    }
+
+    /**
+     * Updates the wall texture wrap mode
+     * @param {string} value 
+     */
+    updateWallWrap(value){
+        this.wrapMode = value;
+        if(value === "Repeat"){
+            this.wall1Texture.wrapS = THREE.RepeatWrapping;
+            this.wall1Texture.wrapT = THREE.RepeatWrapping;
+        }
+        else if(value === "Clamp to Edge"){
+
+            this.wall1Texture.wrapS = THREE.ClampToEdgeWrapping;
+            this.wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
+        }
+
+        this.wall1Texture.needsUpdate = true;
+        this.wall1.material.map = this.wall1Texture;
+        this.wall1.material.needsUpdate = true;
+    
+
     }
     
     /**

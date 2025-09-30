@@ -37,3 +37,5 @@ Were there any unexpected behaviors with any of the requested changes?
 Did the light helper behave as expected?
 
 - Mostly, but the helper doesnt automatically follow changes to spotlight target, since its an independent object, it needed a function to be updated when change light target or visibility.
+
+
