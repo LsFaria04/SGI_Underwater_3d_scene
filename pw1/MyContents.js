@@ -32,7 +32,7 @@ class MyContents  {
         this.spotlightEnabled = true;
         this.intensity = 15;
         this.lightDistance = 14;
-        this.angle = 30 * Math.PI / 180;
+        this.angle = 15 * Math.PI / 180;
         this.penumbra = 0;
         this.decay = 0;
 
@@ -98,19 +98,23 @@ class MyContents  {
         const sphereSize = 0.5;
         const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
         this.app.scene.add( pointLightHelper );
+
         */
 
+
         // create a directional light source
-        const directionalLight = new THREE.DirectionalLight( 0xffffff, 15);
+        const directionalLight = new THREE.DirectionalLight( 0xffffff, 5);
         directionalLight.position.set( 0, 10, 0);
         directionalLight.target.position.set(1,0,1);
         this.app.scene.add( directionalLight );
         this.directionalLight = directionalLight
 
+
         // add a directional light helper for the previous directional light
 
         const directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight, 0.5);
         this.app.scene.add( directionalLightHelper );
+
 
         // create a spotlight light source
         
@@ -128,7 +132,7 @@ class MyContents  {
 
 
         // add an ambient light and make it pure red
-        const ambientLight = new THREE.AmbientLight( 0x444444 ); // soft white light
+        const ambientLight = new THREE.AmbientLight( 0xffffff ); // soft white light
         this.app.scene.add( ambientLight );
 
         //this.buildBox()
