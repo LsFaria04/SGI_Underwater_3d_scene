@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 /**
- * This class represents a pencil composed of a tip and body
+ * This class represents a book composed of a cover and pages
  */
 class MyBook extends THREE.Object3D {
     /**
@@ -21,9 +21,16 @@ class MyBook extends THREE.Object3D {
         bookSide.position.y = length / 2;
         this.add(bookSide);
         
+        //texture to use in the front cover
+        const texture = new THREE.TextureLoader().load("./textures/text_to_mirror.jpg");
+        texture.wrapS = THREE.MirroredRepeatWrapping;
+        texture.wrapT = THREE.MirroredRepeatWrapping;
+        texture.repeat.set(2, 2);
+        const textureMaterial = new THREE.MeshPhongMaterial({map: texture})
+        
         //book top cover
         const topGeometry = new THREE.PlaneGeometry(width, length) ;
-        const topCover = new THREE.Mesh(topGeometry, coverMaterial);
+        const topCover = new THREE.Mesh(topGeometry, textureMaterial);
         topCover.position.set(width / 2, length / 2, thickness / 2);
         this.add(topCover); 
 

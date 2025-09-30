@@ -30,13 +30,40 @@ class MyLamp extends THREE.Object3D {
         this.add(lampSupport);
 
         // Lamp top
-        const topGeometry = new THREE.CylinderGeometry(width / 2 * 0.4, width / 2 , height * 0.45);
-        const topMaterial = new THREE.MeshPhongMaterial({ color: colorTop });
+        const topGeometry = new THREE.CylinderGeometry(width / 2 * 0.4, width / 2 , height * 0.45, 32, 1, true);
+        const topMaterial = new THREE.MeshPhongMaterial({ color: colorTop, side: THREE.DoubleSide });
         const lampTop = new THREE.Mesh(topGeometry, topMaterial);
         lampTop.position.y = height * 0.45 / 2 + height * 0.65;
 
         this.add(lampTop);
-        
+
+        // bottom cap
+        const capGeometry = new THREE.CircleGeometry(width / 2, 32);
+        const cap = new THREE.Mesh(capGeometry, topMaterial);
+
+        cap.rotation.x = -Math.PI / 2;
+        cap.position.y = lampTop.position.y - height * 0.45 / 2;
+
+        this.add(cap);
+
+        // Lamp bulb
+        const bulbRadius = width * 0.15;
+        const bulbGeometry = new THREE.SphereGeometry(bulbRadius, 32, 32);
+        const bulbMaterial = new THREE.MeshPhongMaterial({ 
+            color: 0xffffcc,    
+            emissive: 0xffffaa, 
+            emissiveIntensity: 0.8,
+            shininess: 100
+        });
+        const bulb = new THREE.Mesh(bulbGeometry, bulbMaterial);
+
+        bulb.position.y = height * 0.65 + (height * 0.45) / 4;
+        this.add(bulb);
+
+        const bulbLight = new THREE.PointLight(0xffffcc, 1, 3); 
+        bulbLight.position.copy(bulb.position);
+        this.add(bulbLight);
+                
             
     }
 }

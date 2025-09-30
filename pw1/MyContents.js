@@ -8,7 +8,6 @@ import { MyGlobe } from './MyGlobe.js';
 import { MyChair } from './MyChair.js';
 import { MyPencilHolder } from './MyPencilHolder.js';
 
-
 /**
  *  This class contains the contents of out application
  */
@@ -139,10 +138,19 @@ class MyContents  {
 
         //this.buildBox()
         
-        // Create a Plane Mesh with basic material
-        
-        let plane = new THREE.PlaneGeometry(10, 10);
-        this.planeMesh = new THREE.Mesh(plane, this.planeMaterial);
+        this.floorWidth = 10;
+        this.floorHeight = 10;
+        //create the texture that will be used in the floor
+        let floorTexture = new THREE.TextureLoader().load("./textures/floor.png");
+        floorTexture.wrapS = THREE.RepeatWrapping;
+        floorTexture.wrapT = THREE.RepeatWrapping;
+        //using proportions to make the floor texture repeat accordingly to the width and height of the floor
+        floorTexture.repeat.set(this.floorWidth * 4 / 10,this.floorHeight * 4 / 10);
+
+        // Create a Plane to use as the floor
+        let plane = new THREE.PlaneGeometry(this.floorWidth, this.floorHeight);
+        let material = new THREE.MeshPhongMaterial({map: floorTexture, color: "#ff0000"});
+        this.planeMesh = new THREE.Mesh(plane, material);
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
         this.app.scene.add(this.planeMesh);
