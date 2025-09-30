@@ -8,7 +8,6 @@ import { MyGlobe } from './MyGlobe.js';
 import { MyChair } from './MyChair.js';
 import { MyPencilHolder } from './MyPencilHolder.js';
 
-
 /**
  *  This class contains the contents of out application
  */
