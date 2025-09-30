@@ -29,6 +29,13 @@ class MyGuiInterface  {
      * Initialize the gui interface
      */
     init() {
+
+        const axisFolder = this.datgui.addFolder('Axis');
+        axisFolder.add(this.contents, 'axisEnabled').name("enabled").onChange( (value) => { this.contents.toggleAxis(value) } );
+
+        axisFolder.open();
+
+
         // add a folder to the gui interface for the box
         const boxFolder = this.datgui.addFolder( 'Box' );
         // note that we are using a property from the contents object 
@@ -59,15 +66,20 @@ class MyGuiInterface  {
         cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("x coord")
         cameraFolder.open()
 
+        const lampLight = this.datgui.addFolder('lampLight');
+        lampLight.add(this.contents, 'lampEnabled').name("enabled").onChange( (value) => { this.contents.toggleLampLight(value) } );
+
+
         const lightFolder = this.datgui.addFolder('SpotLight')
         lightFolder.add(this.contents, 'spotlightEnabled', true).name("enabled").onChange( (value) => { this.contents.toggleSpotlight(value) } );
         lightFolder.addColor( data, 'spotlight color' ).onChange( (value) => { this.contents.updateSpotlightColor(value) } );
         lightFolder.add(this.contents.spotlight, 'intensity', 0, 1000).name("intensity");
         lightFolder.add(this.contents.spotlight, 'distance', 0, 100).name("distance");
         const initialAngleRad = (this.contents.spotlight && this.contents.spotlight.angle !== undefined) ? this.contents.spotlight.angle : (this.contents.angle !== undefined ? this.contents.angle : 0);
-        const angleObj = { angleDeg: initialAngleRad * 180 / Math.PI };
+        const angleObj = { angleDeg: Math.ceil(initialAngleRad * 180 / Math.PI) };
         lightFolder.add(angleObj, 'angleDeg', 0, 90).name('angle (deg)').onChange((deg) => {
             const rad = deg * Math.PI / 180;
+            
             if (this.contents.spotlight) this.contents.spotlight.angle = rad;
             this.contents.angle = rad;
         });

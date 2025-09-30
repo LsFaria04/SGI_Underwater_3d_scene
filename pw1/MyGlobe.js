@@ -47,9 +47,9 @@ class MyGlobe extends THREE.Object3D {
             shininess: 25        
         });
 
-        const globe = new THREE.Mesh(globeGeom, globeMat);
-        globe.position.y = baseHeight + standHeight + radius;
-        this.add(globe);
+        this.globe = new THREE.Mesh(globeGeom, globeMat);
+        this.globe.position.y = baseHeight + standHeight + radius;
+        this.add(this.globe);
 
         // Ring
         const arcRadius = radius * 1.1; 
@@ -77,6 +77,12 @@ class MyGlobe extends THREE.Object3D {
         arc.add(cap1);
         arc.add(cap2);
 
+    }
+
+    update(deltaTime = 0.01) {
+        if (this.globe) {
+            this.globe.rotation.y += deltaTime;
+        }
     }
 }
 

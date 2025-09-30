@@ -20,6 +20,11 @@ class MyContents  {
     constructor(app) {
         this.app = app
         this.axis = null
+        this.axisEnabled = true;
+
+        //lamp
+        this.lamp = null;
+        this.lampEnabled = true;
 
         // box related attributes
         this.boxMesh = null
@@ -106,7 +111,8 @@ class MyContents  {
         directionalLight.position.set( 0, 10, 0);
         directionalLight.target.position.set(1,0,1);
         this.app.scene.add( directionalLight );
-        this.directionalLight = directionalLight
+        this.directionalLight = directionalLight;
+   
 
 
         // add a directional light helper for the previous directional light
@@ -203,9 +209,9 @@ class MyContents  {
         const tableTopY = legHeight + tableTopHeight + 0.01;
 
         //lamp
-        let lamp = new MyLamp(0.5, 0.6);
-        lamp.position.set(1.3,tableTopY,-0.5);
-        this.app.scene.add(lamp);
+        this.lamp = new MyLamp(0.5, 0.6);
+        this.lamp.position.set(1.3,tableTopY,-0.5);
+        this.app.scene.add(this.lamp);
 
         //pencil
         const pencilLenght = 0.25;
@@ -240,6 +246,7 @@ class MyContents  {
         let globe = new MyGlobe(0.25, 0.1, 0.15, 0.05);
         globe.position.set(-1.3,tableTopY,-0.5);
         this.app.scene.add(globe);
+        this.myGlobe = globe;
 
         //chair number 1
         let chair1 = new MyChair(1, 0.2, 1, 0.05, 0.5, "#8B4513");
@@ -308,6 +315,28 @@ class MyContents  {
             if (this.spotlight.target) this.spotlight.target.visible = value;
         }
     }
+
+    toggleLampLight(value){
+        this.lamp.toggleBulbLight(value);
+        this.lampEnabled = value;
+    }
+
+    toggleAxis(enabled) {
+        this.axisEnabled = enabled;
+
+        // If axis doesn't exist yet, create it
+        if (!this.axis && enabled) {
+            this.axis = new MyAxis(this);
+        }
+
+        if (enabled) {
+            this.app.scene.add(this.axis);
+        } else {
+            if (this.axis) {
+                this.app.scene.remove(this.axis);
+            }
+        }
+    }
     /**
      * updates the box mesh if required
      * this method is called from the render method of the app
@@ -344,6 +373,10 @@ class MyContents  {
         this.boxMesh.position.y = this.boxDisplacement.y
         this.boxMesh.position.z = this.boxDisplacement.z
         */
+
+        if (this.myGlobe) {
+            this.myGlobe.update(0.005);
+        }
         
     }
 
