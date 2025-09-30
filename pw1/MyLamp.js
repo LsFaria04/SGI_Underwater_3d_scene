@@ -37,6 +37,15 @@ class MyLamp extends THREE.Object3D {
 
         this.add(lampTop);
 
+        // bottom cap
+        const capGeometry = new THREE.CircleGeometry(width / 2, 32);
+        const cap = new THREE.Mesh(capGeometry, topMaterial);
+
+        cap.rotation.x = -Math.PI / 2;
+        cap.position.y = lampTop.position.y - height * 0.45 / 2;
+
+        this.add(cap);
+
         // Lamp bulb
         const bulbRadius = width * 0.15;
         const bulbGeometry = new THREE.SphereGeometry(bulbRadius, 32, 32);
