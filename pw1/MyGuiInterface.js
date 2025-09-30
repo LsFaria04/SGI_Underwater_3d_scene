@@ -67,7 +67,8 @@ class MyGuiInterface  {
         cameraFolder.open()
 
         const lampLight = this.datgui.addFolder('lampLight');
-        
+        lampLight.add(this.contents, 'lampEnabled').name("enabled").onChange( (value) => { this.contents.toggleLampLight(value) } );
+
 
         const lightFolder = this.datgui.addFolder('SpotLight')
         lightFolder.add(this.contents, 'spotlightEnabled', true).name("enabled").onChange( (value) => { this.contents.toggleSpotlight(value) } );

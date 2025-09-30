@@ -22,6 +22,10 @@ class MyContents  {
         this.axis = null
         this.axisEnabled = true;
 
+        //lamp
+        this.lamp = null;
+        this.lampEnabled = true;
+
         // box related attributes
         this.boxMesh = null
         this.boxMeshSize = 1.0
@@ -149,7 +153,7 @@ class MyContents  {
 
         // Create a Plane to use as the floor
         let plane = new THREE.PlaneGeometry(this.floorWidth, this.floorHeight);
-        let material = new THREE.MeshPhongMaterial({map: floorTexture, color: "#ff0000"});
+        let material = new THREE.MeshPhongMaterial({map: floorTexture, color: "#ffffff"});
         this.planeMesh = new THREE.Mesh(plane, material);
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
@@ -195,9 +199,9 @@ class MyContents  {
         const tableTopY = legHeight + tableTopHeight + 0.01;
 
         //lamp
-        let lamp = new MyLamp(0.5, 0.6);
-        lamp.position.set(1.3,tableTopY,-0.5);
-        this.app.scene.add(lamp);
+        this.lamp = new MyLamp(0.5, 0.6);
+        this.lamp.position.set(1.3,tableTopY,-0.5);
+        this.app.scene.add(this.lamp);
 
         //pencil
         const pencilLenght = 0.25;
@@ -299,6 +303,11 @@ class MyContents  {
             if (this.spotlightHelper) this.spotlightHelper.visible = value;
             if (this.spotlight.target) this.spotlight.target.visible = value;
         }
+    }
+
+    toggleLampLight(value){
+        this.lamp.toggleBulbLight(value);
+        this.lampEnabled = value;
     }
 
     toggleAxis(enabled) {
