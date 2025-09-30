@@ -38,4 +38,8 @@ Did the light helper behave as expected?
 
 - Mostly, but the helper doesnt automatically follow changes to spotlight target, since its an independent object, it needed a function to be updated when change light target or visibility.
 
+PW1 - E
 
+Were you able to see changes in real time of the wrap mode? What was necessary for those changes to happen?
+
+ - Yes, we were able to see the changes in real time. In order to accomplish that we needed to change the wrap mode in the texture associated to the material and set the flag "needsUpdate" to true both for the texture and material. 

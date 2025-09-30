@@ -172,7 +172,7 @@ class MyContents  {
         this.wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
         this.wall1Texture.repeat.set(2,2);
        this.wall1Texture.offset.set( - 0.5  , - 0.5  );
-       this.wall1Texture.rotation = Math.PI;
+       //this.wall1Texture.rotation = Math.PI;
         
         
         //back wall
