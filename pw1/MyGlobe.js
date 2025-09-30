@@ -36,12 +36,17 @@ class MyGlobe extends THREE.Object3D {
         this.add(stand);
 
         // Globe
-        const globeGeom = new THREE.SphereGeometry(radius, 32, 32);
+        const globeGeom = new THREE.SphereGeometry(radius, 32, 32);  
+
+        const textureLoader = new THREE.TextureLoader();
+        const earthTexture = textureLoader.load('./textures/earth.jpg');
+
         const globeMat = new THREE.MeshPhongMaterial({
-            color: globeColor,
-            shininess: 50,
-            flatShading: false
+            map: earthTexture,   
+            specular: 0x333333,  
+            shininess: 25        
         });
+
         const globe = new THREE.Mesh(globeGeom, globeMat);
         globe.position.y = baseHeight + standHeight + radius;
         this.add(globe);

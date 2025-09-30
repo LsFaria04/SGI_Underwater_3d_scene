@@ -72,7 +72,7 @@ class MyGuiInterface  {
             this.contents.angle = rad;
         });
         lightFolder.add(this.contents.spotlight, 'penumbra', 0, 1).name("penumbra");
-        lightFolder.add(this.contents.spotlight, 'decay', 1, 2).name("decay");
+        lightFolder.add(this.contents.spotlight, 'decay', 0, 2).name("decay");
         lightFolder.add(this.contents.spotlight.position, 'y', -20, 20).name("y coord");
         lightFolder.add(this.contents.spotlight.target.position, 'x', -20, 20).name("x coord target");
         lightFolder.add(this.contents.spotlight.target.position, 'y', -20, 20).name("y coord target");
