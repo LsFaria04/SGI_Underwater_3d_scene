@@ -21,6 +21,7 @@ class MyContents  {
     constructor(app) {
         this.app = app
         this.axis = null
+        this.axisEnabled = true;
 
         // box related attributes
         this.boxMesh = null
@@ -107,7 +108,8 @@ class MyContents  {
         directionalLight.position.set( 0, 10, 0);
         directionalLight.target.position.set(1,0,1);
         this.app.scene.add( directionalLight );
-        this.directionalLight = directionalLight
+        this.directionalLight = directionalLight;
+   
 
 
         // add a directional light helper for the previous directional light
@@ -287,6 +289,23 @@ class MyContents  {
             this.spotlightEnabled = value;
             if (this.spotlightHelper) this.spotlightHelper.visible = value;
             if (this.spotlight.target) this.spotlight.target.visible = value;
+        }
+    }
+
+    toggleAxis(enabled) {
+        this.axisEnabled = enabled;
+
+        // If axis doesn't exist yet, create it
+        if (!this.axis && enabled) {
+            this.axis = new MyAxis(this);
+        }
+
+        if (enabled) {
+            this.app.scene.add(this.axis);
+        } else {
+            if (this.axis) {
+                this.app.scene.remove(this.axis);
+            }
         }
     }
     /**
