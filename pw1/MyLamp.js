@@ -60,11 +60,15 @@ class MyLamp extends THREE.Object3D {
         bulb.position.y = height * 0.65 + (height * 0.45) / 4;
         this.add(bulb);
 
-        const bulbLight = new THREE.PointLight(0xffffcc, 1, 3); 
-        bulbLight.position.copy(bulb.position);
-        this.add(bulbLight);
+        this.bulbLight = new THREE.PointLight(0xffffcc, 1, 3); 
+        this.bulbLight.position.copy(bulb.position);
+        this.add(this.bulbLight);
                 
             
+    }
+
+    toggleBulbLight(value){
+        this.bulbLight.visible = value;
     }
 }
 
