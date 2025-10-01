@@ -42,7 +42,7 @@ class MyWindow extends THREE.Object3D {
         this.add(frameVertical2);
         
         // landscape
-        const landscapeMaterial = new THREE.MeshPhongMaterial({map:landscapeTexture, color: 0xffffff,  emissive: 0x222222});
+        const landscapeMaterial = new THREE.MeshPhongMaterial({map:landscapeTexture, color: 0xffffff,  emissive: 0x222222, emissiveMap:landscapeTexture, emissiveIntensity: 10});
         const landscapeGeometry = new THREE.PlaneGeometry(width, height);
         const landscape = new THREE.Mesh(landscapeGeometry, landscapeMaterial);
         landscape.position.y = height / 2;

@@ -143,7 +143,7 @@ class MyContents  {
 
 
         // add an ambient light and make it pure red
-        const ambientLight = new THREE.AmbientLight( 0xffffff ); // soft white light
+        const ambientLight = new THREE.AmbientLight( 0xffffff, 1 ); // soft white light
         this.app.scene.add( ambientLight );
 
         //this.buildBox()
@@ -301,7 +301,7 @@ class MyContents  {
         this.app.scene.add(window);
 
         //inserts a light behind the window (simulate the sun light)
-        const sunlight = new THREE.DirectionalLight(0xffffff,3); 
+        const sunlight = new THREE.DirectionalLight(0xffffff,1.5); 
         sunlight.position.set(this.floorSize/2 + 0.5 , wallHeight/2 + 1, 0); 
         sunlight.target.position.set(0, 0, 0); 
 
