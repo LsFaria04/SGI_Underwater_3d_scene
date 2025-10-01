@@ -36,6 +36,7 @@ class MyGuiInterface  {
         axisFolder.open();
 
 
+        /*
         // add a folder to the gui interface for the box
         const boxFolder = this.datgui.addFolder( 'Box' );
         // note that we are using a property from the contents object 
@@ -51,13 +52,15 @@ class MyGuiInterface  {
             'specular color': this.contents.specularPlaneColor,
             'spotlight color': '#ffffff'
         };
-
+        
+        
         // adds a folder to the gui interface for the plane
         const planeFolder = this.datgui.addFolder( 'Plane' );
         planeFolder.addColor( data, 'diffuse color' ).onChange( (value) => { this.contents.updateDiffusePlaneColor(value) } );
         planeFolder.addColor( data, 'specular color' ).onChange( (value) => { this.contents.updateSpecularPlaneColor(value) } );
         planeFolder.add(this.contents, 'planeShininess', 0, 1000).name("shininess").onChange( (value) => { this.contents.updatePlaneShininess(value) } );
         planeFolder.open();
+        */
 
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')
@@ -69,6 +72,7 @@ class MyGuiInterface  {
         const lampLight = this.datgui.addFolder('lampLight');
         lampLight.add(this.contents, 'lampEnabled').name("enabled").onChange( (value) => { this.contents.toggleLampLight(value) } );
 
+        /*
         const wallFolder = this.datgui.addFolder("Wall");
         wallFolder.add(this.contents, "wrapMode", ["Repeat", "Clamp to Edge"]).name("Wrap Mode").onChange((value) =>{this.contents.updateWallWrap(value)})
         wallFolder.open();
@@ -93,6 +97,7 @@ class MyGuiInterface  {
         lightFolder.add(this.contents.spotlight.target.position, 'y', -20, 20).name("y coord target");
         lightFolder.add(this.contents.spotlight.target.position, 'z', -20, 20).name("z coord target");
         lightFolder.open();
+        */
 
     }
 }

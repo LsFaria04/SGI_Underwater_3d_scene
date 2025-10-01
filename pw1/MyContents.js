@@ -8,6 +8,7 @@ import { MyGlobe } from './MyGlobe.js';
 import { MyChair } from './MyChair.js';
 import { MyPencilHolder } from './MyPencilHolder.js';
 import { MyPainting } from './MyPainting.js';
+import { MyWindow } from './MyWindow.js';
 
 /**
  *  This class contains the contents of out application
@@ -110,22 +111,24 @@ class MyContents  {
 
 
         // create a directional light source
+        /*
         const directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
         directionalLight.position.set( 0, 10, 0);
         directionalLight.target.position.set(1,0,1);
         this.app.scene.add( directionalLight );
         this.directionalLight = directionalLight;
-   
+   */
 
 
         // add a directional light helper for the previous directional light
 
-        const directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight, 0.5);
-        this.app.scene.add( directionalLightHelper );
+        //const directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight, 0.5);
+        //this.app.scene.add( directionalLightHelper );
 
 
         // create a spotlight light source
         
+        /*
         const spotlight = new THREE.SpotLight( 0xffffff, this.intensity, this.lightDistance, this.angle, this.penumbra, this.decay);
         spotlight.position.set( 5, 10, 2);
         spotlight.target.position.set(1,0,1);
@@ -136,7 +139,7 @@ class MyContents  {
         //spotlight helper
         this.spotlightHelper = new THREE.SpotLightHelper( spotlight );
         this.app.scene.add( this.spotlightHelper );
-
+        */
 
 
         // add an ambient light and make it pure red
@@ -151,7 +154,7 @@ class MyContents  {
         floorTexture.wrapS = THREE.RepeatWrapping;
         floorTexture.wrapT = THREE.RepeatWrapping;
         //using proportions to make the floor texture repeat accordingly to the width and height of the floor
-        floorTexture.repeat.set(this.floorSize * 4 / 10,this.floorSize * 4 / 10);
+        floorTexture.repeat.set(this.floorSize * 10 / this.floorSize,this.floorSize * 10 / this.floorSize);
 
         // Create a Plane to use as the floor
         let plane = new THREE.PlaneGeometry(this.floorSize, this.floorSize);
@@ -275,21 +278,35 @@ class MyContents  {
         //painting 1
         const texturePainting = new THREE.TextureLoader().load("./textures/Pedro.jpg");
         let painting = new MyPainting(paintingsWidth,paintingsHeight,frameWidth, texturePainting);
-        painting.position.set(firstPaintingPosition, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
+        painting.position.set(firstPaintingPosition, wallHeight / 2 - paintingsHeight / 2, -this.floorSize / 2 + 0.1);
         this.app.scene.add(painting);
 
         //painting 2
         const texturePainting2 = new THREE.TextureLoader().load("./textures/Alex.jpg");
         let painting2 = new MyPainting(paintingsWidth,paintingsHeight,frameWidth, texturePainting2);
-        painting2.position.set(firstPaintingPosition + xSpacePaintings, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
+        painting2.position.set(firstPaintingPosition + xSpacePaintings, wallHeight / 2 - paintingsHeight / 2, -this.floorSize / 2 + 0.05);
         this.app.scene.add(painting2);
 
         //painting 3
         const texturePainting3 = new THREE.TextureLoader().load("./textures/Lucas.jpg");
         let painting3 = new MyPainting(paintingsWidth,paintingsHeight,frameWidth, texturePainting3);
-        painting3.position.set(firstPaintingPosition + 2 * xSpacePaintings, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
+        painting3.position.set(firstPaintingPosition + 2 * xSpacePaintings, wallHeight / 2 - paintingsHeight / 2, -this.floorSize / 2 + 0.05);
         this.app.scene.add(painting3);
 
+        //window with a landscape
+        const landscapeTexture = new THREE.TextureLoader().load("./textures/window_texture.jpg");
+        let window = new MyWindow(2,2,0.1, landscapeTexture);
+        window.position.set(this.floorSize/2 - 0.05, wallHeight/2 - 1, 0)
+        window.rotateY(-Math.PI / 2);
+        this.app.scene.add(window);
+
+        //inserts a light behind the window (simulate the sun light)
+        const sunlight = new THREE.DirectionalLight(0xffffff,3); 
+        sunlight.position.set(this.floorSize/2 + 0.5 , wallHeight/2 + 1, 0); 
+        sunlight.target.position.set(0, 0, 0); 
+
+        this.app.scene.add(sunlight);
+        this.app.scene.add(sunlight.target);
 
     }
     
