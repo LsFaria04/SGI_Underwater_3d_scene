@@ -267,23 +267,24 @@ class MyContents  {
         
         const paintingsWidth = 2;
         const paintingsHeight = 2;
+        const frameWidth = 0.1;
         const xSpacePaintings = this.floorSize / 3; //space between the paintings considering the wall size
-        const firstPaintingPosition = - this.floorSize / 2 + paintingsWidth / 2 + 0.2 + xSpacePaintings  / 2 - (paintingsWidth / 2 + 0.2); //position of the first painting
+        const firstPaintingPosition = - this.floorSize / 2 + paintingsWidth / 2 + frameWidth * 2 + xSpacePaintings  / 2 - (paintingsWidth / 2 + frameWidth * 2); //position of the first painting
         //painting 1
         const texturePainting = new THREE.TextureLoader().load("./textures/Pedro.jpg");
-        let painting = new MyPainting(paintingsWidth,paintingsHeight,texturePainting);
+        let painting = new MyPainting(paintingsWidth,paintingsHeight,frameWidth, texturePainting);
         painting.position.set(firstPaintingPosition, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
         this.app.scene.add(painting);
 
         //painting 2
         const texturePainting2 = new THREE.TextureLoader().load("./textures/Alex.jpg");
-        let painting2 = new MyPainting(paintingsWidth,paintingsHeight,texturePainting2);
+        let painting2 = new MyPainting(paintingsWidth,paintingsHeight,frameWidth, texturePainting2);
         painting2.position.set(firstPaintingPosition + xSpacePaintings, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
         this.app.scene.add(painting2);
 
         //painting 3
         const texturePainting3 = new THREE.TextureLoader().load("./textures/Lucas.jpg");
-        let painting3 = new MyPainting(paintingsWidth,paintingsHeight,texturePainting3);
+        let painting3 = new MyPainting(paintingsWidth,paintingsHeight,frameWidth, texturePainting3);
         painting3.position.set(firstPaintingPosition + 2 * xSpacePaintings, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
         this.app.scene.add(painting3);
 

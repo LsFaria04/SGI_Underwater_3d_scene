@@ -8,15 +8,17 @@ class MyPainting extends THREE.Object3D {
      * 
      * @param {number} width Painting width
      * @param {number} height Painting height
+     * @param {number} frameWidth Painting frame width
      * @param {THREE.Texture} photoTexture The photo to include in the painting
+     * @param {string} frameColor Color of the painting frame
      */
-    constructor(width = 0.5, height = 2, photoTexture) {
+    constructor(width = 0.5, height = 2, frameWidth = 0.1,  photoTexture, frameColor = "#ffffff") {
         super();
 
-        const frameMaterial = new THREE.MeshPhongMaterial({ color: "#ffffff" });
+        const frameMaterial = new THREE.MeshPhongMaterial({ color: frameColor});
 
         // frame horizontal
-        const frameHorizontalGeometry = new THREE.BoxGeometry(width + 0.1, 0.1, 0.1);
+        const frameHorizontalGeometry = new THREE.BoxGeometry(width + frameWidth, frameWidth, 0.1);
         const frameHorizontal1 = new THREE.Mesh(frameHorizontalGeometry, frameMaterial);
         this.add(frameHorizontal1);
 
@@ -25,7 +27,7 @@ class MyPainting extends THREE.Object3D {
         this.add(frameHorizontal2);
 
         //frame vertical
-        const frameVerticalGeometry = new THREE.BoxGeometry(0.1, height, 0.1);
+        const frameVerticalGeometry = new THREE.BoxGeometry(frameWidth, height, 0.1);
         const frameVertical1 = new THREE.Mesh(frameVerticalGeometry, frameMaterial);
         frameVertical1.position.y = height / 2;
         frameVertical1.position.x = - width / 2;
@@ -42,15 +44,17 @@ class MyPainting extends THREE.Object3D {
         const photo = new THREE.Mesh(photoGeometry, photoMaterial);
         photo.position.y = height / 2;
         this.add(photo);
-        /*
-        const backrestHeight = height * 5;
-        const backrestGeometry = new THREE.BoxGeometry(width, backrestHeight, height);
-        const backrestMaterial = seatMaterial;
-        const backrest = new THREE.Mesh(backrestGeometry, backrestMaterial);
-        backrest.position.set(0, legHeight + backrestHeight / 2, depth / 2 - height / 2); // backrest at back of seat
-        this.add(backrest);
-        */
 
+        //inserts a spotlight in the painting
+        const spotlight = new THREE.SpotLight( 0xffffff, 2);
+        spotlight.position.set( 0, height, frameWidth/ 2);
+        spotlight.target.position.set( 0, 0, 0);
+        spotlight.angle = Math.PI / 3; 
+        spotlight.penumbra = 0.8;          
+        spotlight.decay = 0.5;              
+        spotlight.distance = 10; 
+        this.add( spotlight );
+        this.add( spotlight.target );
     }
 }
 
