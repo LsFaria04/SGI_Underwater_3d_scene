@@ -16,16 +16,21 @@ class MyTable extends THREE.Object3D {
     constructor(width = 4, height = 0.2, depth = 2, legRadius = 0.1, legHeight = 1, color = "#8B4513") {
         super();
 
+        //Table texture
+        const tableTexture = new THREE.TextureLoader().load("./textures/wood.jpg");
+        tableTexture.wrapS = THREE.RepeatWrapping;
+        tableTexture.wrapT = THREE.RepeatWrapping;
+        tableTexture.repeat.set(width, height);
         // Tabletop
         const topGeometry = new THREE.BoxGeometry(width, height, depth);
-        const topMaterial = new THREE.MeshPhongMaterial({ color });
+        const topMaterial = new THREE.MeshPhongMaterial({ color: color, map: tableTexture });
         const tableTop = new THREE.Mesh(topGeometry, topMaterial);
         tableTop.position.y = legHeight + height / 2; // tabletop is on top of legs
         this.add(tableTop);
 
         // Legs
         const legGeometry = new THREE.CylinderGeometry(legRadius, legRadius, legHeight, 16);
-        const legMaterial = topMaterial;
+        const legMaterial = new THREE.MeshPhongMaterial({color: "#3c3b3c", specular: "#ffffff", shininess: 20});
 
         const dxs = [-width/2 + legRadius, width/2 - legRadius];
         const dzs = [-depth/2 + legRadius, depth/2 - legRadius];
