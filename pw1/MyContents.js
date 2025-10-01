@@ -7,6 +7,7 @@ import { MyBook } from './MyBook.js';
 import { MyGlobe } from './MyGlobe.js';
 import { MyChair } from './MyChair.js';
 import { MyPencilHolder } from './MyPencilHolder.js';
+import { MyPainting } from './MyPainting.js';
 
 /**
  *  This class contains the contents of out application
@@ -144,17 +145,16 @@ class MyContents  {
 
         //this.buildBox()
         
-        this.floorWidth = 10;
-        this.floorHeight = 10;
+        this.floorSize = 10;
         //create the texture that will be used in the floor
         let floorTexture = new THREE.TextureLoader().load("./textures/floor.png");
         floorTexture.wrapS = THREE.RepeatWrapping;
         floorTexture.wrapT = THREE.RepeatWrapping;
         //using proportions to make the floor texture repeat accordingly to the width and height of the floor
-        floorTexture.repeat.set(this.floorWidth * 4 / 10,this.floorHeight * 4 / 10);
+        floorTexture.repeat.set(this.floorSize * 4 / 10,this.floorSize * 4 / 10);
 
         // Create a Plane to use as the floor
-        let plane = new THREE.PlaneGeometry(this.floorWidth, this.floorHeight);
+        let plane = new THREE.PlaneGeometry(this.floorSize, this.floorSize);
         let material = new THREE.MeshPhongMaterial({map: floorTexture, color: "#ffffff"});
         this.planeMesh = new THREE.Mesh(plane, material);
         this.planeMesh.rotation.x = -Math.PI / 2;
@@ -163,39 +163,38 @@ class MyContents  {
 
         let wallMaterial = new THREE.MeshPhongMaterial({ color: "#ffffff" , shininess: 0, specular: "#000000"});
         let wallHeight = 10;
-        let floorSize = 10;
 
 
         //wall1 texture
-        this.wall1Texture = new THREE.TextureLoader().load("./textures/window.jpg");
-        this.wall1Texture.wrapS = THREE.ClampToEdgeWrapping;
-        this.wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
-        this.wall1Texture.repeat.set(2,2);
-       this.wall1Texture.offset.set( - 0.5  , - 0.5  );
+        //this.wall1Texture = new THREE.TextureLoader().load("./textures/window.jpg");
+        //this.wall1Texture.wrapS = THREE.ClampToEdgeWrapping;
+        //this.wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
+        //this.wall1Texture.repeat.set(2,2);
+       //this.wall1Texture.offset.set( - 0.5  , - 0.5  );
        //this.wall1Texture.rotation = Math.PI;
         
         
         //back wall
-        let wall1Material = new THREE.MeshPhongMaterial({map: this.wall1Texture});
-        this.wall1 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wall1Material);
-        this.wall1.position.set(0, wallHeight/2, -floorSize/2);
+        //let wall1Material = new THREE.MeshPhongMaterial({map: this.wall1Texture});
+        this.wall1 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wallMaterial);
+        this.wall1.position.set(0, wallHeight/2, -this.floorSize/2);
         this.app.scene.add(this.wall1);
         
         //front wall
-        let wall2 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
-        wall2.position.set(0, wallHeight/2, floorSize/2);
+        let wall2 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wallMaterial);
+        wall2.position.set(0, wallHeight/2, this.floorSize/2);
         wall2.rotation.y = Math.PI;
         this.app.scene.add(wall2);
 
         //left wall
-        let wall3 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
-        wall3.position.set(-floorSize/2, wallHeight/2, 0);
+        let wall3 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wallMaterial);
+        wall3.position.set(-this.floorSize/2, wallHeight/2, 0);
         wall3.rotation.y = Math.PI/2;
         this.app.scene.add(wall3);
         
         //right wall
-        let wall4 = new THREE.Mesh(new THREE.PlaneGeometry(floorSize, wallHeight), wallMaterial);
-        wall4.position.set(floorSize/2, wallHeight/2, 0);
+        let wall4 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wallMaterial);
+        wall4.position.set(this.floorSize/2, wallHeight/2, 0);
         wall4.rotation.y = -Math.PI/2;
         this.app.scene.add(wall4);
 
@@ -266,6 +265,29 @@ class MyContents  {
         pencilHolder.position.set(-0.7,tableTopY,-0.5);
         this.app.scene.add(pencilHolder);
         
+        const paintingsWidth = 2;
+        const paintingsHeight = 2;
+        const xSpacePaintings = this.floorSize / 3; //space between the paintings considering the wall size
+        const firstPaintingPosition = - this.floorSize / 2 + paintingsWidth / 2 + 0.2 + xSpacePaintings  / 2 - (paintingsWidth / 2 + 0.2); //position of the first painting
+        //painting 1
+        const texturePainting = new THREE.TextureLoader().load("./textures/Pedro.jpg");
+        let painting = new MyPainting(paintingsWidth,paintingsHeight,texturePainting);
+        painting.position.set(firstPaintingPosition, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
+        this.app.scene.add(painting);
+
+        //painting 2
+        const texturePainting2 = new THREE.TextureLoader().load("./textures/Alex.jpg");
+        let painting2 = new MyPainting(paintingsWidth,paintingsHeight,texturePainting2);
+        painting2.position.set(firstPaintingPosition + xSpacePaintings, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
+        this.app.scene.add(painting2);
+
+        //painting 3
+        const texturePainting3 = new THREE.TextureLoader().load("./textures/Lucas.jpg");
+        let painting3 = new MyPainting(paintingsWidth,paintingsHeight,texturePainting3);
+        painting3.position.set(firstPaintingPosition + 2 * xSpacePaintings, wallHeight / 2 - 1, -this.floorSize / 2 + 0.1);
+        this.app.scene.add(painting3);
+
+
     }
     
     /**
