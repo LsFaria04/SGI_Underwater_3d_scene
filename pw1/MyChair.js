@@ -16,9 +16,15 @@ class MyChair extends THREE.Object3D {
     constructor(width = 4, height = 0.2, depth = 2, legRadius = 0.1, legHeight = 1, color = "#8B4513") {
         super();
 
+        // Chair texture (same as table)
+        const chairTexture = new THREE.TextureLoader().load("./textures/wood.jpg");
+        chairTexture.wrapS = THREE.RepeatWrapping;
+        chairTexture.wrapT = THREE.RepeatWrapping;
+        chairTexture.repeat.set(width, height);
+
         // Seat
         const seatGeometry = new THREE.BoxGeometry(width, height, depth);
-        const seatMaterial = new THREE.MeshPhongMaterial({ color });
+        const seatMaterial = new THREE.MeshPhongMaterial({ color: color, map: chairTexture });
         const seat = new THREE.Mesh(seatGeometry, seatMaterial);
         seat.position.y = legHeight + height / 2; // seat is on top of legs
         this.add(seat);
@@ -26,14 +32,14 @@ class MyChair extends THREE.Object3D {
         // Backrest
         const backrestHeight = height * 5;
         const backrestGeometry = new THREE.BoxGeometry(width, backrestHeight, height);
-        const backrestMaterial = seatMaterial;
+        const backrestMaterial = new THREE.MeshPhongMaterial({ color: color, map: chairTexture });
         const backrest = new THREE.Mesh(backrestGeometry, backrestMaterial);
         backrest.position.set(0, legHeight + backrestHeight / 2, depth / 2 - height / 2); // backrest at back of seat
         this.add(backrest);
 
         // Legs
         const legGeometry = new THREE.CylinderGeometry(legRadius, legRadius, legHeight, 16);
-        const legMaterial = seatMaterial;
+        const legMaterial = new THREE.MeshPhongMaterial({ color: color, map: chairTexture });
 
         const dxs = [-width/2 + legRadius, width/2 - legRadius];
         const dzs = [-depth/2 + legRadius, depth/2 - legRadius];

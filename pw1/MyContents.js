@@ -143,7 +143,7 @@ class MyContents  {
 
 
         // add an ambient light and make it pure red
-        const ambientLight = new THREE.AmbientLight( 0xffffff, 1 ); // soft white light
+        const ambientLight = new THREE.AmbientLight( 0xffffff, 0.1); // soft white light
         this.app.scene.add( ambientLight );
 
         //this.buildBox()
@@ -168,35 +168,36 @@ class MyContents  {
         let wallHeight = 5;
 
 
-        //wall1 texture
-        //this.wall1Texture = new THREE.TextureLoader().load("./textures/window.jpg");
-        //this.wall1Texture.wrapS = THREE.ClampToEdgeWrapping;
-        //this.wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
-        //this.wall1Texture.repeat.set(2,2);
-       //this.wall1Texture.offset.set( - 0.5  , - 0.5  );
-       //this.wall1Texture.rotation = Math.PI;
+        //wall texture
+        this.wallTexture = new THREE.TextureLoader().load("./textures/walltext.jpg");
+        this.wallTexture.wrapS = THREE.RepeatWrapping;
+        this.wallTexture.wrapT = THREE.RepeatWrapping;
+        this.wallTexture.repeat.set(1, 1);
         
         
         //back wall
-        //let wall1Material = new THREE.MeshPhongMaterial({map: this.wall1Texture});
-        this.wall1 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wallMaterial);
+        let wall1Material = new THREE.MeshPhongMaterial({map: this.wallTexture});
+        this.wall1 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wall1Material);
         this.wall1.position.set(0, wallHeight/2, -this.floorSize/2);
         this.app.scene.add(this.wall1);
         
         //front wall
-        let wall2 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wallMaterial);
+        let wall2Material = new THREE.MeshPhongMaterial({map: this.wallTexture});
+        let wall2 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wall2Material);
         wall2.position.set(0, wallHeight/2, this.floorSize/2);
         wall2.rotation.y = Math.PI;
         this.app.scene.add(wall2);
 
         //left wall
-        let wall3 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wallMaterial);
+        let wall3Material = new THREE.MeshPhongMaterial({map: this.wallTexture});
+        let wall3 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wall3Material);
         wall3.position.set(-this.floorSize/2, wallHeight/2, 0);
         wall3.rotation.y = Math.PI/2;
         this.app.scene.add(wall3);
         
         //right wall
-        let wall4 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wallMaterial);
+        let wall4Material = new THREE.MeshPhongMaterial({map: this.wallTexture});
+        let wall4 = new THREE.Mesh(new THREE.PlaneGeometry(this.floorSize, wallHeight), wall4Material);
         wall4.position.set(this.floorSize/2, wallHeight/2, 0);
         wall4.rotation.y = -Math.PI/2;
         this.app.scene.add(wall4);
@@ -301,7 +302,7 @@ class MyContents  {
         this.app.scene.add(window);
 
         //inserts a light behind the window (simulate the sun light)
-        const sunlight = new THREE.DirectionalLight(0xffffff,1.5); 
+        const sunlight = new THREE.DirectionalLight(0xffffff,5); 
         sunlight.position.set(this.floorSize/2 + 0.5 , wallHeight/2 + 1, 0); 
         sunlight.target.position.set(0, 0, 0); 
 
