@@ -161,7 +161,7 @@ class MyContents  {
         this.planeMesh.position.y = -0;
         this.app.scene.add(this.planeMesh);
 
-        let wallMaterial = new THREE.MeshPhongMaterial({ color: "#ffffff" });
+        let wallMaterial = new THREE.MeshPhongMaterial({ color: "#ffffff" , shininess: 0, specular: "#000000"});
         let wallHeight = 10;
         let floorSize = 10;
 
