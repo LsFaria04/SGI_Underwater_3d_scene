@@ -9,24 +9,27 @@ class MyBook extends THREE.Object3D {
      * @param {number} width Book width
      * @param {number} height Book height
      * @param {string|number} color Book color (hex or string)
+     * @param {THREE.Texture} bookCoverTexture Texture that will be on the book cover
      */
-    constructor(length = 0.4, width = 0.3, thickness = 0.1,  color = "#2b00ff") {
+    constructor(length = 0.4, width = 0.3, thickness = 0.1,  color = "#2b00ff", bookCoverTexture) {
         super();
 
+        //Generic cover material
         const coverMaterial = new THREE.MeshPhongMaterial({ color});
 
-        // Book cover side
-        const bodyGeometry = new THREE.CylinderGeometry(thickness / 2, thickness / 2, length, 32 ,1,true, Math.PI, Math.PI); 
-        const bookSide= new THREE.Mesh(bodyGeometry, coverMaterial);
-        bookSide.position.y = length / 2;
-        this.add(bookSide);
-        
-        //texture to use in the front cover
+        //texture to use in thecover
         const texture = new THREE.TextureLoader().load("./textures/text_to_mirror.jpg");
         texture.wrapS = THREE.MirroredRepeatWrapping;
         texture.wrapT = THREE.MirroredRepeatWrapping;
         texture.repeat.set(2, 2);
-        const textureMaterial = new THREE.MeshPhongMaterial({map: texture})
+        const textureMaterial = new THREE.MeshPhongMaterial({map: bookCoverTexture ? bookCoverTexture : texture})
+
+        // Book cover side
+        const bodyGeometry = new THREE.CylinderGeometry(thickness / 2, thickness / 2, length, 32 ,1,true, Math.PI, Math.PI); 
+        const bookSide= new THREE.Mesh(bodyGeometry, textureMaterial);
+        bookSide.position.y = length / 2;
+        this.add(bookSide);
+        
         
         //book top cover
         const topGeometry = new THREE.PlaneGeometry(width, length) ;
@@ -35,7 +38,7 @@ class MyBook extends THREE.Object3D {
         this.add(topCover); 
 
         //book back cover
-        const backCover = new THREE.Mesh(topGeometry, coverMaterial);
+        const backCover = new THREE.Mesh(topGeometry, textureMaterial);
         backCover.rotateY(Math.PI);
         backCover.position.set(width / 2, length / 2, - thickness / 2);
         this.add(backCover);

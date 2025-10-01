@@ -162,7 +162,7 @@ class MyContents  {
         this.app.scene.add(this.planeMesh);
 
         let wallMaterial = new THREE.MeshPhongMaterial({ color: "#ffffff" , shininess: 0, specular: "#000000"});
-        let wallHeight = 10;
+        let wallHeight = 5;
 
 
         //wall1 texture
@@ -224,16 +224,18 @@ class MyContents  {
         this.app.scene.add(pencil);
 
         //book1
+        const bookTexture1 = new THREE.TextureLoader().load("./textures/seamless-book-cover.jpg");
         const bookWidth = 0.4;
         const bookLength = 0.6;
         const bookThickness = 0.1;
-        let book1 = new MyBook(bookLength,bookWidth, bookThickness);
+        let book1 = new MyBook(bookLength,bookWidth, bookThickness, "#0000ff", bookTexture1);
         book1.position.set(-0.9, tableTopY + bookThickness / 2, 0.75);
         book1.rotateX(- Math.PI / 2);
         this.app.scene.add(book1);
 
         //book2
-        let book2 = new MyBook(bookLength,bookWidth, bookThickness, "#ff0000");
+        const bookTexture2 = new THREE.TextureLoader().load("./textures/grungy-front-book-cover.jpg");
+        let book2 = new MyBook(bookLength,bookWidth, bookThickness, "#ff0000", bookTexture2);
         book2.position.set(0.6, tableTopY + bookThickness / 2, 0.75);
         book2.rotateX(- Math.PI / 2);
         this.app.scene.add(book2);
