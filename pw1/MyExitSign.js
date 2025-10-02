@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 /**
- * This class represents a window 
+ * This class represents an exit sign
  */
 class MyExitSign extends THREE.Object3D {
     /**

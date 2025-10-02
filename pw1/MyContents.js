@@ -13,6 +13,7 @@ import { MyBookshelf } from './MyBookshelf.js';
 import { MyDoor } from './MyDoor.js';
 import { MyExitSign } from './MyExitSign.js';
 import { MyDiamond } from './MyDiamond.js';
+import { MyRubber } from './MyRubber.js';
 
 /**
  *  This class contains the contents of out application
@@ -282,6 +283,17 @@ class MyContents  {
         this.pencil2.position.set(1.15,this.tableTopY + pencilWidth / 2,0.5);
         this.pencil2.rotateX(- Math.PI / 2);
         this.app.scene.add(this.pencil2);
+
+        // ---- Rubbers ------
+        const rubberHeight = 0.02;
+        const rubberWidth = 0.1;
+        const rubberDepth = 0.05;
+        this.rubber1 = new MyRubber(rubberWidth, rubberHeight, rubberDepth, 0x9999ff);
+        this.rubber2 = new MyRubber(rubberWidth, rubberHeight, rubberDepth, 0xff9999);
+        this.rubber1.position.set(-0.3,this.tableTopY, 0.5);
+        this.rubber2.position.set(1.25,this.tableTopY + rubberHeight / 2, 0.5);
+        this.app.scene.add(this.rubber1);
+        this.app.scene.add(this.rubber2);
 
         // -----Books-----
         // book dimensions
