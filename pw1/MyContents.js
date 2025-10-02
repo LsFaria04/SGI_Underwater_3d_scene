@@ -315,6 +315,16 @@ class MyContents  {
         bookshelf.position.set(-4.75, 0, 4);
         bookshelf.rotateY(Math.PI / 2);
         this.app.scene.add(bookshelf);
+
+        // rug beneath the table
+        const rugTexture = new THREE.TextureLoader().load("./textures/rug.jpg");
+        const rugMaterial = new THREE.MeshPhongMaterial({ map: rugTexture, color: 0xcccccc, roughness: 0.7 });
+        const rug = new THREE.Mesh(new THREE.PlaneGeometry(6, 5), rugMaterial);
+
+        rug.rotation.x = -Math.PI / 2; 
+        rug.position.set(0, 0.01, 0);
+
+        this.app.scene.add(rug);
     }
     
     /**
