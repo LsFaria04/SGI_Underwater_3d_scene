@@ -11,6 +11,7 @@ import { MyPainting } from './MyPainting.js';
 import { MyWindow } from './MyWindow.js';
 import { MyBookshelf } from './MyBookshelf.js';
 import { MyDoor } from './MyDoor.js';
+import { MyExitSign } from './MyExitSign.js';
 
 /**
  *  This class contains the contents of out application
@@ -86,9 +87,9 @@ class MyContents  {
 
     // initializes the scene contents
     init() {
-        this.initLights();
         this.initTextures();
         this.initObjects();
+        this.initLights();
     }
 
     initLights() {
@@ -155,6 +156,11 @@ class MyContents  {
 
         this.app.scene.add(this.sunlight);
         this.app.scene.add(this.sunlight.target);
+
+        // Point light to simulate glow
+        const exitLight = new THREE.PointLight(0x0BA14A, 1, 5);
+        exitLight.position.set(0,this.doorHeight + this.signHeight / 2 + 0.2, this.floorSize / 2 - 0.1); // Place behind the sign
+        this.app.scene.add(exitLight);
     }
 
     initTextures() {
@@ -353,10 +359,18 @@ class MyContents  {
         this.app.scene.add(this.rug);
 
         // -----Door-------
-        this.door = new MyDoor(2,4,0.2, this.doorTexture, "#8B4513");
+        this.doorHeight = 4;
+        this.door = new MyDoor(2,this.doorHeight,0.2, this.doorTexture, "#8B4513");
         this.door.position.set(0,0,this.floorSize / 2 - 0.1);
         this.door.rotation.y = Math.PI;
         this.app.scene.add(this.door);
+
+        // ----Exit Sign -----
+        this.signHeight = 0.5;
+        this.exitSign = new MyExitSign(1,this.signHeight);
+        this.exitSign.position.set(0,this.doorHeight + 0.2,this.floorSize / 2 - 0.05);
+        this.exitSign.rotation.y = Math.PI;
+        this.app.scene.add(this.exitSign);
 
     }
     
