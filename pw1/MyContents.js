@@ -298,8 +298,10 @@ class MyContents  {
         const rubberDepth = 0.05;
         this.rubber1 = new MyRubber(rubberWidth, rubberHeight, rubberDepth, 0x9999ff);
         this.rubber2 = new MyRubber(rubberWidth, rubberHeight, rubberDepth, 0xff9999);
-        this.rubber1.position.set(-0.3,this.tableTopY, 0.5);
-        this.rubber2.position.set(1.25,this.tableTopY + rubberHeight / 2, 0.5);
+        this.rubber1.position.set(-0.3,this.tableTopY, 0.4);
+        this.rubber2.position.set(1.25,this.tableTopY + rubberHeight / 2, 0.4);
+        this.rubber1.rotateY(Math.PI / 2);
+        this.rubber2.rotateY(Math.PI / 2);
         this.app.scene.add(this.rubber1);
         this.app.scene.add(this.rubber2);
 
