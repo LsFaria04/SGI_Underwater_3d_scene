@@ -13,11 +13,11 @@ class MyChair extends THREE.Object3D {
      * @param {number} legHeight Cylinder height for legs
      * @param {string|number} color Chair color (hex or string)
      */
-    constructor(width = 4, height = 0.2, depth = 2, legRadius = 0.1, legHeight = 1, color = "#8B4513") {
+    constructor(width = 4, height = 0.2, depth = 2, legRadius = 0.1, legHeight = 1, color = "#8B4513", woodTexture) {
         super();
 
         // Chair texture (same as table)
-        const chairTexture = new THREE.TextureLoader().load("./textures/wood.jpg");
+        const chairTexture = woodTexture;
         chairTexture.wrapS = THREE.RepeatWrapping;
         chairTexture.wrapT = THREE.RepeatWrapping;
         chairTexture.repeat.set(width, height);

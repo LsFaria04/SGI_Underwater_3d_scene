@@ -17,12 +17,8 @@ class MyBook extends THREE.Object3D {
         //Generic cover material
         const coverMaterial = new THREE.MeshPhongMaterial({ color});
 
-        //texture to use in thecover
-        const texture = new THREE.TextureLoader().load("./textures/seamless-book-cover.jpg");
-        texture.wrapS = THREE.MirroredRepeatWrapping;
-        texture.wrapT = THREE.MirroredRepeatWrapping;
-        texture.repeat.set(2, 2);
-        const textureMaterial = new THREE.MeshPhongMaterial({map: bookCoverTexture ? bookCoverTexture : texture})
+        //texture to use in the cover
+        const textureMaterial = new THREE.MeshPhongMaterial({map: bookCoverTexture || null})
 
         // Book cover side
         const bodyGeometry = new THREE.CylinderGeometry(thickness / 2, thickness / 2, length, 32 ,1,true, Math.PI, Math.PI); 

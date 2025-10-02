@@ -13,11 +13,12 @@ class MyTable extends THREE.Object3D {
      * @param {number} legHeight Cylinder height for legs
      * @param {string|number} color Table color (hex or string)
      */
-    constructor(width = 4, height = 0.2, depth = 2, legRadius = 0.1, legHeight = 1, color = "#8B4513") {
+    constructor(width = 4, height = 0.2, depth = 2, legRadius = 0.1, legHeight = 1, woodTexture, color = "#8B4513") {
         super();
 
         //Table texture
-        const tableTexture = new THREE.TextureLoader().load("./textures/wood.jpg");
+        this.woodTexture = woodTexture;
+        const tableTexture = this.woodTexture;
         tableTexture.wrapS = THREE.RepeatWrapping;
         tableTexture.wrapT = THREE.RepeatWrapping;
         tableTexture.repeat.set(width, height);

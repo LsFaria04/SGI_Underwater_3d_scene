@@ -17,8 +17,9 @@ class MyGlobe extends THREE.Object3D {
         standHeight = 0.3,
         baseRadius = 0.25,
         baseHeight = 0.1,
-        globeColor = 0x1E90FF, 
-        standColor = 0x2e1809 
+        earthTexture, 
+        globeColor = 0x1E90FF,
+        standColor = 0x2e1809
     ) {
         super();
 
@@ -37,9 +38,6 @@ class MyGlobe extends THREE.Object3D {
 
         // Globe
         const globeGeom = new THREE.SphereGeometry(radius, 32, 32);  
-
-        const textureLoader = new THREE.TextureLoader();
-        const earthTexture = textureLoader.load('./textures/earth.jpg');
 
         const globeMat = new THREE.MeshPhongMaterial({
             map: earthTexture,   

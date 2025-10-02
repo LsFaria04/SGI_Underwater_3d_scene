@@ -199,6 +199,14 @@ class MyContents  {
         //Door texture
         this.doorTexture = new THREE.TextureLoader().load("./textures/door.jpg");
 
+        // wood texture
+        this.woodTexture = new THREE.TextureLoader().load("./textures/wood.jpg");
+
+        // exit sign texture
+        this.exitSignTexture = new THREE.TextureLoader().load("./textures/exit.jpeg");
+
+        // globe texture
+        this.earthTexture = new THREE.TextureLoader().load("./textures/earth.jpg");
 
     }
 
@@ -256,7 +264,7 @@ class MyContents  {
         const legRadius = 0.1;
         const legHeight = 1;
 
-        this.table = new MyTable(tableWidth, tableTopHeight, tableDepth, legRadius, legHeight);
+        this.table = new MyTable(tableWidth, tableTopHeight, tableDepth, legRadius, legHeight, this.woodTexture);
         this.table.position.set(0, 0, 0);
         this.app.scene.add(this.table);
 
@@ -302,18 +310,18 @@ class MyContents  {
         this.app.scene.add(this.book2);
 
         //-----Globe-----
-        this.globe = new MyGlobe(0.25, 0.1, 0.15, 0.05);
+        this.globe = new MyGlobe(0.25, 0.1, 0.15, 0.05, this.earthTexture);
         this.globe.position.set(-1.3, this.tableTopY, -0.5);
         this.app.scene.add(this.globe);
 
         //-----Chairs-----
         //chair number 1
-        this.chair1 = new MyChair(1, 0.2, 1, 0.05, 0.5, "#8B4513");
+        this.chair1 = new MyChair(1, 0.2, 1, 0.05, 0.5, "#8B4513", this.woodTexture);
         this.chair1.position.set(-0.75,-0,1.5);   
         this.app.scene.add(this.chair1);
 
         //chair number 2
-        this.chair2 = new MyChair(1, 0.2, 1, 0.05, 0.5, "#8B4513");
+        this.chair2 = new MyChair(1, 0.2, 1, 0.05, 0.5, "#8B4513", this.woodTexture);
         this.chair2.position.set(0.75,-0,1.5);   
         this.app.scene.add(this.chair2);
 
@@ -345,7 +353,7 @@ class MyContents  {
         this.app.scene.add(this.window);
 
         // -----bookshelf-----
-        this.bookshelf = new MyBookshelf(2, 0.5, 5, "#8B4513", this.redBookTexture, this.blueBookTexture);
+        this.bookshelf = new MyBookshelf(2, 0.5, 5, "#8B4513", this.woodTexture, this.redBookTexture, this.blueBookTexture);
         this.bookshelf.position.set(-4.75, 0, 4);
         this.bookshelf.rotateY(Math.PI / 2);
         this.app.scene.add(this.bookshelf);
@@ -368,7 +376,7 @@ class MyContents  {
 
         // ----Exit Sign -----
         this.signHeight = 0.5;
-        this.exitSign = new MyExitSign(1,this.signHeight);
+        this.exitSign = new MyExitSign(1,this.signHeight, this.exitSignTexture);
         this.exitSign.position.set(0,this.doorHeight + 0.2,this.floorSize / 2 - 0.05);
         this.exitSign.rotation.y = Math.PI;
         this.app.scene.add(this.exitSign);
