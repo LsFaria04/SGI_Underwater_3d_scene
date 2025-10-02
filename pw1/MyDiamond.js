@@ -32,26 +32,6 @@ class MyDiamond extends THREE.Object3D {
         const pedestal = new THREE.Mesh(pedestalGeo, pedestalMat);
         pedestal.position.y = boxSize + boxSize * 0.025;
         this.add(pedestal);
-
-        // Glass dome covering the diamond
-        
-        const domeRadius = boxSize * (diamondScale + 0.3);
-        const domeGeo = new THREE.SphereGeometry(domeRadius, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
-        
-        const domeMat = new THREE.MeshPhysicalMaterial({
-            color: 0xFFFFFF,
-            metalness: 0,
-            roughness: 0.05,
-            transparent: true,
-            opacity: 0.35,
-            transmission: 0.9,
-            ior: 1.45,
-            thickness: 0.02,
-            reflectivity: 0.5
-        });
-        const dome = new THREE.Mesh(domeGeo, domeMat);
-        dome.position.y = boxSize;
-        this.add(dome);
     }
 }
 
