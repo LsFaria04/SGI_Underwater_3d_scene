@@ -11,6 +11,7 @@ import { MyPainting } from './MyPainting.js';
 import { MyWindow } from './MyWindow.js';
 import { MyBookshelf } from './MyBookshelf.js';
 import { MyDoor } from './MyDoor.js';
+import { MyDiamond } from './MyDiamond.js';
 
 /**
  *  This class contains the contents of out application
@@ -358,6 +359,11 @@ class MyContents  {
         this.door.rotation.y = Math.PI;
         this.app.scene.add(this.door);
 
+
+        // ----- Diamond on a box -----
+        this.diamond = new MyDiamond(0.2, 0.2, 0x000000, 0x00FFFF);
+        this.diamond.position.set(0.6, this.tableTopY, -0.5);
+        this.app.scene.add(this.diamond);
     }
     
     /**
