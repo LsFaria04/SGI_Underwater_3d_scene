@@ -9,6 +9,7 @@ import { MyChair } from './MyChair.js';
 import { MyPencilHolder } from './MyPencilHolder.js';
 import { MyPainting } from './MyPainting.js';
 import { MyWindow } from './MyWindow.js';
+import { MyBookshelf } from './MyBookshelf.js';
 
 /**
  *  This class contains the contents of out application
@@ -309,6 +310,11 @@ class MyContents  {
         this.app.scene.add(sunlight);
         this.app.scene.add(sunlight.target);
 
+        // bookshelf
+        const bookshelf = new MyBookshelf(2, 0.5, 5);
+        bookshelf.position.set(-4.75, 0, 4);
+        bookshelf.rotateY(Math.PI / 2);
+        this.app.scene.add(bookshelf);
     }
     
     /**
