@@ -10,6 +10,7 @@ import { MyPencilHolder } from './MyPencilHolder.js';
 import { MyPainting } from './MyPainting.js';
 import { MyWindow } from './MyWindow.js';
 import { MyBookshelf } from './MyBookshelf.js';
+import { MyDoor } from './MyDoor.js';
 
 /**
  *  This class contains the contents of out application
@@ -188,6 +189,9 @@ class MyContents  {
         // Rug texture
         this.rugTexture = new THREE.TextureLoader().load("./textures/rug.jpg");
 
+        //Door texture
+        this.doorTexture = new THREE.TextureLoader().load("./textures/door.jpg");
+
 
     }
 
@@ -347,6 +351,13 @@ class MyContents  {
         this.rug.position.set(0, 0.01, 0);
 
         this.app.scene.add(this.rug);
+
+        // -----Door-------
+        this.door = new MyDoor(2,4,0.2, this.doorTexture, "#8B4513");
+        this.door.position.set(0,0,this.floorSize / 2 - 0.1);
+        this.door.rotation.y = Math.PI;
+        this.app.scene.add(this.door);
+
     }
     
     /**
