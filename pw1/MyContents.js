@@ -180,8 +180,8 @@ class MyContents  {
         this.wallTexture.repeat.set(1, 1);
 
         // book textures
-        this.bookTexture1 = new THREE.TextureLoader().load("./textures/seamless-book-cover.jpg");
-        this.bookTexture2 = new THREE.TextureLoader().load("./textures/grungy-front-book-cover.jpg");
+        this.blueBookTexture = new THREE.TextureLoader().load("./textures/seamless-book-cover.jpg");
+        this.redBookTexture = new THREE.TextureLoader().load("./textures/grungy-front-book-cover.jpg");
 
         // painting textures
         this.paintingTextures = [
@@ -290,13 +290,13 @@ class MyContents  {
         const bookThickness = 0.1;
 
         //book1
-        this.book1 = new MyBook(bookLength,bookWidth, bookThickness, "#0000ff", this.bookTexture1);
+        this.book1 = new MyBook(bookLength,bookWidth, bookThickness, "#0000ff", this.blueBookTexture);
         this.book1.position.set(-0.9, this.tableTopY + bookThickness / 2, 0.75);
         this.book1.rotateX(- Math.PI / 2);
         this.app.scene.add(this.book1);
 
         //book2
-        this.book2 = new MyBook(bookLength,bookWidth, bookThickness, "#ff0000", this.bookTexture2);
+        this.book2 = new MyBook(bookLength,bookWidth, bookThickness, "#ff0000", this.redBookTexture);
         this.book2.position.set(0.6, this.tableTopY + bookThickness / 2, 0.75);
         this.book2.rotateX(- Math.PI / 2);
         this.app.scene.add(this.book2);
@@ -345,7 +345,7 @@ class MyContents  {
         this.app.scene.add(this.window);
 
         // -----bookshelf-----
-        this.bookshelf = new MyBookshelf(2, 0.5, 5);
+        this.bookshelf = new MyBookshelf(2, 0.5, 5, "#8B4513", this.redBookTexture, this.blueBookTexture);
         this.bookshelf.position.set(-4.75, 0, 4);
         this.bookshelf.rotateY(Math.PI / 2);
         this.app.scene.add(this.bookshelf);

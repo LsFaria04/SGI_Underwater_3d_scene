@@ -2,8 +2,12 @@ import * as THREE from 'three';
 import { MyBook } from './MyBook.js';
 
 class MyBookshelf extends THREE.Object3D {
-    constructor(width = 2, depth = 0.5, shelfCount = 5, color = "#8B4513") {
+    constructor(width = 2, depth = 0.5, shelfCount = 5, color = "#8B4513", redBookTexture, blueBookTexture) {
         super();
+
+        if (!redBookTexture || !blueBookTexture) {
+            console.warn("Book textures not provided!");
+        }
 
         const woodTexture = new THREE.TextureLoader().load("./textures/wood.jpg");
         woodTexture.wrapS = THREE.RepeatWrapping;
@@ -48,9 +52,7 @@ class MyBookshelf extends THREE.Object3D {
                 const isRed = Math.random() < 0.5;
 
                 const color = isRed ? "#FF3333" : "#3366FF";
-                const texturePath = isRed 
-                    ? "./textures/grungy-front-book-cover.jpg"
-                    : "./textures/seamless-book-cover.jpg";
+                const texturePath = isRed ? redBookTexture : blueBookTexture
 
                 const texture = new THREE.TextureLoader().load(texturePath);
                 
