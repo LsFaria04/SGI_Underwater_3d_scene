@@ -17,7 +17,7 @@ class MyPencilHolder extends THREE.Object3D {
 
         // Holder body
         const bodyGeometry = new THREE.CylinderGeometry(radius, radius, height, 32, 1, true);
-        const bodyMaterial = new THREE.MeshPhongMaterial({ color , side: THREE.DoubleSide});
+        const bodyMaterial = new THREE.MeshPhongMaterial({ color , side: THREE.DoubleSide, roughness: 0.7, metalness: 0.2});
         const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
         body.position.y = height / 2; // position the body above the ground
         this.add(body);

@@ -18,7 +18,7 @@ class MyBook extends THREE.Object3D {
         const coverMaterial = new THREE.MeshPhongMaterial({ color});
 
         //texture to use in thecover
-        const texture = new THREE.TextureLoader().load("./textures/text_to_mirror.jpg");
+        const texture = new THREE.TextureLoader().load("./textures/seamless-book-cover.jpg");
         texture.wrapS = THREE.MirroredRepeatWrapping;
         texture.wrapT = THREE.MirroredRepeatWrapping;
         texture.repeat.set(2, 2);
