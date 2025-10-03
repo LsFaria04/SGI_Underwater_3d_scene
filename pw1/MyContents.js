@@ -210,6 +210,9 @@ class MyContents  {
         // globe texture
         this.earthTexture = new THREE.TextureLoader().load("./textures/earth.jpg");
 
+        // clock texture
+        this.clockTexture = new THREE.TextureLoader().load('./textures/clock.jpeg');
+
     }
 
     initObjects() {
@@ -403,7 +406,7 @@ class MyContents  {
         this.table.add(this.diamond);
 
         // ------- Clock ------------
-        this.clock = new MyClock(0.5, 0.2);
+        this.clock = new MyClock(0.5, 0.2, this.clockTexture);
         this.clock.position.set(- this.floorSize / 2, this.wallHeight / 2, 0);
         this.clock.rotation.z = Math.PI / 2;
         this.clock.rotation.y = Math.PI;

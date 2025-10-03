@@ -11,12 +11,11 @@ class MyClock extends THREE.Object3D {
      * @param {string} frameColor Color of the frame
      * @param {string} hansdColor Color of the clock hands frame
      */
-    constructor(radius = 0.5, depth = 0.1, frameColor = "#ffffff", handsColor = "#000000") {
+    constructor(radius = 0.5, depth = 0.1, clockTexture, frameColor = "#ffffff", handsColor = "#000000") {
         super();
 
         //clock body
         const frameMaterial = new THREE.MeshPhongMaterial({ color: frameColor});
-        const clockTexture = new THREE.TextureLoader().load('./textures/clock.jpeg');
         const frontMaterial = new THREE.MeshPhongMaterial({ map: clockTexture });
         const materials = [frameMaterial, frontMaterial, frameMaterial]; // Order: side, top, bottom
         const clockGeometry = new THREE.CylinderGeometry(radius, radius, depth);
