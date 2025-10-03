@@ -30,7 +30,7 @@ class MyTable extends THREE.Object3D {
 
         // Legs
         const legGeometry = new THREE.CylinderGeometry(legRadius, legRadius, legHeight, 16);
-        const legMaterial = new THREE.MeshPhongMaterial({color: "#3c3b3c", specular: "#ffffff", shininess: 20});
+        const legMaterial = new THREE.MeshPhongMaterial({color: "#3c3b3c", specular: "#ffffff", shininess: 50});
 
         const dxs = [-width/2 + legRadius, width/2 - legRadius];
         const dzs = [-depth/2 + legRadius, depth/2 - legRadius];
