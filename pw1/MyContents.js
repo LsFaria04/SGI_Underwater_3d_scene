@@ -14,6 +14,7 @@ import { MyDoor } from './MyDoor.js';
 import { MyExitSign } from './MyExitSign.js';
 import { MyDiamond } from './MyDiamond.js';
 import { MyRubber } from './MyRubber.js';
+import { MyClock } from './MyClock.js';
 
 /**
  *  This class contains the contents of out application
@@ -400,6 +401,14 @@ class MyContents  {
         this.diamond = new MyDiamond(0.2, 0.2, 0x000000, 0x00FFFF);
         this.diamond.position.set(0.6, this.tableTopY, -0.5);
         this.table.add(this.diamond);
+
+        // ------- Clock ------------
+        this.clock = new MyClock(0.5, 0.2);
+        this.clock.position.set(- this.floorSize / 2, this.wallHeight / 2, 0);
+        this.clock.rotation.z = Math.PI / 2;
+        this.clock.rotation.y = Math.PI;
+        
+        this.app.scene.add(this.clock);
     }
     
     /**
