@@ -275,7 +275,7 @@ class MyContents  {
         // -----Lamp-----
         this.lamp = new MyLamp(0.5, 0.6);
         this.lamp.position.set(1.3,this.tableTopY,-0.5);
-        this.app.scene.add(this.lamp);
+        this.table.add(this.lamp);
 
         // ----- Pencils -----
         // pencil dimensions
@@ -285,12 +285,12 @@ class MyContents  {
         this.pencil = new MyPencil(pencilLength, pencilWidth);
         this.pencil.position.set(-0.4,this.tableTopY + pencilWidth / 2,0.5);
         this.pencil.rotateX(- Math.PI / 2);
-        this.app.scene.add(this.pencil);
+        this.table.add(this.pencil);
 
         this.pencil2 = new MyPencil(pencilLength, pencilWidth);
         this.pencil2.position.set(1.15,this.tableTopY + pencilWidth / 2,0.5);
         this.pencil2.rotateX(- Math.PI / 2);
-        this.app.scene.add(this.pencil2);
+        this.table.add(this.pencil2);
 
         // ---- Rubbers ------
         const rubberHeight = 0.02;
@@ -302,8 +302,8 @@ class MyContents  {
         this.rubber2.position.set(1.25,this.tableTopY + rubberHeight / 2, 0.4);
         this.rubber1.rotateY(Math.PI / 2);
         this.rubber2.rotateY(Math.PI / 2);
-        this.app.scene.add(this.rubber1);
-        this.app.scene.add(this.rubber2);
+        this.table.add(this.rubber1);
+        this.table.add(this.rubber2);
 
         // -----Books-----
         // book dimensions
@@ -315,18 +315,18 @@ class MyContents  {
         this.book1 = new MyBook(bookLength,bookWidth, bookThickness, "#0000ff", this.blueBookTexture);
         this.book1.position.set(-0.9, this.tableTopY + bookThickness / 2, 0.75);
         this.book1.rotateX(- Math.PI / 2);
-        this.app.scene.add(this.book1);
+        this.table.add(this.book1);
 
         //book2
         this.book2 = new MyBook(bookLength,bookWidth, bookThickness, "#ff0000", this.redBookTexture);
         this.book2.position.set(0.6, this.tableTopY + bookThickness / 2, 0.75);
         this.book2.rotateX(- Math.PI / 2);
-        this.app.scene.add(this.book2);
+        this.table.add(this.book2);
 
         //-----Globe-----
         this.globe = new MyGlobe(0.25, 0.1, 0.15, 0.05, this.earthTexture);
         this.globe.position.set(-1.3, this.tableTopY, -0.5);
-        this.app.scene.add(this.globe);
+        this.table.add(this.globe);
 
         //-----Chairs-----
         //chair number 1
@@ -342,7 +342,7 @@ class MyContents  {
         //-----pencil holder-----
         this.pencilHolder = new MyPencilHolder(0.10, 0.25, "#00FF00");
         this.pencilHolder.position.set(-0.7,this.tableTopY,-0.5);
-        this.app.scene.add(this.pencilHolder);
+        this.table.add(this.pencilHolder);
 
         // -----Painting-----
         const paintingsWidth = 2;
@@ -399,7 +399,7 @@ class MyContents  {
         // ----- Diamond on a box -----
         this.diamond = new MyDiamond(0.2, 0.2, 0x000000, 0x00FFFF);
         this.diamond.position.set(0.6, this.tableTopY, -0.5);
-        this.app.scene.add(this.diamond);
+        this.table.add(this.diamond);
     }
     
     /**
