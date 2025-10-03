@@ -9,7 +9,7 @@ class MyExitSign extends THREE.Object3D {
      * @param {number} width Sign width
      * @param {number} height Sign height
      */
-    constructor(width = 1, height = 0.5) {
+    constructor(width = 1, height = 0.5, exitSignTexture) {
         super();
 
         const frameMaterial = new THREE.MeshPhongMaterial({ color: "#ffffff"});
@@ -39,7 +39,7 @@ class MyExitSign extends THREE.Object3D {
         this.add(frameVertical2);
         
         // Sign
-        const exitTexture = new THREE.TextureLoader().load("./textures/exit.jpeg");
+        const exitTexture = exitSignTexture;
         const signMaterial = new THREE.MeshPhongMaterial({map:exitTexture, color: 0xffffff,  emissive: 0x222222, emissiveMap:exitTexture, emissiveIntensity: 20});
         const signGeometry = new THREE.PlaneGeometry(width, height);
         const sign = new THREE.Mesh(signGeometry, signMaterial);
