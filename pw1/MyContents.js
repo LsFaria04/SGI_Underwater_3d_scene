@@ -49,7 +49,7 @@ class MyContents  {
     initLights() {
 
         // add an ambient light and make it pure red
-        const ambientLight = new THREE.AmbientLight( 0xffffff, 0.1); // soft white light
+        const ambientLight = new THREE.AmbientLight( 0xffffff, 0.2); // soft white light
         this.app.scene.add( ambientLight );
 
         
