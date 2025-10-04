@@ -52,7 +52,7 @@ class MyPainting extends THREE.Object3D {
         spotlight.angle = Math.PI / 3; 
         spotlight.penumbra = 0.8;          
         spotlight.decay = 0.5;              
-        spotlight.distance = 10; 
+        spotlight.distance = height * 2; 
         this.add( spotlight );
         this.add( spotlight.target );
     }
