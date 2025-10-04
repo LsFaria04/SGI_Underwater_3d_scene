@@ -36,56 +36,7 @@ class MyContents  {
         //lamp
         this.lamp = null;
         this.lampEnabled = true;
-
-        // box related attributes
-        this.boxMesh = null
-        this.boxMeshSize = 1.0
-        this.boxEnabled = true
-        this.lastBoxEnabled = null
-        this.boxDisplacement = new THREE.Vector3(0,2,0);
-
-        this.wrapMode = "Clamp To Edge";
-
-        this.spotlightEnabled = true;
-        this.intensity = 15;
-        this.lightDistance = 14;
-        this.angle = 15 * Math.PI / 180;
-        this.penumbra = 0;
-        this.decay = 0;
-
-        // plane related attributes
-
-        //Change plane diffuse and specular color to 50% gray and shiness to 100
-        this.diffusePlaneColor = "#808080"
-        this.specularPlaneColor = "#808080"
-        this.planeShininess = 100
-        this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, 
-            specular: this.specularPlaneColor, emissive: "#000000", shininess: this.planeShininess })
-
-
-        this.spotlight = null
-        this.directionalLight = null
-    this.spotlightHelper = null
         
-    }
-
-    /**
-     * builds the box mesh with material assigned
-     */
-    buildBox() {    
-        let boxMaterial = new THREE.MeshPhongMaterial({ color: "#ffff77", 
-        specular: "#000000", emissive: "#000000", shininess: 90 })
-
-        // Create a Cube Mesh with basic material
-        let box = new THREE.BoxGeometry(  this.boxMeshSize,  this.boxMeshSize,  this.boxMeshSize );
-        this.boxMesh = new THREE.Mesh( box, boxMaterial );
-        
-        this.boxMesh.position.y = this.boxDisplacement.y;
-        this.boxMesh.rotateX(Math.PI * 30 / 180 );
-        this.boxMesh.rotateX(Math.PI * 30 / 180 );
-        this.boxMesh.scale.x = 3;
-        this.boxMesh.scale.y = 2;
-        this.boxMesh.scale.z = 1;
     }
 
     // initializes the scene contents
@@ -96,56 +47,6 @@ class MyContents  {
     }
 
     initLights() {
-
-
-        // add a point light on top of the model
-
-        // 4.2 Comment code relative to point light and increase ambient light intensity to a value of 0x444444
-        
-        /*
-        const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
-        pointLight.position.set( 0, -20, 0 );
-        this.app.scene.add( pointLight );
-
-        // add a point light helper for the previous point light
-        const sphereSize = 0.5;
-        const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
-        this.app.scene.add( pointLightHelper );
-
-        */
-
-
-        // create a directional light source
-        /*
-        const directionalLight = new THREE.DirectionalLight( 0xffffff, 1);
-        directionalLight.position.set( 0, 10, 0);
-        directionalLight.target.position.set(1,0,1);
-        this.app.scene.add( directionalLight );
-        this.directionalLight = directionalLight;
-        */
-
-
-        // add a directional light helper for the previous directional light
-
-        //const directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight, 0.5);
-        //this.app.scene.add( directionalLightHelper );
-
-
-        // create a spotlight light source
-        
-        /*
-        const spotlight = new THREE.SpotLight( 0xffffff, this.intensity, this.lightDistance, this.angle, this.penumbra, this.decay);
-        spotlight.position.set( 5, 10, 2);
-        spotlight.target.position.set(1,0,1);
-        this.app.scene.add( spotlight );
-        this.app.scene.add( spotlight.target );
-        this.spotlight = spotlight;
-
-        //spotlight helper
-        this.spotlightHelper = new THREE.SpotLightHelper( spotlight );
-        this.app.scene.add( this.spotlightHelper );
-        */
-
 
         // add an ambient light and make it pure red
         const ambientLight = new THREE.AmbientLight( 0xffffff, 0.1); // soft white light
@@ -413,80 +314,6 @@ class MyContents  {
         
         this.app.scene.add(this.clock);
     }
-    
-    /**
-     * updates the diffuse plane color and the material
-     * @param {THREE.Color} value 
-     */
-    updateDiffusePlaneColor(value) {
-        this.diffusePlaneColor = value
-        this.planeMaterial.color.set(this.diffusePlaneColor)
-    }
-    /**
-     * updates the specular plane color and the material
-     * @param {THREE.Color} value 
-     */
-    updateSpecularPlaneColor(value) {
-        this.specularPlaneColor = value
-        this.planeMaterial.specular.set(this.specularPlaneColor)
-    }
-    /**
-     * updates the plane shininess and the material
-     * @param {number} value 
-     */
-    updatePlaneShininess(value) {
-        this.planeShininess = value
-        this.planeMaterial.shininess = this.planeShininess
-    }
-
-    /**
-     * Updates the wall texture wrap mode
-     * @param {string} value 
-     */
-    updateWallWrap(value){
-        this.wrapMode = value;
-        if(value === "Repeat"){
-            this.wall1Texture.wrapS = THREE.RepeatWrapping;
-            this.wall1Texture.wrapT = THREE.RepeatWrapping;
-        }
-        else if(value === "Clamp to Edge"){
-
-            this.wall1Texture.wrapS = THREE.ClampToEdgeWrapping;
-            this.wall1Texture.wrapT = THREE.ClampToEdgeWrapping;
-        }
-
-        this.wall1Texture.needsUpdate = true;
-        this.wall1.material.map = this.wall1Texture;
-        this.wall1.material.needsUpdate = true;
-    
-
-    }
-    
-    /**
-     * rebuilds the box mesh if required
-     * this method is called from the gui interface
-     */
-    rebuildBox() {
-        // remove boxMesh if exists
-        if (this.boxMesh !== undefined && this.boxMesh !== null) {  
-            this.app.scene.remove(this.boxMesh)
-        }
-        this.buildBox();
-        this.lastBoxEnabled = null
-    }
-
-    updateSpotlightColor(value) {
-        if (this.spotlight) this.spotlight.color.set(value)
-    }
-
-    toggleSpotlight(value) {
-        if (this.spotlight) {
-            this.spotlight.visible = value;
-            this.spotlightEnabled = value;
-            if (this.spotlightHelper) this.spotlightHelper.visible = value;
-            if (this.spotlight.target) this.spotlight.target.visible = value;
-        }
-    }
 
     toggleLampLight(value){
         this.lamp.toggleBulbLight(value);
@@ -509,23 +336,6 @@ class MyContents  {
             }
         }
     }
-    /**
-     * updates the box mesh if required
-     * this method is called from the render method of the app
-     * updates are trigered by boxEnabled property changes
-     */
-    updateBoxIfRequired() {
-        /*
-        if (this.boxEnabled !== this.lastBoxEnabled) {
-            this.lastBoxEnabled = this.boxEnabled
-            if (this.boxEnabled) {
-                this.app.scene.add(this.boxMesh)
-            }
-            else {
-                this.app.scene.remove(this.boxMesh)
-            }
-        }*/
-    }
 
     /**
      * updates the contents
@@ -533,19 +343,6 @@ class MyContents  {
      * 
      */
     update() {
-        // check if box mesh needs to be updated
-        this.updateBoxIfRequired()
-
-        // update spotlight helper to follow the light's position/target
-        if (this.spotlightHelper) this.spotlightHelper.update();
-
-        // sets the box mesh position based on the displacement vector
-        /*
-        this.boxMesh.position.x = this.boxDisplacement.x
-        this.boxMesh.position.y = this.boxDisplacement.y
-        this.boxMesh.position.z = this.boxDisplacement.z
-        */
-
         if (this.globe) {
             this.globe.update(0.005);
         }
