@@ -19,7 +19,7 @@ class MyPencilHolder extends THREE.Object3D {
         const outerRadius = radius;
         const innerRadius = Math.max(0.001, radius - wallThickness);
 
-        const bodyMaterial = new THREE.MeshPhongMaterial({ color, side: THREE.DoubleSide, roughness: 0.7, metalness: 0.2 });
+        const bodyMaterial = new THREE.MeshPhongMaterial({ color, side: THREE.DoubleSide});
 
         // Outer shell
         const outerGeometry = new THREE.CylinderGeometry(outerRadius, outerRadius, height, 32, 1, true);

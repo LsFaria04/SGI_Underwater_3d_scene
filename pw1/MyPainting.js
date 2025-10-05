@@ -45,14 +45,14 @@ class MyPainting extends THREE.Object3D {
         photo.position.y = height / 2;
         this.add(photo);
 
-        //inserts a spotlight in the painting
+        //inserts a spotlight into the painting
         const spotlight = new THREE.SpotLight( 0xffffff, 2);
         spotlight.position.set( 0, height, frameWidth/ 2);
         spotlight.target.position.set( 0, 0, 0);
         spotlight.angle = Math.PI / 3; 
         spotlight.penumbra = 0.8;          
         spotlight.decay = 0.5;              
-        spotlight.distance = 10; 
+        spotlight.distance = height * 2; 
         this.add( spotlight );
         this.add( spotlight.target );
     }

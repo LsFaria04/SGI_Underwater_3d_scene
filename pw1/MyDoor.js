@@ -49,7 +49,7 @@ class MyDoor extends THREE.Object3D {
         this.add(texture);
 
         //door handle
-        const handleMaterial = new THREE.MeshPhongMaterial({color: "#606060"});
+        const handleMaterial = new THREE.MeshPhongMaterial({color: "#606060", specular: "#ffffff", shininess: 50});
         const handleGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.5);
         const doorhandle = new THREE.Mesh(handleGeometry, handleMaterial);
         doorhandle.position.y = height / 2;
