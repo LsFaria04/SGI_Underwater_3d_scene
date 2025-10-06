@@ -19,7 +19,7 @@ The objective of this project was to design and implement a 3D scene using THREE
   - Transformations such as translation, rotation and scaling applied to the objects.
   - Organized and modular scene structure for readability and extensibility.
 - Scene
-  - The scene depicts a small 3D study room featuring a textured wooden floor and walls. It includes several geometric objects with distinct materials, such as a room door, pencil holder, bookshelf, diamond, globe, lamp, and pencils. Different lighting types were used to enhance realism: a directional light simulates sunlight entering through the window, spotlights illuminate the paintings and exit sign, a point light represents the lamp’s glow, and ambient lighting provides the general illumination of the room.
+  - The scene depicts a small 3D study room featuring a textured wooden floor and walls. It includes several geometric objects with distinct materials, such as a room door, pencil holder, bookshelf, diamond, globe, lamp, and pencils. Different lighting types were used to enhance realism: a directional light simulates sunlight entering through the window, spotlights illuminate the paintings, a point light represents the lamp’s glow and exit sign light, and ambient lighting provides the general illumination of the room.
   - [Scene link](/pw1/MyContents.js)
 ----
 ## Issues/Problems

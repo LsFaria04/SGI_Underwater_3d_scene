@@ -127,7 +127,7 @@ class MyContents  {
         // -----Floor-----
         // Create a Plane to use as the floor
         const floorGeometry = new THREE.PlaneGeometry(this.floorSize, this.floorSize);
-        const floorMaterial = new THREE.MeshPhongMaterial({map: this.floorTexture, color: "#ffffff", shininess: 1000, specular: "#ffffff", specularMap: this.floorTexture});
+        const floorMaterial = new THREE.MeshPhongMaterial({map: this.floorTexture, color: "#ffffff", shininess: 2000, specular: "#ffffff"});
         this.planeMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
