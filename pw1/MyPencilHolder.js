@@ -67,7 +67,7 @@ class MyPencilHolder extends THREE.Object3D {
         for (let i = 0; i < pencilCount; i++) {
             const pencil = new MyPencil(0.25, 0.02, i % 2 == 0 ? "#FFFF00" : "#FF0000");
             const angle = (i / pencilCount) * Math.PI * 2;
-            const pencilRadius = radius * 0.6; // position pencils slightly inside the holder
+            const pencilRadius = radius * 0.5; // position pencils slightly inside the holder
             pencil.rotateX(0.10);
             pencil.position.set(Math.cos(angle) * pencilRadius, height - 0.2, Math.sin(angle) * pencilRadius);
             this.add(pencil);
