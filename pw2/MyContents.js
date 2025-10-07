@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
+import { MyCarp} from './MyCarp.js';
 
 /**
  *  This class contains the contents of out application
@@ -37,11 +38,14 @@ class MyContents  {
         }
 
         const floorGeometry = new THREE.PlaneGeometry(10, 10);
-        const floorMaterial = new THREE.MeshPhongMaterial({map: this.floorTexture, color: "#ffffffff", shininess: 2000, specular: "#ffffff"});
+        const floorMaterial = new THREE.MeshPhongMaterial({map: this.floorTexture, color: "#747474ff", shininess: 2000, specular: "#7a7a7aff"});
         this.planeMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
         this.app.scene.add(this.planeMesh);
+
+        const carpBody = new MyCarp(10,10, "0xffffff");
+        this.app.scene.add(carpBody);
 
     }   
 
