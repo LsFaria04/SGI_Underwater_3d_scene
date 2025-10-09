@@ -29,6 +29,8 @@ class MyApp  {
         this.gui = null
         this.axis = null
         this.contents == null
+
+        this.clock = new THREE.Clock();
     }
     /**
      * initializes the application
@@ -193,9 +195,13 @@ class MyApp  {
         this.stats.begin()
         this.updateCameraIfRequired()
 
+        const delta = this.clock.getDelta();
+        if (this.contents) this.contents.update(delta);
+
+
         // update the animation if contents were provided
         if (this.activeCamera !== undefined && this.activeCamera !== null) {
-            this.contents.update()
+            this.contents.update(delta);    
         }
 
         // required if controls.enableDamping or controls.autoRotate are set to true

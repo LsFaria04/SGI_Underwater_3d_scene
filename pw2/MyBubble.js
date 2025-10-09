@@ -34,6 +34,7 @@ class MyBubble extends THREE.Object3D {
 
     update(delta) {
         if (!delta) return;
+
         this.position.y += this.speed * delta;
 
         // reset to bottom when reaching surface

@@ -1,10 +1,7 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
-<<<<<<< HEAD
 import { MyCarp} from './MyCarp.js';
-=======
 import { MyBubble } from './MyBubble.js';
->>>>>>> 5964d23092a06ee8edc7dea38be8f1beb5c7b41d
 
 /**
  *  This class contains the contents of out application
