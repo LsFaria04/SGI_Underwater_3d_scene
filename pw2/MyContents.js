@@ -26,9 +26,13 @@ class MyContents  {
 
     initLights() {
 
-        // add an ambient light and make it pure red
-        const ambientLight = new THREE.AmbientLight( 0xffffff, 2); // soft white light
+        const ambientLight = new THREE.AmbientLight(0x6688aa, 0.6); // soft blue light
         this.app.scene.add( ambientLight );
+
+        // directional light to simulate sun from above
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        directionalLight.position.set(5, 10, 5);
+        this.app.scene.add(directionalLight);
     }
 
     initObjects() {
@@ -39,14 +43,28 @@ class MyContents  {
             this.app.scene.add(this.axis)
         }
 
-        const floorGeometry = new THREE.PlaneGeometry(10, 10);
-        const floorMaterial = new THREE.MeshPhongMaterial({map: this.floorTexture, color: "#ad8554", shininess: 2000, specular: "#ffffff"});
+        this.app.scene.fog = new THREE.FogExp2(0x003366, 0.12);
+
+        const floorGeometry = new THREE.PlaneGeometry(50, 50);
+        const floorMaterial = new THREE.MeshPhongMaterial({map: this.floorTexture, color: "998866  ", shininess: 2000, specular: "#ffffff"});
         this.planeMesh = new THREE.Mesh(floorGeometry, floorMaterial);
         this.planeMesh.rotation.x = -Math.PI / 2;
-        this.planeMesh.position.y = -0;
+        this.planeMesh.position.y = -1.5;
         this.app.scene.add(this.planeMesh);
 
-        const carpBody = new MyCarp(10,10, "0xffffff");
+        const waterGeometry = new THREE.BoxGeometry(50, 20, 50);
+        const waterMaterial = new THREE.MeshPhongMaterial({
+            color: 0x336688,   
+            transparent: true,
+            opacity: 0.3,      
+            side: THREE.BackSide, 
+        });
+        const water = new THREE.Mesh(waterGeometry, waterMaterial);
+        water.position.set(0, 3, 0); 
+        this.app.scene.add(water);
+
+
+        const carpBody = new MyCarp(10,10, "0x88ccff");
         this.app.scene.add(carpBody);
 
         this.bubbles = [];

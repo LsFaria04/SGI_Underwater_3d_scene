@@ -11,7 +11,7 @@ class MyBubble extends THREE.Object3D {
         super();
 
         const bubbleMaterial = new THREE.MeshPhongMaterial({
-            color: 0xffffff,
+            color: 0x99ccff,
             transparent: true,
             opacity: 0.5,
             shininess: 100,
