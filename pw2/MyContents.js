@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
+import { MyCarp} from './MyCarp.js';
+import { MyBubble } from './MyBubble.js';
 import { MyRock } from './MyRock.js';
 
 /**
@@ -20,13 +22,18 @@ class MyContents  {
     init() {
         this.initLights();
         this.initObjects();
+        this.initTextures();
     }
 
     initLights() {
 
-        // add an ambient light and make it pure red
-        const ambientLight = new THREE.AmbientLight( 0xffffff, 2); // soft white light
+        const ambientLight = new THREE.AmbientLight(0x6688aa, 0.6); // soft blue light
         this.app.scene.add( ambientLight );
+
+        // directional light to simulate sun from above
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+        directionalLight.position.set(5, 10, 5);
+        this.app.scene.add(directionalLight);
     }
 
     initObjects() {
@@ -50,10 +57,37 @@ class MyContents  {
         rock.rotation.x = Math.PI / 2;
         this.floor.add(rock);
 
-    }   
+        const waterGeometry = new THREE.BoxGeometry(50, 20, 50);
+        const waterMaterial = new THREE.MeshPhongMaterial({
+            color: 0x336688,   
+            transparent: true,
+            opacity: 0.3,      
+            side: THREE.BackSide, 
+        });
+        const water = new THREE.Mesh(waterGeometry, waterMaterial);
+        water.position.set(0, 3, 0); 
+        this.app.scene.add(water);
 
-    update(){
 
+        const carpBody = new MyCarp(10,10, "0x88ccff");
+        this.app.scene.add(carpBody);
+
+        this.bubbles = [];
+        for (let i = 0; i < 10; i++) {
+            const bubble = new MyBubble(0.10 + Math.random() * 0.08, 1); 
+            this.app.scene.add(bubble);
+            this.bubbles.push(bubble);
+        }
+
+    }
+
+    initTextures() {
+        
+    }
+
+    update(delta) {
+        if (!delta) return;
+        for (const b of this.bubbles) b.update(delta);
     }
 }
 

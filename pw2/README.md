@@ -3,9 +3,9 @@
 ## Group T03G01
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
-| Lucas Faria        | 202207540 | up202207540@up.pt                |
-| Alexandre Lopes        | 202207015 | up202207015@up.pt                |
-|Pedro Borges| 202207552 | up202207552@up.pt|
+| Lucas Faria      | 202207540 | up202207540@up.pt  |
+| Alexandre Lopes  | 202207015 | up202207015@up.pt  |
+| Pedro Borges     | 202207552 | up202207552@up.pt  |
 ----
 ## Project information
 
