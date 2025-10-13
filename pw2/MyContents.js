@@ -3,6 +3,8 @@ import { MyAxis } from './MyAxis.js';
 import { MyCarp} from './MyCarp.js';
 import { MyBubble } from './MyBubble.js';
 import { MyRock } from './MyRock.js';
+import {MyTriangle} from './MyTriangle.js';
+
 
 /**
  *  This class contains the contents of out application
@@ -80,6 +82,22 @@ class MyContents  {
             this.app.scene.add(bubble);
             this.bubbles.push(bubble);
         }
+        /* Triangle Example with texture 
+        
+        const texture = new THREE.TextureLoader().load('./textures/uv_grid_opengl.jpg' ); 
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        const material = new THREE.MeshBasicMaterial( { map:texture } );
+
+        //Triangle 1
+        const triangleGeo1 = new MyTriangle(0, 0, 0, 1, 0, 0, 0, 1, 0);
+        const mesh1 = new THREE.Mesh(triangleGeo1, material);
+        mesh1.scale.set(3,3,1);
+        mesh1.position.set(-3, 0,0);
+
+        this.app.scene.add(mesh1);
+
+        */
 
     }
 
