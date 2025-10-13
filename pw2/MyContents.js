@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
+import { MyRock } from './MyRock.js';
 
 /**
  *  This class contains the contents of out application
@@ -36,12 +37,18 @@ class MyContents  {
             this.app.scene.add(this.axis)
         }
 
-        const floorGeometry = new THREE.PlaneGeometry(10, 10);
-        const floorMaterial = new THREE.MeshPhongMaterial({map: this.floorTexture, color: "#ffffffff", shininess: 2000, specular: "#ffffff"});
-        this.planeMesh = new THREE.Mesh(floorGeometry, floorMaterial);
-        this.planeMesh.rotation.x = -Math.PI / 2;
-        this.planeMesh.position.y = -0;
-        this.app.scene.add(this.planeMesh);
+        const floorGeometry = new THREE.PlaneGeometry(50, 50);
+        const floorMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", shininess: 2000, specular: "#ffffff"});
+        this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        this.floor.rotation.x = -Math.PI / 2;
+        this.app.scene.add(this.floor);
+
+        //we can use groups to create some more complex geometry with groups of rocks and corals
+        //we should use groups to aggregate fishes of the same species
+
+        const rock = new MyRock(1,1,1,"#4c4747");
+        rock.rotation.x = Math.PI / 2;
+        this.floor.add(rock);
 
     }   
 
