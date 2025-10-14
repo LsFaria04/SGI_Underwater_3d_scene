@@ -3,6 +3,9 @@ import { MyAxis } from './MyAxis.js';
 import { MyCarp} from './MyCarp.js';
 import { MyBubble } from './MyBubble.js';
 import { MyRock } from './MyRock.js';
+import { MyCoral } from './MyCoral.js';
+import { MySeaPlant } from './MySeaPlant.js';
+import { MySeaStar } from './MySeaStar.js';
 
 /**
  *  This class contains the contents of out application
@@ -57,8 +60,19 @@ class MyContents  {
         //we should use groups to aggregate fishes of the same species
 
         const rock = new MyRock(1,1,1,"#4c4747");
-        rock.rotation.x = Math.PI / 2;
-        this.floor.add(rock);
+        this.app.scene.add(rock);
+
+        const coral = new MyCoral(0.1,2,"#00ff00");
+        this.app.scene.add(coral);
+        coral.position.set(5,0,0);
+
+        const seaPlant = new MySeaPlant(0.1,2,0.05, "#00ff00");
+        this.app.scene.add(seaPlant);
+        seaPlant.position.set(1,0,1);
+
+        const seaStar = new MySeaStar(0.5,1,"#ff0000");
+        this.app.scene.add(seaStar);
+        seaStar.position.set(2,0,2);
 
         const waterGeometry = new THREE.BoxGeometry(50, 20, 50);
         const waterMaterial = new THREE.MeshPhongMaterial({
