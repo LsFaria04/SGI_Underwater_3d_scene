@@ -214,26 +214,21 @@ class MyApp  {
         const camera = this.activeCamera;
         const speed = this.speed * delta;
 
-        // Update rotation
         camera.rotation.order = 'YXZ';
-        camera.rotation.y = this.yaw;
+        camera.rotation.y = this.yaw;  
         camera.rotation.x = this.pitch;
 
-        // Direction vectors
-        const forward = new THREE.Vector3();
-        camera.getWorldDirection(forward);
-        forward.y = 0; // keep horizontal movement more stable
-
-        const right = new THREE.Vector3();
-        right.crossVectors(forward, camera.up).normalize();
+        const forward = new THREE.Vector3(0, 0, -1).applyEuler(camera.rotation);
+        const right = new THREE.Vector3(forward.z, 0, -forward.x).normalize();
+        const up = new THREE.Vector3(0, 1, 0);
 
         // Apply movement
         if (this.move.forward) camera.position.addScaledVector(forward, speed);
         if (this.move.backward) camera.position.addScaledVector(forward, -speed);
         if (this.move.left) camera.position.addScaledVector(right, -speed);
         if (this.move.right) camera.position.addScaledVector(right, speed);
-        if (this.move.up) camera.position.y += speed;
-        if (this.move.down) camera.position.y -= speed;
+        if (this.move.up) camera.position.addScaledVector(up, speed);
+        if (this.move.down) camera.position.addScaledVector(up, -speed);
     };
 
     // handle keyboard input
@@ -245,15 +240,6 @@ class MyApp  {
             case 'KeyD': this.move.right = isPressed; break;
             case 'Space': this.move.up = isPressed; break;
             case 'ShiftLeft': this.move.down = isPressed; break;
-        }
-    }
-
-    // handle mouse movement
-    onMouseMove(e) {
-        if (this.activeCameraName === 'Free-Fly') {
-            this.yaw -= e.movementX * this.mouseSensitivity;
-            this.pitch -= e.movementY * this.mouseSensitivity;
-            this.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitch));
         }
     }
 }
