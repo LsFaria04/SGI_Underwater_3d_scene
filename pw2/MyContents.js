@@ -4,6 +4,7 @@ import { MyCarp} from './MyCarp.js';
 import { MyBubble } from './MyBubble.js';
 import { MyRock } from './MyRock.js';
 import {MyTriangle} from './MyTriangle.js';
+import {MyCoral} from './MyCoral.js';
 
 
 /**
@@ -59,7 +60,7 @@ class MyContents  {
 
         const rock = new MyRock(1,1,1,"#4c4747");
         rock.rotation.x = Math.PI / 2;
-        this.floor.add(rock);
+        //this.floor.add(rock);
 
         const waterGeometry = new THREE.BoxGeometry(50, 20, 50);
         const waterMaterial = new THREE.MeshPhongMaterial({
@@ -98,6 +99,11 @@ class MyContents  {
         this.app.scene.add(mesh1);
 
         */
+        const coral = new MyCoral();
+        const coralMesh = coral.createObject(3); // Pass a complexity value (1–6)
+        coralMesh.position.y = 0;
+        coralMesh.position.x = 1;
+        this.app.scene.add(coralMesh); 
 
     }
 
