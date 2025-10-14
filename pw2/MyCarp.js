@@ -6,59 +6,68 @@ import * as THREE from 'three';
 class MyCarp extends THREE.Object3D {
     /**
      * 
-     * @param {number} width carp width
-     * @param {number} length carp length
-     * @param {string} color Color of the carp
+     * @param {number} widthBody Width of the carp body
+     * @param {number} lengthBody Length of the carp body
+     * @param {number} widthFin Width of the fins
+     * @param {number} lengthFin Length of the fins
+     * @param {string|number} color Color of the carp
      */
-    constructor(width, length, color){
+    constructor(widthBody = 1, lengthBody = 3, widthFin = 0.5, lengthFin = 0.5, color = 0xffaa00) {
         super();
-        this.width = width;
-        this.length = length;
+
+        this.widthBody = widthBody;
+        this.lengthBody = lengthBody;
+        this.widthFin = widthFin;
+        this.lengthFin = lengthFin;
         this.color = color;
 
         this.init();
     }
 
-    init(){
+    init() {
+        // Scaling factors
+        const bw = this.widthBody;
+        const bl = this.lengthBody;
+        const fw = this.widthFin;
+        const fl = this.lengthFin;
 
+        // Original vertices scaled accordingly
         const vertices = new Float32Array([
-        // Head - left side
-        0, 1, 0,  // 0
-        0.5, 0.5, 0, // 1
-        0.6, 1, 0.2, // 2
-        0.5, 1.5, 0, // 3
-        0.6, 1, -0.2, // 4
+            // Head - left side
+            0, 1 * bw, 0,               // 0
+            0.5 * bl, 0.5 * bw, 0,      // 1
+            0.6 * bl, 1 * bw, 0.2 * bw, // 2
+            0.5 * bl, 1.5 * bw, 0,      // 3
+            0.6 * bl, 1 * bw, -0.2 * bw, // 4
 
-        // Body - Only a Vertex
-        2.5, 1, 0, // 5
+            // Body center
+            2.5 * bl, 1 * bw, 0,        // 5
 
-        // BackFins
-        3, 1.5, 0, //6
-        3, 0.5, 0, // 7
-        2.75, 1, 0, // 8
+            // Back Fin
+            (2.5 + 0.5) * bl, (1 + Math.max(0.5 * fl / 2,0.5)) * bw, 0,    // 6
+            (2.5 + 0.5) * bl, (1 - Math.max(0.5 * fl / 2,0.5)) * bw, 0,    // 7
+            (2.5 + 0.25) * bl, 1 * bw, 0,               // 8
 
-        // TopFin
-        1.5, 1.2, 0, // 9
-        1.25, 1.3, 0, // 10
-        1.40, 1.6, 0, // 11
-        1.70, 1.4, 0, // 12
+            // Top Fin
+            1.5 * bl, (1 + 0.2) * bw, 0,        // 9
+            1.25 * bl, (1 + 0.3) * bw, 0,       // 10
+            1.40 * bl, (1 + Math.max(0.6 * fl / 2,0.6)) * bw, 0,       // 11
+            1.70 * bl, (1 + Math.max(0.4 * fl / 2,0.4)) * bw, 0,       // 12
 
-        // BellyFins
-        0.75, 1, 0.16, // 13
-        1, 1.3, 0.3, // 14
-        1, 0.7, 0.3, // 15
+            // Belly Fins (right)
+            0.75 * bl , 1 * bw, 0.16 * bw,           // 13
+            1 * bl + fw/4, (1 + 0.3 * fl) * bw, 0.3 * bw,   // 14
+            1 * bl + fw/4, (1 - 0.3 * fl) * bw, 0.3 * bw,   // 15
 
-        0.75, 1, -0.16, // 16
-        1, 1.3, -0.3, // 17
-        1, 0.7, -0.3, // 18
-
-        
-
+            // Belly Fins (left)
+            0.75 * bl, 1 * bw, -0.16 * bw,           // 16
+            1 * bl + fw/4, (1 + 0.3 * fl) * bw, -0.3 * bw,   // 17
+            1 * bl + fw/4, (1 - 0.3 * fl) * bw, -0.3 * bw,   // 18
         ]);
 
         // Define faces (triangles)
         const indices = [
-            //Face
+            // Face
             0, 1, 2,
             0, 2, 3,
             0, 1, 4,
@@ -70,38 +79,33 @@ class MyCarp extends THREE.Object3D {
             3, 2, 5,
             3, 5, 4,
 
-            // BackFin
-            5,6,8,
-            5,7,8,
+            // Back Fin
+            5, 6, 8,
+            5, 7, 8,
 
-            //Top Fin
-            9,10,11,
-            9,11,12,
+            // Top Fin
+            9, 10, 11,
+            9, 11, 12,
 
-            //Belly Fins
-            13,14,15,
-            16,17,18,
-
+            // Belly Fins
+            13, 14, 15,
+            16, 17, 18,
         ];
 
-        // Create BufferGeometry
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         geometry.setIndex(indices);
         geometry.computeVertexNormals();
 
-        // Create a material
-        const material = new THREE.MeshStandardMaterial({ color: 0xff0000, side: THREE.DoubleSide });
+        const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
-        // Create mesh
         const fish = new THREE.Mesh(geometry, material);
 
-        this.position.y = this.width/2;
+        // Adjust position so fish doesn't sit too low or clip through origin
+        this.position.y = this.widthBody * 1.5;
 
         this.add(fish);
-
     }
-
 }
 
-export {MyCarp};
+export { MyCarp };

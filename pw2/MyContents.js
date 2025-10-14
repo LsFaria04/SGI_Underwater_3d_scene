@@ -73,7 +73,7 @@ class MyContents  {
         this.app.scene.add(water);
 
 
-        const carpBody = new MyCarp(10,10, "0x88ccff");
+        const carpBody = new MyCarp(1, 1, 1, 1, "#88ccff");
         this.app.scene.add(carpBody);
 
         this.bubbles = [];
