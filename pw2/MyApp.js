@@ -121,6 +121,24 @@ class MyApp  {
         orthoBack.position.set(0,0, - this.frustumSize /4) 
         orthoBack.lookAt( new THREE.Vector3(0,0,0) );
         this.cameras['Back'] = orthoBack
+
+        // free fly camera
+        const freeFly = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
+        freeFly.position.set(15,10,15);
+        this.cameras['FreeFly'] = freeFly;
+
+        // underwater camera
+        const underwater = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
+        underwater.position.set(0,2,0);
+        underwater.lookAt(new THREE.Vector3(0,2,5));
+        this.cameras['Underwater'] = underwater;
+
+        // fixed aquarium view
+        const aquariumView = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 );
+        aquariumView.position.set(0,10,25);
+        aquariumView.lookAt(new THREE.Vector3(0,5,0));
+        this.cameras['Aquarium'] = aquariumView;
+
     }
 
     /**
