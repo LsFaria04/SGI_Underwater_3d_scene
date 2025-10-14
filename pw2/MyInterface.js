@@ -29,11 +29,21 @@ class MyInterface  {
      * Initialize the gui interface
      */
     init() {
+        const axisFolder = this.datgui.addFolder('Axis');
+        axisFolder.add(this.contents, 'axisEnabled').name("enabled").onChange( (value) => { this.contents.toggleAxis(value) } );
+        axisFolder.open();
 
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')
         cameraFolder.add(this.app, 'activeCameraName', [ 'Aquarium View', 'UnderWater', 'Free-Fly'] ).name("active camera");
         cameraFolder.open()
+
+        const displayFolder = this.datgui.addFolder('Display')
+        const params = { wireframe: false };
+        displayFolder.add(params, 'wireframe').name('Wireframe Mode').onChange((value) => {
+            if (this.contents) this.contents.setWireframeMode(value);
+        });
+        displayFolder.open();
 
     }
 }

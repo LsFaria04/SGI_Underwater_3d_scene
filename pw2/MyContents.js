@@ -18,6 +18,7 @@ class MyContents  {
     */ 
     constructor(app) {
         this.axis = null;
+        this.axisEnabled = false;
         this.app = app
     }
 
@@ -30,11 +31,11 @@ class MyContents  {
 
     initLights() {
 
-        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.3);
+        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.5);
         this.app.scene.add( ambientLight );
 
         // directional light to simulate sun from above
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
         directionalLight.position.set(10, 20, 10);
         this.app.scene.add(directionalLight);
 
@@ -45,13 +46,14 @@ class MyContents  {
         if (this.axis === null) {
             // create and attach the axis to the scene
             this.axis = new MyAxis(this)
-            this.app.scene.add(this.axis)
+            //this.app.scene.add(this.axis)
+            
         }
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
         const floorGeometry = new THREE.PlaneGeometry(50, 50);
-        const floorMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", shininess: 30, specular: "#ffffff"});
+        const floorMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", shininess: 5, specular: "#ffffff"});
         this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
         this.floor.rotation.x = -Math.PI / 2;
         this.app.scene.add(this.floor);
@@ -105,6 +107,35 @@ class MyContents  {
     update(delta) {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
+    }
+
+    setWireframeMode(enabled) {
+        this.app.scene.traverse((child) => {
+            if (child.isMesh && child.material) {
+                if (Array.isArray(child.material)) {
+                    child.material.forEach((mat) => (mat.wireframe = enabled));
+                } else {
+                    child.material.wireframe = enabled;
+                }
+            }
+        });
+    }
+
+    toggleAxis(enabled) {
+        this.axisEnabled = enabled;
+
+        // If axis doesn't exist yet, create it
+        if (!this.axis && enabled) {
+            this.axis = new MyAxis(this);
+        }
+
+        if (enabled) {
+            this.app.scene.add(this.axis);
+        } else {
+            if (this.axis) {
+                this.app.scene.remove(this.axis);
+            }
+        }
     }
 }
 
