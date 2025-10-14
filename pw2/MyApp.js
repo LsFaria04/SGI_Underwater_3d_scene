@@ -46,7 +46,7 @@ class MyApp  {
         document.body.appendChild(this.stats.dom)
 
         this.initCameras();
-        this.setActiveCamera('Perspective')
+        this.setActiveCamera('Free-Fly')
 
         // Create a renderer with Antialiasing
         this.renderer = new THREE.WebGLRenderer({antialias:true});
@@ -57,7 +57,7 @@ class MyApp  {
         this.renderer.setSize( window.innerWidth, window.innerHeight );
 
         // Append Renderer to DOM
-        document.getElementById("canvas").appendChild( this.renderer.domElement );
+        document.getElementById("canvas").appendChild( this.renderer.domElement);
 
         // manage window resizes
         window.addEventListener('resize', this.onResize.bind(this), false );
@@ -67,60 +67,23 @@ class MyApp  {
      * initializes all the cameras
      */
     initCameras() {
+        
         const aspect = window.innerWidth / window.innerHeight;
 
+
         // Create a basic perspective camera
-        const perspective1 = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 )
-        perspective1.position.set(10,10,3)
-        this.cameras['Perspective'] = perspective1
+        const perspective1 = new THREE.PerspectiveCamera( 110, aspect, 1, 500);
+        perspective1.position.set(0,10,20);
+        this.cameras['Aquarium View'] = perspective1
 
         // Create a secondary perspective camera
-        const perspective2 = new THREE.PerspectiveCamera( 90, aspect, 1, 500)
-        perspective2.position.set(3,5,10)
-        this.cameras['Perspective2'] = perspective2
+        const perspective2 = new THREE.PerspectiveCamera( 90, aspect, 1, 500);
+        perspective2.position.set(3,5,10);
+        this.cameras['UnderWater'] = perspective2;
 
-        // defines the frustum size for the orthographic cameras
-        const left = -this.frustumSize / 2 * aspect
-        const right = this.frustumSize /2 * aspect 
-        const top = this.frustumSize / 2 
-        const bottom = -this.frustumSize / 2
-        const near = -this.frustumSize /2
-        const far =  this.frustumSize
-
-        // create a left view orthographic camera
-        const orthoLeft = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
-        orthoLeft.up = new THREE.Vector3(0,1,0);
-        orthoLeft.position.set(-this.frustumSize /4,0,0) 
-        orthoLeft.lookAt( new THREE.Vector3(0,0,0) );
-        this.cameras['Left'] = orthoLeft
-
-        // create a top view orthographic camera
-        const orthoTop = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
-        orthoTop.up = new THREE.Vector3(0,0,1);
-        orthoTop.position.set(0, this.frustumSize /4, 0) 
-        orthoTop.lookAt( new THREE.Vector3(0,0,0) );
-        this.cameras['Top'] = orthoTop
-
-        // create a front view orthographic camera
-        const orthoFront = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
-        orthoFront.up = new THREE.Vector3(0,1,0);
-        orthoFront.position.set(0,0, this.frustumSize /4) 
-        orthoFront.lookAt( new THREE.Vector3(0,0,0) );
-        this.cameras['Front'] = orthoFront
-
-        // create a right view orthographic camera
-        const orthoRight = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
-        orthoRight.up = new THREE.Vector3(0,1,0);
-        orthoRight.position.set(this.frustumSize/4, 0, 0)
-        orthoRight.lookAt( new THREE.Vector3(0,0,0));
-        this.cameras['Right'] = orthoRight
-
-        // create a back view orthographic camera
-        const orthoBack = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
-        orthoBack.up = new THREE.Vector3(0,1,0);
-        orthoBack.position.set(0,0, - this.frustumSize /4) 
-        orthoBack.lookAt( new THREE.Vector3(0,0,0) );
-        this.cameras['Back'] = orthoBack
+        const perspective3 = new THREE.PerspectiveCamera( 90, aspect, 1, 500);
+        perspective3.position.set(3,5,10);
+        this.cameras['Free-Fly'] = perspective3;
     }
 
     /**
