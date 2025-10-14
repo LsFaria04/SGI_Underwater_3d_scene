@@ -27,13 +27,14 @@ class MyContents  {
 
     initLights() {
 
-        const ambientLight = new THREE.AmbientLight(0x6688aa, 0.6); // soft blue light
+        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.3);
         this.app.scene.add( ambientLight );
 
         // directional light to simulate sun from above
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-        directionalLight.position.set(5, 10, 5);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        directionalLight.position.set(10, 20, 10);
         this.app.scene.add(directionalLight);
+
     }
 
     initObjects() {
@@ -44,10 +45,10 @@ class MyContents  {
             this.app.scene.add(this.axis)
         }
 
-        this.app.scene.fog = new THREE.FogExp2(0x003366, 0.12);
+        this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
         const floorGeometry = new THREE.PlaneGeometry(50, 50);
-        const floorMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", shininess: 2000, specular: "#ffffff"});
+        const floorMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", shininess: 30, specular: "#ffffff"});
         this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
         this.floor.rotation.x = -Math.PI / 2;
         this.app.scene.add(this.floor);
@@ -67,7 +68,7 @@ class MyContents  {
             side: THREE.BackSide, 
         });
         const water = new THREE.Mesh(waterGeometry, waterMaterial);
-        water.position.set(0, 3, 0); 
+        water.position.set(0, 10.01, 0); 
         this.app.scene.add(water);
 
 
