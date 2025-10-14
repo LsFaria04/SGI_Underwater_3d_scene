@@ -52,11 +52,34 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        const floorGeometry = new THREE.PlaneGeometry(50, 50);
-        const floorMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", shininess: 5, specular: "#ffffff"});
-        this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        this.floor.rotation.x = -Math.PI / 2;
-        this.app.scene.add(this.floor);
+
+   const floorSize = 50;
+const floorSegments = 128;
+const floorGeometry = new THREE.PlaneGeometry(floorSize, floorSize, floorSegments, floorSegments);
+
+// Generate smooth wavy sand-like bumps using a sinusoidal pattern
+const positions = floorGeometry.attributes.position;
+for (let i = 0; i < positions.count; i++) {
+    const x = positions.getX(i);
+    const z = positions.getY(i); // before rotation, Y acts as Z in the final world
+    const height = 0.4 * Math.sin(x * 0.3) * Math.cos(z * 0.3) + (Math.random() - 0.5) * 0.1;
+    positions.setZ(i, height); // displace along Z, which becomes Y after rotation
+}
+positions.needsUpdate = true;
+floorGeometry.computeVertexNormals();
+
+// Sandy material with warm tone
+const floorMaterial = new THREE.MeshPhongMaterial({
+    color: 0xC2B280,   // sand color
+    shininess: 8,
+    specular: 0x222222,
+});
+
+this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
+this.floor.rotation.x = -Math.PI / 2; // make it horizontal
+this.floor.receiveShadow = true;
+this.app.scene.add(this.floor);
+
 
         //we can use groups to create some more complex geometry with groups of rocks and corals
         //we should use groups to aggregate fishes of the same species
@@ -84,7 +107,7 @@ class MyContents  {
             side: THREE.BackSide, 
         });
         const water = new THREE.Mesh(waterGeometry, waterMaterial);
-        water.position.set(0, 10.01, 0); 
+        water.position.set(0, 9.5, 0); 
         this.app.scene.add(water);
 
 
