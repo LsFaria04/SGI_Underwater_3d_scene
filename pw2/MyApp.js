@@ -113,9 +113,10 @@ class MyApp  {
      * it updates the active camera and the controls
      */
     updateCameraIfRequired() {
-        if (this.activeCameraName === 'Free-Fly') {
+        if (this.activeCameraName === 'Free-Fly' || this.activeCameraName === 'Aquarium View') {
             if (this.controls) this.controls.enabled = false;
-        } else {
+        } 
+        else {
             if (this.controls) this.controls.enabled = true;
         }
 
@@ -138,6 +139,13 @@ class MyApp  {
             }
             else {
                 this.controls.object = this.activeCamera
+            }
+
+            if (this.activeCameraName === 'Aquarium View') {
+                this.controls.enabled = false;
+                this.controls.enableZoom = false;
+                this.controls.enablePan = false;
+                this.controls.enableRotate = false;
             }
         }
     }
