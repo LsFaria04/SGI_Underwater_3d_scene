@@ -72,7 +72,7 @@ class MyContents  {
         this.app.scene.add(seaPlant);
         seaPlant.position.set(1,0,1);
 
-        const seaStar = new MySeaStar(0.5,1,"#ff0000");
+        const seaStar = new MySeaStar(0.1,0.2,"#ff0000");
         this.app.scene.add(seaStar);
         seaStar.position.set(2,0,2);
 
