@@ -35,6 +35,13 @@ class MyInterface  {
         cameraFolder.add(this.app, 'activeCameraName', [ 'Aquarium View', 'UnderWater', 'Free-Fly'] ).name("active camera");
         cameraFolder.open()
 
+        const displayFolder = this.datgui.addFolder('Display')
+        const params = { wireframe: false };
+        displayFolder.add(params, 'wireframe').name('Wireframe Mode').onChange((value) => {
+            if (this.contents) this.contents.setWireframeMode(value);
+        });
+        displayFolder.open();
+
     }
 }
 

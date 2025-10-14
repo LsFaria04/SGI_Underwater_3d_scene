@@ -92,6 +92,18 @@ class MyContents  {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
     }
+
+    setWireframeMode(enabled) {
+        this.app.scene.traverse((child) => {
+            if (child.isMesh && child.material) {
+                if (Array.isArray(child.material)) {
+                    child.material.forEach((mat) => (mat.wireframe = enabled));
+                } else {
+                    child.material.wireframe = enabled;
+                }
+            }
+        });
+    }
 }
 
 export { MyContents };
