@@ -15,6 +15,7 @@ class MyContents  {
     */ 
     constructor(app) {
         this.axis = null;
+        this.axisEnabled = false;
         this.app = app
     }
 
@@ -42,7 +43,8 @@ class MyContents  {
         if (this.axis === null) {
             // create and attach the axis to the scene
             this.axis = new MyAxis(this)
-            this.app.scene.add(this.axis)
+            //this.app.scene.add(this.axis)
+            
         }
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
@@ -103,6 +105,23 @@ class MyContents  {
                 }
             }
         });
+    }
+
+    toggleAxis(enabled) {
+        this.axisEnabled = enabled;
+
+        // If axis doesn't exist yet, create it
+        if (!this.axis && enabled) {
+            this.axis = new MyAxis(this);
+        }
+
+        if (enabled) {
+            this.app.scene.add(this.axis);
+        } else {
+            if (this.axis) {
+                this.app.scene.remove(this.axis);
+            }
+        }
     }
 }
 

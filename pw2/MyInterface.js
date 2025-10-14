@@ -29,6 +29,9 @@ class MyInterface  {
      * Initialize the gui interface
      */
     init() {
+        const axisFolder = this.datgui.addFolder('Axis');
+        axisFolder.add(this.contents, 'axisEnabled').name("enabled").onChange( (value) => { this.contents.toggleAxis(value) } );
+        axisFolder.open();
 
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')
