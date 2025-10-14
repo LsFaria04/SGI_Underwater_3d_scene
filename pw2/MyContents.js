@@ -50,7 +50,7 @@ class MyContents  {
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
         const floorGeometry = new THREE.PlaneGeometry(50, 50);
-        const floorMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", shininess: 30, specular: "#ffffff"});
+        const floorMaterial = new THREE.MeshPhongMaterial({color: "#ffffff", shininess: 5, specular: "#ffffff"});
         this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
         this.floor.rotation.x = -Math.PI / 2;
         this.app.scene.add(this.floor);
