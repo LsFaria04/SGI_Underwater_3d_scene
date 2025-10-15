@@ -13,6 +13,8 @@ import { MyRockGroup } from './MyRockGroup.js';
 import { MyCoralGroup } from './MyCoralGroup.js';
 //import {MyTriangle} from './MyTriangle.js';
 import { MyCoralReef } from './MyCoralReef.js';
+import { MyFloor } from './MyFloor.js';
+import { MyWater } from './MyWater.js';
 
 
 /**
@@ -60,45 +62,11 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        
-        const floorSize = 50;
-        const floorSegments = 128;
-        const floorGeometry = new THREE.PlaneGeometry(floorSize, floorSize, floorSegments, floorSegments);
+        const floor = new MyFloor();
+        this.app.scene.add(floor);
 
-        floorGeometry.computeVertexNormals();
-
-        const floorMaterial = new THREE.MeshPhongMaterial({
-            color: 0xC2B280,   // sand color
-            shininess: 8,
-            specular: 0x222222,
-        });
-
-        this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        this.floor.rotation.x = -Math.PI / 2;
-        this.floor.receiveShadow = true;
-        this.app.scene.add(this.floor);
-
-        const waterGeometry = new THREE.BoxGeometry(floorSize * 4, 20, floorSize * 4);
-
-        const waterMaterial = new THREE.MeshPhongMaterial({
-            color: 0x336688,   
-            transparent: true,
-            opacity: 0.3,      
-            side: THREE.BackSide, 
-        });
-
-        const water = new THREE.Mesh(waterGeometry, waterMaterial);
-        water.position.set(0, 9.5, 0); 
+        const water = new MyWater();
         this.app.scene.add(water);
-
-        const positions = floorGeometry.attributes.position;
-        for (let i = 0; i < positions.count; i++) {
-            const x = positions.getX(i);
-            const z = positions.getY(i); 
-            const height = 0.4 * Math.sin(x * 0.3) * Math.cos(z * 0.3) + (Math.random() - 0.5) * 0.1;
-            positions.setZ(i, height); 
-        }
-        positions.needsUpdate = true;
 
 
         //we can use groups to create some more complex geometry with groups of rocks and corals
