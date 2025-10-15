@@ -90,25 +90,6 @@ class MyCrab extends THREE.Object3D {
 
         //claws
         const claw = new THREE.Group();
-        /*
-        const topClawGeometry = new THREE.CylinderGeometry(depth * 0.2, depth * 0.1, height * 0.8  / 2);
-        const topClaw = new THREE.Mesh(topClawGeometry, crabMaterial);
-        const bottomClawGeometry = new THREE.SphereGeometry(depth * 0.2, 8, 8); 
-        const bottomClaw = new THREE.Mesh(bottomClawGeometry, crabMaterial);
-
-        bottomClaw.position.y = - depth * 0.2 - depth * 0.2;
-
-        
-        claw.add(topClaw);
-        claw.add(bottomClaw);
-
-        claw.rotation.z = THREE.MathUtils.degToRad(90);
-        claw.position.y = height - depth * 0.2;
-        claw.position.x = depth * 1.1;
-        claw.position.z = width * 0.4;
-
-        this.add(claw);
-        */
 
         const armGeom = new THREE.CylinderGeometry(depth * 0.1, depth * 0.15, height * 0.6, 8);
         const arm = new THREE.Mesh(armGeom, crabMaterial);
