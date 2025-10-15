@@ -57,31 +57,45 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
+        
+        const floorSize = 50;
+        const floorSegments = 128;
+        const floorGeometry = new THREE.PlaneGeometry(floorSize, floorSize, floorSegments, floorSegments);
 
-    const floorSize = 50;
-    const floorSegments = 128;
-    const floorGeometry = new THREE.PlaneGeometry(floorSize, floorSize, floorSegments, floorSegments);
+        floorGeometry.computeVertexNormals();
 
-    const positions = floorGeometry.attributes.position;
-    for (let i = 0; i < positions.count; i++) {
-        const x = positions.getX(i);
-        const z = positions.getY(i); 
-        const height = 0.4 * Math.sin(x * 0.3) * Math.cos(z * 0.3) + (Math.random() - 0.5) * 0.1;
-        positions.setZ(i, height); 
-    }
-    positions.needsUpdate = true;
-    floorGeometry.computeVertexNormals();
+        const floorMaterial = new THREE.MeshPhongMaterial({
+            color: 0xC2B280,   // sand color
+            shininess: 8,
+            specular: 0x222222,
+        });
 
-    const floorMaterial = new THREE.MeshPhongMaterial({
-        color: 0xC2B280,   // sand color
-        shininess: 8,
-        specular: 0x222222,
-    });
+        this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        this.floor.rotation.x = -Math.PI / 2;
+        this.floor.receiveShadow = true;
+        this.app.scene.add(this.floor);
 
-    this.floor = new THREE.Mesh(floorGeometry, floorMaterial);
-    this.floor.rotation.x = -Math.PI / 2;
-    this.floor.receiveShadow = true;
-    this.app.scene.add(this.floor);
+        const waterGeometry = new THREE.BoxGeometry(floorSize * 4, 20, floorSize * 4);
+
+        const waterMaterial = new THREE.MeshPhongMaterial({
+            color: 0x336688,   
+            transparent: true,
+            opacity: 0.3,      
+            side: THREE.BackSide, 
+        });
+
+        const water = new THREE.Mesh(waterGeometry, waterMaterial);
+        water.position.set(0, 9.5, 0); 
+        this.app.scene.add(water);
+
+        const positions = floorGeometry.attributes.position;
+        for (let i = 0; i < positions.count; i++) {
+            const x = positions.getX(i);
+            const z = positions.getY(i); 
+            const height = 0.4 * Math.sin(x * 0.3) * Math.cos(z * 0.3) + (Math.random() - 0.5) * 0.1;
+            positions.setZ(i, height); 
+        }
+        positions.needsUpdate = true;
 
 
         //we can use groups to create some more complex geometry with groups of rocks and corals
@@ -100,27 +114,15 @@ class MyContents  {
 
         const seaStar = new MySeaStar(0.1,0.2,"#ff0000");
         this.app.scene.add(seaStar);
-        seaStar.position.set(2,0,2);
+        seaStar.position.set(2,0.25,2);
 
-        const waterGeometry = new THREE.BoxGeometry(floorSize * 4, 20, floorSize * 4);
         const jelyFish = new MyJellyFish(0.5, 1);
         this.app.scene.add(jelyFish);
         jelyFish.position.set(0,5,0);
 
         const crab = new MyCrab();
         this.app.scene.add(crab);
-        crab.position.set(3,0,1);
-
-        const waterMaterial = new THREE.MeshPhongMaterial({
-            color: 0x336688,   
-            transparent: true,
-            opacity: 0.3,      
-            side: THREE.BackSide, 
-        });
-        const water = new THREE.Mesh(waterGeometry, waterMaterial);
-        water.position.set(0, 9.5, 0); 
-        this.app.scene.add(water);
-
+        crab.position.set(3,0.25,1);
 
         const carpBody = new MyCarp(2,2, "#88ccff");
         this.app.scene.add(carpBody);
