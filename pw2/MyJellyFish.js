@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 
 class MyJellyFish extends THREE.Object3D {
-    constructor(radius = 1, height = 2, color = "#0000FF", jelyFishTexture){
+    constructor(radius = 1, height = 2, color = "#0000FF", jellyFishTexture){
         super();
         
-        const jelyFishMaterial = new THREE.MeshPhongMaterial({color: color, map: jelyFishTexture ? jelyFishTexture : null});
+        const jellyFishMaterial = new THREE.MeshPhongMaterial({color: color, map: jellyFishTexture || null, transparent: true, opacity: 0.6, shininess: 100});
 
         //head
-        const headGeometry = new THREE.SphereGeometry(radius, 35, 35, Math.PI, Math.PI);
-        const headTop = new THREE.Mesh(headGeometry, jelyFishMaterial);
+        const headGeometry = new THREE.SphereGeometry(radius, 16, 12, Math.PI, Math.PI);
+        const headTop = new THREE.Mesh(headGeometry, jellyFishMaterial);
         headTop.rotation.x = Math.PI / 2;
 
-        const headBottomGeometry = new THREE.CircleGeometry(radius, 35);
-        const headBottom = new THREE.Mesh(headBottomGeometry, jelyFishMaterial);
+        const headBottomGeometry = new THREE.CircleGeometry(radius, 16);
+        const headBottom = new THREE.Mesh(headBottomGeometry, jellyFishMaterial);
         headBottom.rotation.x = Math.PI / 2;
         
         const head = new THREE.Group();
@@ -23,8 +23,8 @@ class MyJellyFish extends THREE.Object3D {
         head.position.y = height - radius;
 
         //tentacles
-        const tentacleGeometry = new THREE.CylinderGeometry(radius * 0.1, radius * 0.1, height - radius);
-        const tentacle = new THREE.Mesh(tentacleGeometry, jelyFishMaterial);
+        const tentacleGeometry = new THREE.CylinderGeometry(radius * 0.1, radius * 0.1, height - radius, 8);
+        const tentacle = new THREE.Mesh(tentacleGeometry, jellyFishMaterial);
         tentacle.position.y = (height - radius) / 2;
         tentacle.position.z = 0;
         tentacle.position.x = radius * 0.6;
