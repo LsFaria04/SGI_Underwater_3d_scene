@@ -7,6 +7,7 @@ import { MyCoral } from './MyCoral.js';
 import { MySeaPlant } from './MySeaPlant.js';
 import { MySeaStar } from './MySeaStar.js';
 import { MyJellyFish } from './MyJellyFish.js';
+import { MyCrab } from './MyCrab.js';
 
 /**
  *  This class contains the contents of out application
@@ -77,9 +78,13 @@ class MyContents  {
         this.app.scene.add(seaStar);
         seaStar.position.set(2,0,2);
 
-        const jelyFish = new MyJellyFish();
+        const jelyFish = new MyJellyFish(0.5, 1);
         this.app.scene.add(jelyFish);
         jelyFish.position.set(0,5,0);
+
+        const crab = new MyCrab();
+        this.app.scene.add(crab);
+        crab.position.set(3,0,1);
 
         const waterGeometry = new THREE.BoxGeometry(50, 20, 50);
         const waterMaterial = new THREE.MeshPhongMaterial({
