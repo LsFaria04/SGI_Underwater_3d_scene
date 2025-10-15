@@ -8,6 +8,7 @@ import { MySeaPlant } from './MySeaPlant.js';
 import { MySeaStar } from './MySeaStar.js';
 import { MyJellyFish } from './MyJellyFish.js';
 import { MyCrab } from './MyCrab.js';
+import { MySchoolfOfFish } from './MySchoolOfFish.js';
 
 /**
  *  This class contains the contents of out application
@@ -98,7 +99,7 @@ class MyContents  {
         this.app.scene.add(water);
 
 
-        const carpBody = new MyCarp(10,10, "#88ccff");
+        const carpBody = new MyCarp(0.5,1.5, "#88ccff");
         this.app.scene.add(carpBody);
 
         this.bubbles = [];
@@ -107,6 +108,10 @@ class MyContents  {
             this.app.scene.add(bubble);
             this.bubbles.push(bubble);
         }
+        console.log(carpBody.length)
+        const fishGroup = new MySchoolfOfFish(10, 0.05, 1,0.2, carpBody);
+        this.app.scene.add(fishGroup);
+        fishGroup.position.set(-10,1,-10)
 
     }
 
