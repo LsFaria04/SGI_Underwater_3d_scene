@@ -134,12 +134,15 @@ class MyApp  {
             if (this.controls === null) {
                 // Orbit controls allow the camera to orbit around a target.
                 this.controls = new OrbitControls( this.activeCamera, this.renderer.domElement );
-                this.controls.enableZoom = true;
-                this.controls.update();
             }
             else {
                 this.controls.object = this.activeCamera
             }
+
+            this.controls.enabled = true;
+            this.controls.enableZoom = true;
+            this.controls.enableRotate = true;
+            this.controls.enablePan = true;
 
             if (this.activeCameraName === 'Aquarium View') {
                 this.controls.enabled = false;
@@ -148,6 +151,8 @@ class MyApp  {
                 this.controls.enableRotate = false;
             }
         }
+        
+        this.controls.update();
     }
 
     /**
