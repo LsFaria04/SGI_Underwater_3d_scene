@@ -3,8 +3,9 @@ import { MyAxis } from './MyAxis.js';
 import { MyCarp} from './MyCarp.js';
 import { MyBubble } from './MyBubble.js';
 import { MyRock } from './MyRock.js';
-import {MyTriangle} from './MyTriangle.js';
+//import {MyTriangle} from './MyTriangle.js';
 import {MyCoral} from './MyCoral.js';
+import { MyCoralReef } from './MyCoralReef.js';
 
 
 /**
@@ -100,10 +101,15 @@ class MyContents  {
 
         */
         const coral = new MyCoral();
-        const coralMesh = coral.createObject(3); // Pass a complexity value (1–6)
+        const coralMesh = coral.createObject(4); // Pass a complexity value (1–6)
         coralMesh.position.y = 0;
         coralMesh.position.x = 1;
         this.app.scene.add(coralMesh); 
+
+        const coralReef = new MyCoralReef();
+        coralReef.position.y = 0;
+        this.app.scene.add(coralReef);
+
 
     }
 

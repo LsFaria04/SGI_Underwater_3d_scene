@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 export class MyCoral {
     constructor() {
+
         this.ui = {
             supportsWireframe: true,
             supportsComplexity: true,
@@ -11,37 +12,13 @@ export class MyCoral {
             complexityStep: 1,
             complexityDefault: 1
         };
+
         this.cameraConfig = {
             position: new THREE.Vector3(0, 4, 12),
             target: new THREE.Vector3(0, 3, 0)
         };
-    }
 
-    chooseNextRule(options) {
-        //Sum the weights (probabilities) of all options.
-        const total = options.reduce((sum, o) => sum + o.prob, 0);
-
-        //Number between 0 and `total`
-        let randomValue = Math.random() * total;
-
-        //The first option that makes `r <= 0` is the winner.
-        for (const opt of options) {
-            randomValue -= opt.prob;
-            if (randomValue <= 0)
-                return opt.rule;
-        }
-
-        //default: return the last option.
-        return options[options.length - 1].rule;
-    }
-
-    createObject(complexity) {
-        const iterations = complexity;
-        const baseAngle = 25 * THREE.MathUtils.DEG2RAD;
-        const variableAngle = 10 * THREE.MathUtils.DEG2RAD; // random angle variation for more natural trees
-
-        // --- Stochastic L-System Rules ---
-        const coralPresets = {
+        this.coralPresets = {
         fanCoral: {
             rules: {
             'X': [
@@ -66,9 +43,9 @@ export class MyCoral {
                 { prob: 1.0, rule: 'FF' }
             ]
             },
-            angle: 25,
+            angle: 45,
             variableAngle: 10,
-            lengthFactor: 0.55
+            lengthFactor: 0.1
         },
         bubbleCoral: {
             rules: {
@@ -85,9 +62,41 @@ export class MyCoral {
             lengthFactor: 0.9
         }
         };
+    }
+
+    chooseNextRule(options) {
+        //Sum the weights (probabilities) of all options.
+        const total = options.reduce((sum, o) => sum + o.prob, 0);
+
+        //Number between 0 and `total`
+        let randomValue = Math.random() * total;
+
+        //The first option that makes `r <= 0` is the winner.
+        for (const opt of options) {
+            randomValue -= opt.prob;
+            if (randomValue <= 0)
+                return opt.rule;
+        }
+
+        //default: return the last option.
+        return options[options.length - 1].rule;
+    }
+    createObject(complexity) {
+        const defaultCoral = this.coralPresets.branchingCoral;
+        const coral = this.generateCoralMesh(defaultCoral, complexity);
+        
+        coral.position.y = -4; 
+        return coral;
+    }
+
+    generateCoralMesh(coralType, complexity) {
+        const iterations = complexity;
+        const baseAngle = 25 * THREE.MathUtils.DEG2RAD;
+        const variableAngle = 10 * THREE.MathUtils.DEG2RAD; // random angle variation for more natural trees
+
+        // --- Stochastic L-System Rules ---
 
         const axiom = 'X';
-        const coralType = coralPresets.branchingCoral;
         const rules = coralType.rules;
 
         let currentString = axiom;
@@ -111,8 +120,8 @@ export class MyCoral {
             quaternion: new THREE.Quaternion(),
         };
 
-        let branchLength = 0.3;
-        const lengthFactor = 0.55;
+        let branchLength = 0.2;
+        const lengthFactor = 0.6;
         const branchMatrices = [];
         const leafMatrices = [];
 
@@ -184,17 +193,6 @@ export class MyCoral {
             branchMesh.setMatrixAt(i, branchMatrices[i]);
         }
         group.add(branchMesh);
-
-        if (leafMatrices.length > 0) {
-            const leafGeo = new THREE.IcosahedronGeometry(0.2, 0);
-            const leafMat = new THREE.MeshStandardMaterial({ color: '#2086AE', metalness: 0, roughness: 0.8 });
-            const leafMesh = new THREE.InstancedMesh(leafGeo, leafMat, leafMatrices.length);
-            leafMesh.name = "leaves";
-            for (let i = 0; i < leafMatrices.length; i++) {
-                leafMesh.setMatrixAt(i, leafMatrices[i]);
-            }
-            group.add(leafMesh);
-        }
 
         group.scale.setScalar(0.4);
         group.position.y = -4;
