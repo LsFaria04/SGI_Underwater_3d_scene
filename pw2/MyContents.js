@@ -11,6 +11,9 @@ import { MyCrab } from './MyCrab.js';
 import { MySchoolfOfFish } from './MySchoolOfFish.js';
 import { MyRockGroup } from './MyRockGroup.js';
 import { MyCoralGroup } from './MyCoralGroup.js';
+//import {MyTriangle} from './MyTriangle.js';
+import { MyCoralReef } from './MyCoralReef.js';
+
 
 /**
  *  This class contains the contents of out application
@@ -69,10 +72,6 @@ class MyContents  {
         const rock = new MyRock(0.5,0.5,0.5,"#4c4747");
         //this.app.scene.add(rock);
 
-        const coral = new MyCoral(0.1,2,"#00ff00");
-        this.app.scene.add(coral);
-        coral.position.set(5,0,0);
-
         const seaPlant = new MySeaPlant(0.1,2,0.05, "#00ff00");
         this.app.scene.add(seaPlant);
         seaPlant.position.set(1,0,1);
@@ -101,7 +100,7 @@ class MyContents  {
         this.app.scene.add(water);
 
 
-        const carpBody = new MyCarp(2,2, "#88ccff");
+        const carpBody = new MyCarp(1, 1, 1, 1, "#88ccff");
         this.app.scene.add(carpBody);
 
         this.bubbles = [];
@@ -111,7 +110,7 @@ class MyContents  {
             this.bubbles.push(bubble);
         }
         console.log(carpBody.length)
-        const fishGroup = new MySchoolfOfFish(10, 0.05, 1,0.2, "Carp");
+        const fishGroup = new MySchoolfOfFish(10, 0.1, 1,0.2, "Carp", 1,1,1,1);
         this.app.scene.add(fishGroup);
         fishGroup.position.set(-10,1,-10);
 
@@ -119,9 +118,32 @@ class MyContents  {
         this.app.scene.add(rockGroup)
         rockGroup.position.set(10,0,-10);
 
-        const coralGroup = new MyCoralGroup(4, 1, 1, 0.2, ["#3f4c3f", "#56643f", "#aaa27b"]);
-        this.app.scene.add(coralGroup);
-        coralGroup.position.set(0,0,-10);
+        /* Triangle Example with texture 
+        
+        const texture = new THREE.TextureLoader().load('./textures/uv_grid_opengl.jpg' ); 
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        const material = new THREE.MeshBasicMaterial( { map:texture } );
+
+        //Triangle 1
+        const triangleGeo1 = new MyTriangle(0, 0, 0, 1, 0, 0, 0, 1, 0);
+        const mesh1 = new THREE.Mesh(triangleGeo1, material);
+        mesh1.scale.set(3,3,1);
+        mesh1.position.set(-3, 0,0);
+
+        this.app.scene.add(mesh1);
+
+        */
+        const coral = new MyCoral();
+        const coralMesh = coral.createObject(4); // Pass a complexity value (1–6)
+        coralMesh.position.y = 0;
+        coralMesh.position.x = 1;
+        this.app.scene.add(coralMesh); 
+
+        const coralReef = new MyCoralReef();
+        coralReef.position.y = 0;
+        this.app.scene.add(coralReef);
+
 
     }
 
