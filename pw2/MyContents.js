@@ -6,6 +6,11 @@ import { MyRock } from './MyRock.js';
 import { MyCoral } from './MyCoral.js';
 import { MySeaPlant } from './MySeaPlant.js';
 import { MySeaStar } from './MySeaStar.js';
+import { MyJellyFish } from './MyJellyFish.js';
+import { MyCrab } from './MyCrab.js';
+import { MySchoolfOfFish } from './MySchoolOfFish.js';
+import { MyRockGroup } from './MyRockGroup.js';
+import { MyCoralGroup } from './MyCoralGroup.js';
 
 /**
  *  This class contains the contents of out application
@@ -82,8 +87,8 @@ class MyContents  {
         //we can use groups to create some more complex geometry with groups of rocks and corals
         //we should use groups to aggregate fishes of the same species
 
-        const rock = new MyRock(1,1,1,"#4c4747");
-        this.app.scene.add(rock);
+        const rock = new MyRock(0.5,0.5,0.5,"#4c4747");
+        //this.app.scene.add(rock);
 
         const coral = new MyCoral(0.1,2,"#00ff00");
         this.app.scene.add(coral);
@@ -93,11 +98,19 @@ class MyContents  {
         this.app.scene.add(seaPlant);
         seaPlant.position.set(1,0,1);
 
-        const seaStar = new MySeaStar(0.5,1,"#ff0000");
+        const seaStar = new MySeaStar(0.1,0.2,"#ff0000");
         this.app.scene.add(seaStar);
         seaStar.position.set(2,0,2);
 
         const waterGeometry = new THREE.BoxGeometry(floorSize * 4, 20, floorSize * 4);
+        const jelyFish = new MyJellyFish(0.5, 1);
+        this.app.scene.add(jelyFish);
+        jelyFish.position.set(0,5,0);
+
+        const crab = new MyCrab();
+        this.app.scene.add(crab);
+        crab.position.set(3,0,1);
+
         const waterMaterial = new THREE.MeshPhongMaterial({
             color: 0x336688,   
             transparent: true,
@@ -109,7 +122,7 @@ class MyContents  {
         this.app.scene.add(water);
 
 
-        const carpBody = new MyCarp(10,10, "#88ccff");
+        const carpBody = new MyCarp(2,2, "#88ccff");
         this.app.scene.add(carpBody);
 
         this.bubbles = [];
@@ -118,6 +131,18 @@ class MyContents  {
             this.app.scene.add(bubble);
             this.bubbles.push(bubble);
         }
+        console.log(carpBody.length)
+        const fishGroup = new MySchoolfOfFish(10, 0.05, 1,0.2, "Carp");
+        this.app.scene.add(fishGroup);
+        fishGroup.position.set(-10,1,-10);
+
+        const rockGroup = new MyRockGroup(10, 0.01, 1, 0.01, ["#4c4747", "#292727", "#8c8989"]);
+        this.app.scene.add(rockGroup)
+        rockGroup.position.set(10,0,-10);
+
+        const coralGroup = new MyCoralGroup(4, 1, 1, 0.2, ["#3f4c3f", "#56643f", "#aaa27b"]);
+        this.app.scene.add(coralGroup);
+        coralGroup.position.set(0,0,-10);
 
     }
 

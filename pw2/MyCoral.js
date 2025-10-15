@@ -3,6 +3,9 @@ import * as THREE from 'three';
 class MyCoral extends THREE.Object3D {
     constructor(radius = 1, height = 1, color = "#000000", coralTexture){
         super();
+
+        this.radius = radius;
+        this.height = height;
         
         const coralGeometry = new THREE.CylinderGeometry(radius, radius, height);
         const coralMaterial = new THREE.MeshPhongMaterial({color: color, map: coralTexture ? coralTexture : null});
