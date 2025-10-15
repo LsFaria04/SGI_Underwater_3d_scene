@@ -10,6 +10,7 @@ import { MyJellyFish } from './MyJellyFish.js';
 import { MyCrab } from './MyCrab.js';
 import { MySchoolfOfFish } from './MySchoolOfFish.js';
 import { MyRockGroup } from './MyRockGroup.js';
+import { MyCoralGroup } from './MyCoralGroup.js';
 
 /**
  *  This class contains the contents of out application
@@ -110,12 +111,17 @@ class MyContents  {
             this.bubbles.push(bubble);
         }
         console.log(carpBody.length)
-        const fishGroup = new MySchoolfOfFish(10, 0.05, 1,0.2, carpBody);
+        const fishGroup = new MySchoolfOfFish(10, 0.05, 1,0.2, "Carp");
         this.app.scene.add(fishGroup);
         fishGroup.position.set(-10,1,-10);
 
-        const rockGroup = new MyRockGroup(10, 0.01, 1, 0.01, ["#4c4747", "#292727", "#8c8989"], rock);
+        const rockGroup = new MyRockGroup(10, 0.01, 1, 0.01, ["#4c4747", "#292727", "#8c8989"]);
         this.app.scene.add(rockGroup)
+        rockGroup.position.set(10,0,-10);
+
+        const coralGroup = new MyCoralGroup(4, 1, 1, 0.2, ["#3f4c3f", "#56643f", "#aaa27b"]);
+        this.app.scene.add(coralGroup);
+        coralGroup.position.set(0,0,-10);
 
     }
 
