@@ -89,6 +89,8 @@ class MyCrab extends THREE.Object3D {
         this.add(righteye);
 
         //claws
+        const claw = new THREE.Group();
+        /*
         const topClawGeometry = new THREE.CylinderGeometry(depth * 0.2, depth * 0.1, height * 0.8  / 2);
         const topClaw = new THREE.Mesh(topClawGeometry, crabMaterial);
         const bottomClawGeometry = new THREE.SphereGeometry(depth * 0.2, 8, 8); 
@@ -96,7 +98,7 @@ class MyCrab extends THREE.Object3D {
 
         bottomClaw.position.y = - depth * 0.2 - depth * 0.2;
 
-        const claw = new THREE.Group();
+        
         claw.add(topClaw);
         claw.add(bottomClaw);
 
@@ -106,6 +108,34 @@ class MyCrab extends THREE.Object3D {
         claw.position.z = width * 0.4;
 
         this.add(claw);
+        */
+
+        const armGeom = new THREE.CylinderGeometry(depth * 0.1, depth * 0.15, height * 0.6, 8);
+        const arm = new THREE.Mesh(armGeom, crabMaterial);
+        arm.rotation.z = Math.PI / 2;
+        arm.position.x = height * 0.3;
+        claw.add(arm);
+
+        const hingeGeom = new THREE.SphereGeometry(depth * 0.12, 8, 8);
+        const hinge = new THREE.Mesh(hingeGeom, crabMaterial);
+        hinge.position.x = height * 0.6 - 0.005;
+        claw.add(hinge);
+
+        const upperGeom = new THREE.ConeGeometry(depth*0.15, height*0.4, 8);
+        const upperJaw = new THREE.Mesh(upperGeom, crabMaterial);
+        upperJaw.rotation.z = Math.PI / 2 + Math.PI / 12; 
+        upperJaw.position.set(0, depth*0.06, 0);
+        hinge.add(upperJaw);
+
+        const lowerGeom = new THREE.ConeGeometry(depth*0.12, height*0.35, 8);
+        const lowerJaw = new THREE.Mesh(lowerGeom, crabMaterial);
+        lowerJaw.rotation.z = Math.PI / 2 - Math.PI / 12;   
+        lowerJaw.position.set(0, -depth*0.06, 0); 
+        hinge.add(lowerJaw);
+
+        claw.position.set(depth*1.1 - 0.02, height - depth*0.2, width*0.4);
+
+        this.add(claw);
 
         const rightClaw = claw.clone();
         rightClaw.position.z *= -1;
@@ -113,7 +143,6 @@ class MyCrab extends THREE.Object3D {
         this.add(rightClaw);
 
         
-       
     }
 }
 
