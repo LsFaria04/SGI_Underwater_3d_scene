@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MyCarp } from './MyCarp.js';
 
 class MySchoolfOfFish extends THREE.Object3D {
     constructor(numbFish, minSpace,maxScale, minScale, specie){
@@ -21,6 +22,13 @@ class MySchoolfOfFish extends THREE.Object3D {
             for (let y = 0; y < gridSide && fishCount < numbFish; y++) {
                 for (let z = 0; z < gridSide && fishCount < numbFish; z++) {
                 const cloneSpecie = specie.clone();
+               
+                cloneSpecie.traverse(child => {
+                    if (child.isMesh) {
+                        child.material = new THREE.MeshPhongMaterial({ color: "#00b3ff" });
+                        child.material.needsUpdate = true;
+                    }
+                });
 
                 // Random scale
                 const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());

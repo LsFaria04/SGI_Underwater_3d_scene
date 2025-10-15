@@ -9,6 +9,7 @@ import { MySeaStar } from './MySeaStar.js';
 import { MyJellyFish } from './MyJellyFish.js';
 import { MyCrab } from './MyCrab.js';
 import { MySchoolfOfFish } from './MySchoolOfFish.js';
+import { MyRockGroup } from './MyRockGroup.js';
 
 /**
  *  This class contains the contents of out application
@@ -64,8 +65,8 @@ class MyContents  {
         //we can use groups to create some more complex geometry with groups of rocks and corals
         //we should use groups to aggregate fishes of the same species
 
-        const rock = new MyRock(1,1,1,"#4c4747");
-        this.app.scene.add(rock);
+        const rock = new MyRock(0.5,0.5,0.5,"#4c4747");
+        //this.app.scene.add(rock);
 
         const coral = new MyCoral(0.1,2,"#00ff00");
         this.app.scene.add(coral);
@@ -99,7 +100,7 @@ class MyContents  {
         this.app.scene.add(water);
 
 
-        const carpBody = new MyCarp(0.5,1.5, "#88ccff");
+        const carpBody = new MyCarp(2,2, "#88ccff");
         this.app.scene.add(carpBody);
 
         this.bubbles = [];
@@ -111,7 +112,10 @@ class MyContents  {
         console.log(carpBody.length)
         const fishGroup = new MySchoolfOfFish(10, 0.05, 1,0.2, carpBody);
         this.app.scene.add(fishGroup);
-        fishGroup.position.set(-10,1,-10)
+        fishGroup.position.set(-10,1,-10);
+
+        const rockGroup = new MyRockGroup(10, 0.01, 1, 0.01, ["#4c4747", "#292727", "#8c8989"], rock);
+        this.app.scene.add(rockGroup)
 
     }
 

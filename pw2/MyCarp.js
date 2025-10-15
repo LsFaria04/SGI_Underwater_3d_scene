@@ -10,11 +10,13 @@ class MyCarp extends THREE.Object3D {
      * @param {number} length carp length
      * @param {string} color Color of the carp
      */
-    constructor(width, length, color){
+    constructor(width = 0.5, length = 1, color = "#88ccff"){
         super();
         this.width = width;
         this.length = length;
         this.color = color;
+
+        
 
         this.init();
     }
