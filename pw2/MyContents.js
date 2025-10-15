@@ -110,7 +110,7 @@ class MyContents  {
             this.bubbles.push(bubble);
         }
         console.log(carpBody.length)
-        const fishGroup = new MySchoolfOfFish(10, 0.1, 1,0.2, "Carp", 1,1,1,1);
+        const fishGroup = new MySchoolfOfFish(10, 0.5, 1,0.2, "Carp", 1,1,1,1);
         this.app.scene.add(fishGroup);
         fishGroup.position.set(-10,1,-10);
 
