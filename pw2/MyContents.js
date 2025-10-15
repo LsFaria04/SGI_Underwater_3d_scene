@@ -89,7 +89,7 @@ class MyContents  {
 
         const crab = new MyCrab();
         this.app.scene.add(crab);
-        crab.position.set(3,0.25,1);
+        crab.position.set(3,0.3,1);
 
         const carpBody = new MyCarp(1, 1, 1, 1, "#88ccff");
         this.app.scene.add(carpBody);

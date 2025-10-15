@@ -10,15 +10,19 @@ class MyBubble extends THREE.Object3D {
     constructor(radius = 0.5, startY = 0) {
         super();
 
+        const bubbleGeometry = new THREE.SphereGeometry(radius, 8, 8);
         const bubbleMaterial = new THREE.MeshPhongMaterial({
             color: 0x99ccff,
             transparent: true,
             opacity: 0.5,
             shininess: 100,
-        }); 
+        });
 
-        const bubbleGeometry = new THREE.SphereGeometry(radius, 16, 16);
         this.bubble = new THREE.Mesh(bubbleGeometry, bubbleMaterial);
+
+        this.bubble.castShadow = false;
+        this.bubble.receiveShadow = false;
+
         this.add(this.bubble);
         
         this.position.set(

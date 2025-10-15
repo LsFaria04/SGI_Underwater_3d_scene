@@ -6,7 +6,7 @@ class MySeaStar extends THREE.Object3D {
         
         //star geometry
         const starArmGeometry = new THREE.CylinderGeometry(radius, radius / 3, height);
-        const armTipGeometry = new THREE.SphereGeometry(radius /3 ,32, 32, Math.PI, Math.PI );
+        const armTipGeometry = new THREE.SphereGeometry(radius /3 ,8, 8, Math.PI, Math.PI );
         const starBodyGeometry = new THREE.CylinderGeometry(radius /2, radius / 2, radius * 2, 5);
 
         //star arm 

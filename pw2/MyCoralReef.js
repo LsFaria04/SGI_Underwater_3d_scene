@@ -18,6 +18,9 @@ class MyCoralReef extends THREE.Object3D {
         this.type = this.coralGen.coralPresets[type];
         //console.log(this.type);
         //console.log(type in this.types);
+
+        const coralMeshTemplate = this.coralGen.generateCoralMesh(this.type, iterations);
+
         for (let i = 0; i < numbCorals; i++){
 
             const angle = Math.random() * Math.PI * 2;
@@ -25,7 +28,7 @@ class MyCoralReef extends THREE.Object3D {
             const x = Math.cos(angle) * dist;
             const z = Math.sin(angle) * dist;
 
-            const coralMeshGroup = this.coralGen.generateCoralMesh(this.type, iterations);
+            const coralMeshGroup = coralMeshTemplate.clone();
 
             coralMeshGroup.position.set(x, 0, z);
             coralMeshGroup.rotation.y = Math.random() * Math.PI * 2;

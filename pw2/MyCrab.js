@@ -7,7 +7,7 @@ class MyCrab extends THREE.Object3D {
         const crabMaterial = new THREE.MeshPhongMaterial({color: color, map: crabTexture ? crabTexture : null});
 
         //body
-        const bodyGeometry = new THREE.SphereGeometry(1);
+        const bodyGeometry = new THREE.SphereGeometry(1, 24, 24);
         const body = new THREE.Mesh(bodyGeometry, crabMaterial);
         body.rotation.x = Math.PI / 2;
         body.scale.y = height * 0.3;
@@ -23,7 +23,7 @@ class MyCrab extends THREE.Object3D {
         const topleg = new THREE.Mesh(toplegGeometry, crabMaterial);
         const bottomlegGeometry = new THREE.ConeGeometry(depth * 0.1, height * 0.8  / 2);
         const bottomleg = new THREE.Mesh(bottomlegGeometry, crabMaterial);
-        const legJointGeometry = new THREE.SphereGeometry(depth * 0.1);
+        const legJointGeometry = new THREE.SphereGeometry(depth * 0.1, 8, 8);
         const legJoint = new THREE.Mesh(legJointGeometry, crabMaterial);
         
         bottomleg.rotation.x = THREE.MathUtils.degToRad(-135);
@@ -65,7 +65,7 @@ class MyCrab extends THREE.Object3D {
         this.add(rightLegs);
 
         //eyes
-        const eyeGeometry = new THREE.SphereGeometry(width * 0.1);
+        const eyeGeometry = new THREE.SphereGeometry(width * 0.1, 8, 8);
         const eyeMaterial = new THREE.MeshPhongMaterial({color: "#000000"});
         const eyeBall = new THREE.Mesh(eyeGeometry, eyeMaterial);
 
@@ -91,7 +91,7 @@ class MyCrab extends THREE.Object3D {
         //claws
         const topClawGeometry = new THREE.CylinderGeometry(depth * 0.2, depth * 0.1, height * 0.8  / 2);
         const topClaw = new THREE.Mesh(topClawGeometry, crabMaterial);
-        const bottomClawGeometry = new THREE.SphereGeometry(depth * 0.2); 
+        const bottomClawGeometry = new THREE.SphereGeometry(depth * 0.2, 8, 8); 
         const bottomClaw = new THREE.Mesh(bottomClawGeometry, crabMaterial);
 
         bottomClaw.position.y = - depth * 0.2 - depth * 0.2;
