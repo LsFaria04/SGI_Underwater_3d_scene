@@ -6,16 +6,20 @@ export class MyCoral {
         fanCoral: {
             rules: {
             'X': [
-                { prob: 0.7, rule: 'F[+X][-X]' },
-                { prob: 0.3, rule: 'FX' }
+                { prob: 0.55, rule: 'F&[+X]F[-X]^X' },
+                { prob: 0.25, rule: 'F[+X][-X]FX' },
+                { prob: 0.15, rule: 'F&[+X]X' },
+                { prob: 0.05, rule: 'F' }
             ],
             'F': [
-                { prob: 1.0, rule: 'FF' }
-            ]
-            },
+                { prob: 0.70, rule: 'FF' },
+                { prob: 0.20, rule: 'F' },
+                { prob: 0.10, rule: 'F[+F][-F]' }
+            ],
             angle: 15,
             variableAngle: 5,
             lengthFactor: 0.8
+            }
         },
         branchingCoral: {
             rules: {
@@ -31,20 +35,6 @@ export class MyCoral {
             variableAngle: 10,
             lengthFactor: 0.1
         },
-        bubbleCoral: {
-            rules: {
-            'X': [
-                { prob: 0.8, rule: 'FX' },
-                { prob: 0.2, rule: '' }
-            ],
-            'F': [
-                { prob: 1.0, rule: 'F' }
-            ]
-            },
-            angle: 0,
-            variableAngle: 0,
-            lengthFactor: 0.9
-        }
         };
     }
 
@@ -66,7 +56,7 @@ export class MyCoral {
         return options[options.length - 1].rule;
     }
     createObject(complexity) {
-        const defaultCoral = this.coralPresets.branchingCoral;
+        const defaultCoral = this.coralPresets.fanCoral;
         const coral = this.generateCoralMesh(defaultCoral, complexity);
         
         coral.position.y = -4; 
@@ -132,6 +122,15 @@ export class MyCoral {
                     branchMatrices.push(instanceMatrix);
                     break;
                 }
+                case 'X': {
+
+                    if (coralType == this.coralPresets.branchingCoral) break;
+
+                    const leafMatrix = new THREE.Matrix4();
+                    leafMatrix.compose(turtle.position, new THREE.Quaternion(), new THREE.Vector3(1, 1, 1));
+                    leafMatrices.push(leafMatrix);
+                    break;
+                }
                 case '+':
                     turtle.quaternion.multiply(q.setFromAxisAngle(axisZ, randomAngle(baseAngle)));
                     break;
@@ -168,15 +167,40 @@ export class MyCoral {
 
         const group = new THREE.Group();
 
+        this.colorZ = "";
+
+        if (coralType == this.coralPresets.branchingCoral){
+            this.colorZ = '#ad0065';
+        }
+        else{
+            this.colorZ = '#ff9100'
+
+        }
+
         const branchGeo = new THREE.CylinderGeometry(0.05, 0.05, 1, 8);
         branchGeo.translate(0, 0.5, 0);
-        const branchMat = new THREE.MeshStandardMaterial({ color: '#FF6F61', metalness: 0.1, roughness: 0.8 });
+        const branchMat = new THREE.MeshStandardMaterial({ color: this.colorZ, metalness: 0.1, roughness: 0.8 });
         const branchMesh = new THREE.InstancedMesh(branchGeo, branchMat, branchMatrices.length);
         branchMesh.name = "branches";
         for (let i = 0; i < branchMatrices.length; i++) {
             branchMesh.setMatrixAt(i, branchMatrices[i]);
         }
         group.add(branchMesh);
+
+        if (leafMatrices.length > 0) {
+            const leafShape = new THREE.Shape();
+            leafShape.moveTo(0, 0);
+            leafShape.bezierCurveTo(0.05, 0.2, 0.1, 0.3, 0, 0.5);
+            leafShape.bezierCurveTo(-0.1, 0.3, -0.05, 0.2, 0, 0);
+            const leafGeo = new THREE.ExtrudeGeometry(leafShape, { depth: 0.02, bevelEnabled: false });
+            const leafMat = new THREE.MeshStandardMaterial({ color: 0xff9100, metalness: 0, roughness: 0.8 });
+            const leafMesh = new THREE.InstancedMesh(leafGeo, leafMat, leafMatrices.length);
+            leafMesh.name = "leaves";
+            for (let i = 0; i < leafMatrices.length; i++) {
+                leafMesh.setMatrixAt(i, leafMatrices[i]);
+            }
+            group.add(leafMesh);
+        }
 
         group.scale.setScalar(0.4);
         group.position.y = -4;

@@ -109,31 +109,15 @@ class MyContents  {
         this.app.scene.add(rockGroup)
         rockGroup.position.set(10,0,-10);
 
-        /* Triangle Example with texture 
-        
-        const texture = new THREE.TextureLoader().load('./textures/uv_grid_opengl.jpg' ); 
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        const material = new THREE.MeshBasicMaterial( { map:texture } );
 
-        //Triangle 1
-        const triangleGeo1 = new MyTriangle(0, 0, 0, 1, 0, 0, 0, 1, 0);
-        const mesh1 = new THREE.Mesh(triangleGeo1, material);
-        mesh1.scale.set(3,3,1);
-        mesh1.position.set(-3, 0,0);
-
-        this.app.scene.add(mesh1);
-
-        */
         const coral = new MyCoral();
-        const coralMesh = coral.createObject(4); // Pass a complexity value (1–6)
-        coralMesh.position.y = 0;
-        coralMesh.position.x = 1;
-        this.app.scene.add(coralMesh); 
+        const coralReef1 = new MyCoralReef(5, "fanCoral");
+        coralReef1.position.y = 0;
+        this.app.scene.add(coralReef1);
 
-        const coralReef = new MyCoralReef();
-        coralReef.position.y = 0;
-        this.app.scene.add(coralReef);
+        const coralReef2 = new MyCoralReef();
+        coralReef2.position.y = 0;
+        this.app.scene.add(coralReef2);
 
 
     }
