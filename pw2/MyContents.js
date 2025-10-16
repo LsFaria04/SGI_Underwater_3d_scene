@@ -15,6 +15,7 @@ import { MyCoralGroup } from './MyCoralGroup.js';
 import { MyCoralReef } from './MyCoralReef.js';
 import { MyFloor } from './MyFloor.js';
 import { MyWater } from './MyWater.js';
+import { MySeaUrchin } from './MySeaUrchin.js';
 
 
 /**
@@ -109,7 +110,6 @@ class MyContents  {
         this.app.scene.add(rockGroup)
         rockGroup.position.set(10,0,-10);
 
-
         const coral = new MyCoral();
         const coralReef1 = new MyCoralReef(5, "fanCoral");
         coralReef1.position.y = 0;
@@ -118,6 +118,10 @@ class MyContents  {
         const coralReef2 = new MyCoralReef();
         coralReef2.position.y = 0;
         this.app.scene.add(coralReef2);
+
+        const seaUrchin = new MySeaUrchin();
+        seaUrchin.position.set(4, 0.3, 4);
+        this.app.scene.add(seaUrchin);
 
 
     }
