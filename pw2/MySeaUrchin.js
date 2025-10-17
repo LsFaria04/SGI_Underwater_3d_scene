@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 
+/**
+ * This class represents a sea urchin
+ */
 class MySeaUrchin extends THREE.Object3D {
+    /**
+     * 
+     * @param {*} radius Sea urchin body radius
+     * @param {*} spikeLength Sea urchin spike lenght
+     * @param {*} numSpikes Sea urchin number of spikes in the body
+     * @param {*} color Sea urchin color
+     */
     constructor(radius = 0.1, spikeLength = 0.5, numSpikes = 100, color = 0x000000) {
         super();
         this.radius = radius;

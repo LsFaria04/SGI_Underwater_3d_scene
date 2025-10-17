@@ -1,7 +1,20 @@
 import * as THREE from 'three';
 import { MyCarp } from './MyCarp.js';
 
+/**
+ * This class represents a school of fish (fish group)
+ */
 class MySchoolfOfFish extends THREE.Object3D {
+    /**
+     * 
+     * @param {*} numbFish Number of fish in the group
+     * @param {*} minSpace Minimum space between each fish
+     * @param {*} maxScale Maximum scale of each fish
+     * @param {*} minScale Minimum scale of each fish
+     * @param {*} specie Specie of fish 
+     * @param {*} baseLen Base lenght before scaling of the fishes
+     * @param {*} baseWidth Base width before scaling of the fishes
+     */
     constructor(numbFish, minSpace,maxScale, minScale, specie, baseLen, baseWidth){
         super();
         

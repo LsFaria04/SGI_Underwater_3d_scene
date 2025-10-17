@@ -1,6 +1,13 @@
 import * as THREE from 'three';
-
+/**
+ * This class represents the sea floor
+ */
 class MyFloor extends THREE.Mesh {
+    /**
+     * 
+     * @param {*} size Floor size
+     * @param {*} segments Floor segments
+     */
     constructor(size = 50, segments = 128) {
         const geometry = new THREE.PlaneGeometry(size, size, segments, segments);
 

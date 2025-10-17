@@ -1,6 +1,17 @@
 import * as THREE from 'three';
 
+/**
+ * This class represents a crab
+ */
 class MyCrab extends THREE.Object3D {
+     /**
+     * 
+     * @param {number} width Crab width
+     * @param {number} height Crab height (not including the eyes)
+     * @param {number} depth Crab body depth
+     * @param {color} color Crab body color
+     * @param {crabTexture} crabTexture Texture applied to the crab's body
+     */
     constructor(width = 0.2, height = 0.2,depth = 0.1,  color = "#FF0000", crabTexture){
         super();
         

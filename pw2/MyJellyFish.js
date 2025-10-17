@@ -1,6 +1,15 @@
 import * as THREE from 'three';
-
+/**
+ * This class represents a jellyFish
+ */
 class MyJellyFish extends THREE.Object3D {
+    /**
+     * 
+     * @param {*} radius Jellyfish body radius
+     * @param {*} height JellyFish Height 
+     * @param {*} color  JellyFish color
+     * @param {*} jellyFishTexture JellyFish Texture
+     */
     constructor(radius = 1, height = 2, color = "#0000FF", jellyFishTexture){
         super();
         
