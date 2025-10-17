@@ -3,7 +3,7 @@ import {getRandomInt} from './utils.js';
 import { MyRock } from './MyRock.js';
 
 class MyRockGroup extends THREE.Object3D {
-    constructor(numbRocks, maxSpace,maxScale, minScale, colors){
+    constructor(numbRocks, minSpace,maxScale, minScale, colors, overlap){
         super();
         
         const rock = new MyRock(1,1,1);
@@ -14,10 +14,8 @@ class MyRockGroup extends THREE.Object3D {
         const baseWidth = rock.width;
         const baseDepth = rock.depth;
 
-        // Track cumulative positions per axis
-        const spacingMatrix = new Array(gridSide).fill().map(() =>
-                new Array(gridSide).fill([0,0])
-        );
+        let baseCellWidth = baseWidth * maxScale + minSpace;
+        let baseCellDepth = baseDepth * maxScale + minSpace;
 
         for (let x = 0; x < gridSide && rockCount < numbRocks; x++) {
             for (let y = 0; y < gridSide && rockCount < numbRocks; y++) {
@@ -37,22 +35,18 @@ class MyRockGroup extends THREE.Object3D {
                 }
             });
             
-
-            const newRockWidth = baseWidth * scaleFactor;
-            const newRockDepth = baseDepth * scaleFactor;
-            const spacingWidth = newRockWidth + maxSpace;
-            const spacingDepth = newRockDepth + maxSpace;
+            let cellWidth = baseCellWidth;
+            let cellDepth = baseCellDepth;
+            if(overlap){
+                cellWidth = THREE.MathUtils.lerp(baseWidth * minScale + minSpace, baseCellWidth, Math.random());
+                cellDepth = THREE.MathUtils.lerp(baseDepth * minScale + minSpace, baseCellDepth, Math.random());
+            }
             
-            
-            const prevX = x > 0 ? spacingMatrix[x - 1][y] : spacingMatrix[x][y];  
-            const prevy = y > 0 ? spacingMatrix[x][y - 1]: spacingMatrix[x][y];
-            spacingMatrix[x][y] = [prevX[0] + spacingWidth, prevy[1] + spacingDepth]
-
             // Position fish
             cloneRock.position.set(
-                spacingMatrix[x][y][0] - spacingWidth + newRockWidth / 2,
+                cellWidth * x,
                 0,
-                spacingMatrix[x][y][1] - spacingDepth + newRockDepth / 2,
+                cellDepth * y
             );
             rockGroup.add(cloneRock);
             rockCount++;
