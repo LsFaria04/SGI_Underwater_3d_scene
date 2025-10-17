@@ -16,6 +16,7 @@ import { MyCoralReef } from './MyCoralReef.js';
 import { MyFloor } from './MyFloor.js';
 import { MyWater } from './MyWater.js';
 import { MySeaUrchin } from './MySeaUrchin.js';
+import { MyTurtle } from './MyTurtle.js';
 
 
 /**
@@ -110,7 +111,6 @@ class MyContents  {
         this.app.scene.add(rockGroup)
         rockGroup.position.set(10,0,-10);
 
-        const coral = new MyCoral();
         const coralReef1 = new MyCoralReef(5, "fanCoral");
         coralReef1.position.y = 0;
         this.app.scene.add(coralReef1);
@@ -123,7 +123,9 @@ class MyContents  {
         seaUrchin.position.set(4, 0.3, 4);
         this.app.scene.add(seaUrchin);
 
-
+        const turtle = new MyTurtle(1, 0.3);
+        turtle.position.set(-4, 0.3, 4);
+        this.app.scene.add(turtle);
     }
 
     initTextures() {
