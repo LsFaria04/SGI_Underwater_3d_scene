@@ -1,6 +1,15 @@
 import * as THREE from 'three';
-
+/**
+ * TThis class represents a sea star
+ */
 class MySeaStar extends THREE.Object3D {
+    /**
+     * 
+     * @param {*} radius Radius of the sea star
+     * @param {*} height Height of the sea star
+     * @param {*} color  Color of the sea star
+     * @param {*} starTexture  Texture of the sea star
+     */
     constructor(radius = 0.1, height = 0.2, color = "#ff0000", starTexture){
         super();
         

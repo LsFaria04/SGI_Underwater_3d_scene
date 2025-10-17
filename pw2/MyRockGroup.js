@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import {getRandomInt} from './utils.js';
 import { MyRock } from './MyRock.js';
 
+
 class MyRockGroup extends THREE.Object3D {
     constructor(numbRocks, minSpace,maxScale, minScale, colors, overlap){
         super();

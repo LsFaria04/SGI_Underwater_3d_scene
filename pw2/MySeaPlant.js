@@ -1,6 +1,16 @@
 import * as THREE from 'three';
-
+/**
+ * This class represents a sea plant
+ */
 class MySeaPlant extends THREE.Object3D {
+    /**
+     * 
+     * @param {*} width Width of the plant
+     * @param {*} height Height of the plant
+     * @param {*} depth Depth of the plant
+     * @param {*} color Color of the plant
+     * @param {*} plantTexture Texture of the plant
+     */
     constructor(width = 0.2, height = 1, depth = 0.05, color = "#000000", plantTexture){
         super();
         

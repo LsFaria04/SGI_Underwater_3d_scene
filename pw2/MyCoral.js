@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-
+ /**
+     * This class creates a coral
+     */
 export class MyCoral {
     constructor() {
         this.coralPresets = {

@@ -1,6 +1,17 @@
 import * as THREE from 'three';
 
+/**
+ * Rock texture
+ */
 class MyRock extends THREE.Object3D {
+    /**
+     * 
+     * @param {*} width Rock width
+     * @param {*} height Rock height
+     * @param {*} depth Rock depth
+     * @param {*} color Rock color
+     * @param {*} rockTexture Rock texture
+     */
     constructor(width = 1, height = 1, depth = 1, color = "#000000", rockTexture){
         super();
 
