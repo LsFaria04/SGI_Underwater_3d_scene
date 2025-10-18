@@ -2,16 +2,15 @@ import * as THREE from 'three';
 import { generateRandom } from './utils.js';
 
 /**
- * Rock texture
+ * This class represents a rock with different levels of detail
  */
 class MyRock extends THREE.Object3D {
     /**
      * 
-     * @param {*} width Rock width
-     * @param {*} height Rock height
-     * @param {*} depth Rock depth
+     * @param {number} radius Rock base radius
      * @param {*} color Rock color
      * @param {*} rockTexture Rock texture
+     * @param {string} LOD Level of detail ("L", "M", "H") 
      */
     constructor(radius, color = "#000000", rockTexture, LOD){
         super();
@@ -25,8 +24,8 @@ class MyRock extends THREE.Object3D {
                 this.initLowLOD();
                 break;
             case "M":
-            this.initMidLOD();
-            break;
+                this.initMidLOD();
+                break;
             case "H":
                 this.initHighLOD();
                 break;
@@ -34,7 +33,6 @@ class MyRock extends THREE.Object3D {
                 this.initLowLOD();
         }
          
-
     }
 
     initLowLOD(){
@@ -62,7 +60,7 @@ class MyRock extends THREE.Object3D {
 
     initHighLOD(){
         //use a sphere as the base geometry for High LOD
-        let geometry = new THREE.SphereGeometry(this.radius, 40, 40);
+        let geometry = new THREE.SphereGeometry(this.radius, 30, 30);
 
         //cuts the sphere with a plane to create a random shape rock
         for(let i = 0; i < 20; i++){
