@@ -7,13 +7,18 @@ class MyRockGroup extends THREE.Object3D {
     constructor(numbRocks, minSpace,maxScale, minScale, colors, overlap){
         super();
         
-        const rock = new MyRock(1,1,1);
+        const lod = new THREE.LOD();
+
+        const rock = new MyRock(1,1,1, "L"); //default rock
         const gridSide = Math.ceil(Math.sqrt(numbRocks));
         const rockGroup = new THREE.Group();
+        const rockGroupHighLOD = new THREE.Group();
         let rockCount = 0;
 
-        const baseWidth = rock.width;
-        const baseDepth = rock.depth;
+
+
+        const baseWidth = rock.radius ;
+        const baseDepth = rock.radius ;
 
         let baseCellWidth = baseWidth * maxScale + minSpace;
         let baseCellDepth = baseDepth * maxScale + minSpace;
@@ -21,10 +26,12 @@ class MyRockGroup extends THREE.Object3D {
         for (let x = 0; x < gridSide && rockCount < numbRocks; x++) {
             for (let y = 0; y < gridSide && rockCount < numbRocks; y++) {
             const cloneRock = rock.clone();
+            const highLODRock = new MyRock(1,1,1,"H");
 
             // Random scale
             const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());
             cloneRock.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            highLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
 
             //Random color
             const randomColor = getRandomInt(0,colors.length - 1);
@@ -35,6 +42,14 @@ class MyRockGroup extends THREE.Object3D {
                     child.material.needsUpdate = true;
                 }
             });
+            highLODRock.traverse(
+                child => {
+                if (child.isMesh) {
+                    child.material = new THREE.MeshPhongMaterial({ color: color });
+                    child.material.needsUpdate = true;
+                }
+            }
+            )
             
             let cellWidth = baseCellWidth;
             let cellDepth = baseCellDepth;
@@ -49,14 +64,22 @@ class MyRockGroup extends THREE.Object3D {
                 0,
                 cellDepth * y
             );
+            highLODRock.position.set(
+                cellWidth * x,
+                0,
+                cellDepth * y
+            );
             rockGroup.add(cloneRock);
+            rockGroupHighLOD.add(highLODRock);
             rockCount++;
             }
             
         
         }
     
-        this.add(rockGroup);
+        lod.addLevel(rockGroup, 30);
+        lod.addLevel(rockGroupHighLOD,0);
+        this.add(lod);
     }
 }
 

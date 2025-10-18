@@ -103,9 +103,9 @@ class MyContents  {
         this.app.scene.add(fishGroup);
         fishGroup.position.set(-10,1,-10);
 
-        const rockGroup = new MyRockGroup(10, 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], false);
-        this.app.scene.add(rockGroup)
+        const rockGroup = new MyRockGroup(100, 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], false);
         rockGroup.position.set(10,0,-10);
+        this.app.scene.add(rockGroup);
 
         const coral = new MyCoral();
         const coralReef1 = new MyCoralReef(5, "fanCoral");
@@ -120,7 +120,6 @@ class MyContents  {
         seaUrchin.position.set(4, 0.3, 4);
         this.app.scene.add(seaUrchin);
 
-
     }
 
     initTextures() {
@@ -130,6 +129,7 @@ class MyContents  {
     update(delta) {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
+        
     }
 
     setWireframeMode(enabled) {

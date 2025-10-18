@@ -68,7 +68,7 @@ class MyApp  {
         // input listeners
         window.addEventListener('keydown', (e) => this.onKeyChange(e, true));
         window.addEventListener('keyup', (e) => this.onKeyChange(e, false));
-        window.addEventListener('mousemove', (e) => this.onMouseMove(e));
+        //window.addEventListener('mousemove', (e) => this.onMouseMove(e));
 
         // manage window resizes
         window.addEventListener('resize', this.onResize.bind(this), false );
