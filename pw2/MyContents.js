@@ -91,9 +91,15 @@ class MyContents  {
         this.app.scene.add(jelyFish);
         jelyFish.position.set(0,5,0);
 
-        const crab = new MyCrab();
-        this.app.scene.add(crab);
-        crab.position.set(3,0.3,1);
+        const crabLOD = new THREE.LOD()
+        const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
+        const crabDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "H");
+        const crabMediumDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "M");
+        crabLOD.addLevel(crab, 20);
+        crabLOD.addLevel(crabDetailed, 0);
+        crabLOD.addLevel(crabMediumDetailed, 5);
+        this.app.scene.add(crabLOD);
+        crabLOD.position.set(3,0.3,1);
 
         const carpBody = new MyCarp(1, 1, 1, 1, "#88ccff");
         this.app.scene.add(carpBody);
