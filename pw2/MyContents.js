@@ -104,7 +104,7 @@ class MyContents  {
         this.app.scene.add(fishGroup);
         fishGroup.position.set(-10,1,-10);
 
-        const rockGroup = new MyRockGroup(100, 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], false);
+        const rockGroup = new MyRockGroup(10, 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], false);
         rockGroup.position.set(10,0,-10);
         this.app.scene.add(rockGroup);
 

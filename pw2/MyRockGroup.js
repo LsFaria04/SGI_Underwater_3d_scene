@@ -12,7 +12,6 @@ class MyRockGroup extends THREE.Object3D {
         const rock = new MyRock(1,1,1, "L"); //default rock
         const gridSide = Math.ceil(Math.sqrt(numbRocks));
         const rockGroup = new THREE.Group();
-        const rockGroupHighLOD = new THREE.Group();
         let rockCount = 0;
 
 
@@ -27,11 +26,14 @@ class MyRockGroup extends THREE.Object3D {
             for (let y = 0; y < gridSide && rockCount < numbRocks; y++) {
             const cloneRock = rock.clone();
             const highLODRock = new MyRock(1,1,1,"H");
+            const midLODRock = new MyRock(1,1,1,"M");
+            const lod = new THREE.LOD();
 
             // Random scale
             const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());
             cloneRock.scale.set(scaleFactor, scaleFactor, scaleFactor);
             highLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
+            midLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
 
             //Random color
             const randomColor = getRandomInt(0,colors.length - 1);
@@ -50,6 +52,14 @@ class MyRockGroup extends THREE.Object3D {
                 }
             }
             )
+            midLODRock.traverse(
+                child => {
+                if (child.isMesh) {
+                    child.material = new THREE.MeshPhongMaterial({ color: color });
+                    child.material.needsUpdate = true;
+                }
+            }
+            )
             
             let cellWidth = baseCellWidth;
             let cellDepth = baseCellDepth;
@@ -59,27 +69,21 @@ class MyRockGroup extends THREE.Object3D {
             }
             
             // Position fish
-            cloneRock.position.set(
+            lod.position.set(
                 cellWidth * x,
                 0,
                 cellDepth * y
             );
-            highLODRock.position.set(
-                cellWidth * x,
-                0,
-                cellDepth * y
-            );
-            rockGroup.add(cloneRock);
-            rockGroupHighLOD.add(highLODRock);
+            lod.addLevel(cloneRock, 30);
+            lod.addLevel(highLODRock,0);
+            lod.addLevel(midLODRock,15);
+            rockGroup.add(lod);
             rockCount++;
             }
             
         
         }
-    
-        lod.addLevel(rockGroup, 30);
-        lod.addLevel(rockGroupHighLOD,0);
-        this.add(lod);
+        this.add(rockGroup);
     }
 }
 
