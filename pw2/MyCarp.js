@@ -20,13 +20,14 @@ class MyCarp extends THREE.Object3D {
         this.widthFin = widthFin;
         this.lengthFin = lengthFin;
         this.color = color;
-
+        this.lodMediumThreshold = 20;
+        this.lodBasicThreshold = 40;
         
 
         this.init();
     }
 
-    init() {
+    createFishMesh(includeSmallFins = true) {
         // Scaling factors
         const bw = this.widthBody;
         const bl = this.lengthBody;
@@ -68,7 +69,7 @@ class MyCarp extends THREE.Object3D {
         ]);
 
         // Define faces (triangles)
-        const indices = [
+        let indices = [
             // Face
             0, 1, 2,
             0, 2, 3,
@@ -85,6 +86,8 @@ class MyCarp extends THREE.Object3D {
             5, 6, 8,
             5, 7, 8,
 
+            /*
+
             // Top Fin
             9, 10, 11,
             9, 11, 12,
@@ -92,7 +95,21 @@ class MyCarp extends THREE.Object3D {
             // Belly Fins
             13, 14, 15,
             16, 17, 18,
+
+            */
         ];
+
+        if (includeSmallFins) {
+            indices = indices.concat([
+                // Top Fin
+                9, 10, 11,
+                9, 11, 12,
+
+                // Belly Fins
+                13, 14, 15,
+                16, 17, 18,
+            ]);
+        }
 
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
@@ -101,12 +118,66 @@ class MyCarp extends THREE.Object3D {
 
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
-        const fish = new THREE.Mesh(geometry, material);
+        const detailedMesh = new THREE.Mesh(geometry, material);
+        return detailedMesh;
+    }
 
-        // Adjust position so fish doesn't sit too low or clip through origin
+    /**
+     * Creates the simplified geometry for the fish (Level 1)
+     * @returns {THREE.Mesh} The simplified fish mesh
+     */
+    createSimplifiedMesh() {
+        // Use a simple BoxGeometry as the basic block
+        const geometry = new THREE.BoxGeometry(this.lengthBody * 2, this.widthBody * 2, this.widthBody);
+        const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
+        const simplifiedMesh = new THREE.Mesh(geometry, material);
+
+        simplifiedMesh.position.x = this.lengthBody * 1.5;
+        simplifiedMesh.position.y = 0;
+        simplifiedMesh.position.z = 0;
+
+        return simplifiedMesh;
+    }
+
+    /**
+     * Creates the high-detail geometry for the fish
+    */
+    createDetailedMesh() {
+        return this.createFishMesh(true);
+    }
+
+    /**
+     * Creates the medium-detail geometry for the fish (Level 1) - small fins removed.
+    */
+    createMediumDetailMesh() {
+        return this.createFishMesh(false);
+    }
+
+
+
+    init() {
+        const lod = new THREE.LOD();
+        
+        // 1. Detailed Mesh (Level 0) - Distance 0
+        const detailedFish = this.createDetailedMesh();
+        const detailedWrapper = new THREE.Object3D();
+        detailedWrapper.add(detailedFish);
+        lod.addLevel(detailedWrapper, 0);
+
+        // 2. Medium-Detail Mesh (Level 1)
+        const mediumDetailFish = this.createMediumDetailMesh();
+        const mediumWrapper = new THREE.Object3D();
+        mediumWrapper.add(mediumDetailFish);
+   
+        lod.addLevel(mediumWrapper, this.lodMediumThreshold);
+
+        // 3. Simplified Mesh (Level 2) - Basic Block
+        const simplifiedFish = this.createSimplifiedMesh();
+        lod.addLevel(simplifiedFish, this.lodBasicThreshold);
+        
         this.position.y = this.widthBody * 1.5;
 
-        this.add(fish);
+        this.add(lod);
     }
 }
 
