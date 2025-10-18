@@ -73,7 +73,7 @@ class MyShark extends THREE.Object3D {
             6.92, 3.42, 0,  // 43 - tooth 1
             6.92, 3.49, 0,  // 44 - tooth 1
             6.96, 3.52, 0,  // 45 - tooth 2
-            7.02, 3.47, 0,  // 46 - tooth 2
+            7.02, 3.45, 0,  // 46 - tooth 2
             7.02, 3.53, 0,  // 47 - tooth 2
             6.92, 3.40, 0,  // 48 - tooth 3
             6.96, 3.47, 0,  // 49 - tooth 3
