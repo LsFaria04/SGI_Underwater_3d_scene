@@ -127,9 +127,15 @@ class MyContents  {
         coralReef2.position.y = 0;
         this.app.scene.add(coralReef2);
 
-        const seaUrchin = new MySeaUrchin();
-        seaUrchin.position.set(4, 0.3, 4);
-        this.app.scene.add(seaUrchin);
+        const urchinLOD = new THREE.LOD();
+        const seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
+        const seaUrchinMid = new MySeaUrchin(0.1, 0.5, 100, "#000000", "M");
+        const seaUrchinHigh = new MySeaUrchin(0.1, 0.5, 100, "#000000", "H");
+        urchinLOD.addLevel(seaUrchin, 20);
+        urchinLOD.addLevel(seaUrchinMid, 10);
+        urchinLOD.addLevel(seaUrchinHigh, 0);
+        urchinLOD.position.set(4, 0.3, 4);
+        this.app.scene.add(urchinLOD);
 
         const turtle = new MyTurtle(1, 0.3);
         turtle.position.set(-4, 0.3, 4);
