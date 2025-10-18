@@ -5,10 +5,10 @@ class MyShark extends THREE.Object3D {
      * 
      * @param {string} color Body color
      */
-    constructor(scale = 1, color = "#2244aa") {
+    constructor(depth = 1,color = "#2244aa") {
         super();
 
-        // vertices comments may no be 100% accurate, I had only commented indices and afterwards asked llm to comment vertices for ease of understanding
+        // vertices comments may not be 100% accurate, I had only commented indices and afterwards asked llm to comment vertices for ease of understanding
         const vertices = new Float32Array([
             // tail
             0.38, 2.44, 0,  // 0 - tail bottom tip
@@ -30,7 +30,7 @@ class MyShark extends THREE.Object3D {
             2.47, 3.50, 0,  // 12 - lower fin inner
             2.67, 3.50, 0,  // 13 - lower fin tip
             2.58, 3.71, 0,  // 14 - lower fin outer tip
-            2.36, 3.40, 0,  // 15 - lower fin end
+            0, 0, 0,  // 15 - mistake, it was a repeated vertex
 
             // mid body
             3.48, 3.50, 0,  // 16 - mid body top
@@ -66,7 +66,21 @@ class MyShark extends THREE.Object3D {
             7.20, 3.00, 0,  // 38 - snout tip (nose)
             7.58, 3.21, 0,  // 39 - frontmost mouth edge
             7.17, 3.42, 0,  // 40 - upper jaw contour
-            7.05, 3.53, 0,  // 41 - lower jaw contour
+            7.05, 3.53, 0,  // 41 - lower jaw contour~
+
+            //teeth
+            6.8, 3.48, 0,  // 42 - tooth 1
+            6.92, 3.42, 0,  // 43 - tooth 1
+            6.92, 3.49, 0,  // 44 - tooth 1
+            6.96, 3.52, 0,  // 45 - tooth 2
+            7.02, 3.47, 0,  // 46 - tooth 2
+            7.02, 3.53, 0,  // 47 - tooth 2
+            6.92, 3.40, 0,  // 48 - tooth 3
+            6.96, 3.47, 0,  // 49 - tooth 3
+            7.01, 3.40, 0,  // 50 - tooth 3
+            7.05, 3.40, 0,  // 51 - tooth 4
+            7.08, 3.49, 0,  // 52 - tooth 4
+            7.13, 3.40, 0,  // 53 - tooth 4
         ]);
 
 
@@ -81,7 +95,7 @@ class MyShark extends THREE.Object3D {
             // body 1   (1 is closer to tail, 4 is closer to head)
             2, 7, 3,
             2, 8, 7,
-            8, 15, 16,
+            8, 7, 16,
 
             // body 2
             8, 16, 20,
@@ -116,8 +130,8 @@ class MyShark extends THREE.Object3D {
 
             // lower body bottom fin
             11, 12, 13,
-            11, 13, 15,
-            13, 14, 15,
+            11, 13, 7,
+            13, 14, 7,
 
             // mid body bottom fin
             16, 18, 19,
@@ -133,7 +147,14 @@ class MyShark extends THREE.Object3D {
             22, 31, 32,
             33, 32, 31,
             33, 31, 34,
+
+            // teeth
+            42, 43, 44,
+            45, 46, 47,
+            48, 49, 50,
+            51, 52, 53,
         ];
+        
 
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
@@ -147,9 +168,8 @@ class MyShark extends THREE.Object3D {
         });
 
         const sharkMesh = new THREE.Mesh(geometry, material);
-        sharkMesh.scale.set(scale, scale, scale);
 
-        sharkMesh.rotation.y = Math.PI; 
+        sharkMesh.rotation.set(Math.PI, 0, 0); // made shark on the wrong pose initially
 
         this.add(sharkMesh);
 
