@@ -82,11 +82,10 @@ class MyCarp extends THREE.Object3D {
             3, 2, 5,
             3, 5, 4,
 
+            /*
             // Back Fin
             5, 6, 8,
             5, 7, 8,
-
-            /*
 
             // Top Fin
             9, 10, 11,
@@ -101,6 +100,10 @@ class MyCarp extends THREE.Object3D {
 
         if (includeSmallFins) {
             indices = indices.concat([
+                // Back Fin
+                5, 6, 8,
+                5, 7, 8,
+
                 // Top Fin
                 9, 10, 11,
                 9, 11, 12,
@@ -128,12 +131,12 @@ class MyCarp extends THREE.Object3D {
      */
     createSimplifiedMesh() {
         // Use a simple BoxGeometry as the basic block
-        const geometry = new THREE.BoxGeometry(this.lengthBody * 2, this.widthBody * 2, this.widthBody);
+        const geometry = new THREE.BoxGeometry(this.lengthBody, this.widthBody, this.widthBody);
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
         const simplifiedMesh = new THREE.Mesh(geometry, material);
 
         simplifiedMesh.position.x = this.lengthBody * 1.5;
-        simplifiedMesh.position.y = 0;
+        simplifiedMesh.position.y = this.widthBody * 1.5;
         simplifiedMesh.position.z = 0;
 
         return simplifiedMesh;
