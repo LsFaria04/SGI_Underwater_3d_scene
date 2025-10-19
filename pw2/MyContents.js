@@ -17,7 +17,7 @@ import { MyFloor } from './MyFloor.js';
 import { MyWater } from './MyWater.js';
 import { MySeaUrchin } from './MySeaUrchin.js';
 import { MyTurtle } from './MyTurtle.js';
-import { MySeaPlantGroup } from './groupSeaPlants.js';
+import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
 
 
 /**
@@ -75,11 +75,7 @@ class MyContents  {
         //we can use groups to create some more complex geometry with groups of rocks and corals
         //we should use groups to aggregate fishes of the same species
 
-        const seaPlant = new MySeaPlant(0.1,2,0.05, "#00ff00", null,"M");
-        this.app.scene.add(seaPlant);
-        seaPlant.position.set(1,0,1);
-
-        const seaPlantGroup = new MySeaPlantGroup(100, 0.1, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
+        const seaPlantGroup = new MySeaPlantGroup(100, 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
         this.app.scene.add(seaPlantGroup);
         seaPlantGroup.position.set(5,0,-5);
 

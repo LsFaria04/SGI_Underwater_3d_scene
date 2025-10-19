@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import {getRandomInt} from './utils.js';
-import { MyRock } from './MyRock.js';
 import { MySeaPlant } from './MySeaPlant.js';
 
 
@@ -72,9 +71,9 @@ class MySeaPlantGroup extends THREE.Object3D {
                 0,
                 cellDepth * y
             );
-            lod.addLevel(clonePlant, 30);
+            lod.addLevel(clonePlant, 20);
             lod.addLevel(highLODPlant,0);
-            lod.addLevel(midLODPlant,15);
+            lod.addLevel(midLODPlant,10);
             plantGroup.add(lod);
             plantCount++;
             }

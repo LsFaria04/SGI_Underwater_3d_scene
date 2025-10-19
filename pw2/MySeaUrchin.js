@@ -36,7 +36,7 @@ class MySeaUrchin extends THREE.Object3D {
     initLowLOD() {
         //No spikes and boxy body
         
-        const bodyGeom = new THREE.BoxGeometry(this.radius, this.radius, this.radius);
+        const bodyGeom = new THREE.BoxGeometry(this.radius + this.spikeLength * 0.5, this.radius  + this.spikeLength * 0.5, this.radius  + this.spikeLength * 0.5);
         const bodyMat = new THREE.MeshStandardMaterial({ color: this.color });
         const bodyMesh = new THREE.Mesh(bodyGeom, bodyMat);
         this.add(bodyMesh);
