@@ -8,65 +8,50 @@ class MyShark extends THREE.Object3D {
     constructor(depth = 1,color = "#2244aa") {
         super();
 
-        // vertices comments may not be 100% accurate, I had only commented indices and afterwards asked llm to comment vertices for ease of understanding
+        /*
         const vertices = new Float32Array([
-            // tail
-            0.38, 2.44, 0,  // 0 - tail bottom tip
-            0.98, 2.51, 0,  // 1 - tail top tip
-            2.37, 3.07, 0,  // 2 - tail upper mid
-            1.78, 3.40, 0,  // 3 - tail mid connector
-            1.39, 3.82, 0,  // 4 - tail upper fin (tip)
-            1.66, 3.82, 0,  // 5 - tail upper fin (inner)
-            2.37, 3.40, 0,  // 6 - tail-body connection (upper)
-
-            // rear body
-            3.05, 3.40, 0,  // 7 - rear body top
-            3.23, 2.88, 0,  // 8 - rear body bottom
-            2.63, 3.02, 0,  // 9 - tail underside
-            2.47, 2.73, 0,  // 10 - tail underside inner
-
-            // lower body fins
-            2.68, 3.40, 0,  // 11 - lower fin start (rear)
-            2.47, 3.50, 0,  // 12 - lower fin inner
-            2.67, 3.50, 0,  // 13 - lower fin tip
-            2.58, 3.71, 0,  // 14 - lower fin outer tip
+            0.38, 2.44, 0,  // 0
+            0.98, 2.51, 0,  // 1
+            2.37, 3.07, 0,  // 2
+            1.78, 3.40, 0,  // 3
+            1.39, 3.82, 0,  // 4
+            1.66, 3.82, 0,  // 5
+            2.37, 3.40, 0,  // 6
+            3.05, 3.40, 0,  // 7
+            3.23, 2.88, 0,  // 8
+            2.63, 3.02, 0,  // 9
+            2.47, 2.73, 0,  // 10
+            2.68, 3.40, 0,  // 11
+            2.47, 3.50, 0,  // 12
+            2.67, 3.50, 0,  // 13
+            2.58, 3.71, 0,  // 14
             0, 0, 0,  // 15 - mistake, it was a repeated vertex
-
-            // mid body
-            3.48, 3.50, 0,  // 16 - mid body top
-            4.37, 2.69, 0,  // 17 - mid body bottom start
-            4.07, 3.64, 0,  // 18 - mid body top ridge
-            3.60, 4.00, 0,  // 19 - mid dorsal ridge
-
-            // front body (before head)
-            4.37, 2.69, 0,  // 20 - lower mid body (duplicate of 17)
-            5.48, 3.55, 0,  // 21 - body forward upper
-            5.22, 3.82, 0,  // 22 - upper forward body
-            5.30, 2.60, 0,  // 23 - lower forward body
-            
-            // dorsal fin
-            4.08, 2.74, 0,  // 24 - dorsal fin base front
-            4.44, 2.55, 0,  // 25 - dorsal fin lower base
-            4.40, 2.44, 0,  // 26 - dorsal fin inner base
-            4.18, 1.69, 0,  // 27 - dorsal fin lower tip
-            4.67, 1.89, 0,  // 28 - dorsal fin upper tip
-
-            // head (upper jaw / snout)
-            6.43, 2.77, 0,  // 29 - snout upper base
-            6.30, 3.33, 0,  // 30 - snout top mid
-            6.01, 3.71, 0,  // 31 - head upper ridge
-            5.42, 4.23, 0,  // 32 - top of head crest
-            5.16, 4.69, 0,  // 33 - head top fin tip
-            5.52, 4.47, 0,  // 34 - head top fin inner
-
-            // head (lower jaw / mouth)
-            6.61, 3.65, 0,  // 35 - mouth upper curve
-            6.77, 3.41, 0,  // 36 - mouth mid upper
-            7.10, 3.24, 0,  // 37 - mouth front upper
-            7.20, 3.00, 0,  // 38 - snout tip (nose)
-            7.58, 3.21, 0,  // 39 - frontmost mouth edge
-            7.17, 3.42, 0,  // 40 - upper jaw contour
-            7.05, 3.53, 0,  // 41 - lower jaw contour~
+            3.48, 3.50, 0,  // 16
+            4.37, 2.69, 0,  // 17
+            4.07, 3.64, 0,  // 18
+            3.60, 4.00, 0,  // 19
+            0, 0, 0,  // 20 - mistake, it was a repeated vertex
+            5.48, 3.55, 0,  // 21 
+            5.22, 3.82, 0,  // 22
+            5.30, 2.60, 0,  // 23
+            4.08, 2.74, 0,  // 24
+            4.44, 2.55, 0,  // 25
+            4.40, 2.44, 0,  // 26
+            4.18, 1.69, 0,  // 27
+            4.67, 1.89, 0,  // 28
+            6.43, 2.77, 0,  // 29
+            6.30, 3.33, 0,  // 30
+            6.01, 3.71, 0,  // 31
+            5.42, 4.23, 0,  // 32
+            5.16, 4.69, 0,  // 33
+            5.52, 4.47, 0,  // 34
+            6.61, 3.65, 0,  // 35 
+            6.77, 3.41, 0,  // 36 
+            7.10, 3.24, 0,  // 37 
+            7.20, 3.00, 0,  // 38 
+            7.58, 3.21, 0,  // 39 
+            7.17, 3.42, 0,  // 40 
+            7.05, 3.53, 0,  // 41 
 
             //teeth
             6.8, 3.48, 0,  // 42 - tooth 1
@@ -83,7 +68,6 @@ class MyShark extends THREE.Object3D {
             7.13, 3.40, 0,  // 53 - tooth 4
         ]);
 
-
         const indices = [
             // Tail
             0, 1, 2,
@@ -94,25 +78,25 @@ class MyShark extends THREE.Object3D {
 
             // body 1   (1 is closer to tail, 4 is closer to head)
             2, 7, 3,
-            2, 8, 7,
-            8, 7, 16,
+            2, 8, 7, 
+            8, 7, 16, 
 
             // body 2
-            8, 16, 20,
-            16, 20, 18,
+            8, 16, 17,
+            16, 17, 18,
 
             // body 3
-            18, 20, 21,
+            18, 17, 21,
             18, 21, 22,
-            20, 23, 21,
+            17, 23, 21,
 
             // body 4
             23, 29, 21,
             21, 29, 30,
-            21, 30, 31,
+            21, 30, 31,   
                         
             // head - upper jaw
-            29, 36, 30,
+            29, 36, 30,  
             29, 37, 36,
             29, 38, 37,
             37, 38, 39,
@@ -120,7 +104,7 @@ class MyShark extends THREE.Object3D {
             37, 39, 40,
 
             // head - lower jaw
-            30, 35, 31,
+            30, 35, 31,  
             30, 36, 35,
             36, 41, 35,
 
@@ -154,27 +138,189 @@ class MyShark extends THREE.Object3D {
             48, 49, 50,
             51, 52, 53,
         ];
+        */
+
+        const bodyVertices = new Float32Array([
+            2.37, 3.07, 0,  // 0
+            1.78, 3.40, 0,  // 1
+            3.05, 3.40, 0,  // 2
+            3.23, 2.88, 0,  // 3
+            3.48, 3.50, 0,  // 4
+            4.37, 2.69, 0,  // 5
+            4.07, 3.64, 0,  // 6
+            5.48, 3.55, 0,  // 7
+            5.22, 3.82, 0,  // 8
+            5.30, 2.60, 0,  // 9
+            6.43, 2.77, 0,  // 10
+            6.30, 3.33, 0,  // 11
+            6.01, 3.71, 0,  // 12
+        ]);
+
+        const bodyIndices = [
+            // body 1   (1 is closer to tail, 4 is closer to head)
+            0, 2, 1,
+            0, 3, 2,
+            3, 2, 4,
+
+            // body 2
+            3, 4, 5,
+            4, 5, 6,
+
+            // body 3
+            6, 5, 7,
+            6, 7, 8,
+            5, 9, 7,
+
+            // body 4
+            9, 10, 7,
+            7, 10, 11,
+            7, 11, 12 
+        ];
+
+        const headVertices = new Float32Array([
+            6.43, 2.77, 0,  // 0
+            6.30, 3.33, 0,  // 1
+            6.01, 3.71, 0,  // 2
+            6.61, 3.65, 0,  // 3
+            6.77, 3.41, 0,  // 4
+            7.10, 3.24, 0,  // 5
+            7.20, 3.00, 0,  // 6 
+            7.58, 3.21, 0,  // 7
+            7.17, 3.42, 0,  // 8
+            7.05, 3.53, 0,  // 9 
+        ]);
+        const headIndices = [
+            // upper jaw
+            0, 4, 1,  
+            0, 5, 4,
+            0, 6, 5,
+            5, 6, 7,
+            4, 5, 8,
+            5, 7, 8,
+
+            // lower jaw
+            1, 3, 2,  
+            1, 4, 3,
+            4, 9, 3,
+        ];
+
+        const teethVertices = new Float32Array([
+            6.85, 3.44, 0,  // 0 - tooth 1
+            6.92, 3.42, 0,  // 1 - tooth 1
+            6.92, 3.47, 0,  // 2 - tooth 1
+            6.96, 3.49, 0,  // 3 - tooth 2
+            7.02, 3.45, 0,  // 4 - tooth 2
+            7.02, 3.52, 0,  // 5 - tooth 2
+            6.92, 3.415, 0,  // 6 - tooth 3
+            6.96, 3.47, 0,  // 7 - tooth 3
+            7.01, 3.415, 0,  // 8 - tooth 3
+            7.05, 3.42, 0,  // 9 - tooth 4
+            7.08, 3.49, 0,  // 10 - tooth 4
+            7.13, 3.42, 0,  // 11 - tooth 4
+        ]);
+
+        const teethIndices = [
+            0, 1, 2,
+            3, 4, 5,
+            6, 7, 8,
+            9, 10, 11,
+        ];
+
+        const lowerTopfinVertices = new Float32Array([
+            3.23, 2.88, 0,  // 0
+            2.63, 3.02, 0,  // 1
+            2.47, 2.73, 0,  // 2
+        ]);
+        const lowerTopfinIndices = [
+            0,2,1
+        ];
+
+        const lowerBottomfinVertices = new Float32Array([
+            3.05, 3.40, 0,  // 0
+            2.68, 3.40, 0,  // 1
+            2.47, 3.50, 0,  // 2
+            2.67, 3.50, 0,  // 3
+            2.58, 3.71, 0,  // 4
+        ]);
+        const lowerBottomfinIndices = [
+            1, 2, 3,
+            1, 3, 0,
+            3, 4, 0,
+        ];
+
+        const midBottomfinVertices = new Float32Array([
+            3.48, 3.50, 0,  // 0
+            4.07, 3.64, 0,  // 1
+            3.60, 4.00, 0,  // 2
+        ]);
+        const midBottomfinIndices = [0,1,2];
+
+        const upperTopfinVertices = new Float32Array([
+            5.30, 2.60, 0,  // 0
+            4.08, 2.74, 0,  // 1
+            4.44, 2.55, 0,  // 2
+            4.40, 2.44, 0,  // 3
+            4.18, 1.69, 0,  // 4
+            4.67, 1.89, 0,  // 5
+        ]);
+        const upperTopfinIndices = [
+            1, 2, 0,
+            1, 3, 0,
+            4, 0, 3,
+            4, 5, 0,
+        ];
+
+        const upperBottomfinVertices = new Float32Array([
+            5.48, 3.55, 0,  // 0 
+            5.22, 3.82, 0,  // 1
+            6.01, 3.71, 0,  // 2
+            5.42, 4.23, 0,  // 3
+            5.16, 4.69, 0,  // 4
+            5.52, 4.47, 0,  // 5
+        ]);
+        const upperBottomfinIndices = [            
+            1, 0, 2,
+            1, 2, 3,
+            4, 3, 2,
+            4, 2, 5 ,
+        ];
+
+        function createPart(vertices, indices, color = "#2244aa") {
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+            geometry.setIndex(indices);
+            geometry.computeVertexNormals();
+
+            const material = new THREE.MeshStandardMaterial({
+                color,
+                side: THREE.DoubleSide,
+                flatShading: true
+            });
+
+            return new THREE.Mesh(geometry, material);
+        }
+
+        const body = createPart(bodyVertices, bodyIndices, color);
+        const head = createPart(headVertices, headIndices, color);
+        const lowerTopFin = createPart(lowerTopfinVertices, lowerTopfinIndices, color);
+        const lowerBottomFin = createPart(lowerBottomfinVertices, lowerBottomfinIndices, color);
+        const midBottomFin = createPart(midBottomfinVertices, midBottomfinIndices, color);
+        const upperTopFin = createPart(upperTopfinVertices, upperTopfinIndices, color);
+        const upperBottomFin = createPart(upperBottomfinVertices, upperBottomfinIndices, color);
+        const teeth = createPart(teethVertices, teethIndices, "#ffffff");
+
+        body.add(head);
+        head.add(teeth);
+        body.add(lowerTopFin);
+        body.add(lowerBottomFin);
+        body.add(midBottomFin);
+        body.add(upperTopFin);
+        body.add(upperBottomFin);
         
+        this.add(body);
 
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        geometry.setIndex(indices);
-        geometry.computeVertexNormals();
+        body.rotation.set(Math.PI, 0, 0); // made shark on the wrong pose initially
 
-        const material = new THREE.MeshStandardMaterial({
-            color: color,
-            side: THREE.DoubleSide,
-            flatShading: true
-        });
-
-        const sharkMesh = new THREE.Mesh(geometry, material);
-
-        sharkMesh.rotation.set(Math.PI, 0, 0); // made shark on the wrong pose initially
-
-        this.add(sharkMesh);
-
-        this.mesh = sharkMesh;
-        this.geometry = geometry;
     }
 }
 
