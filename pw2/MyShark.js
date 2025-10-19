@@ -139,6 +139,21 @@ class MyShark extends THREE.Object3D {
             51, 52, 53,
         ];
         */
+        const tailVertices = new Float32Array([
+            0.38, 2.44, 0,  // 0
+            0.98, 2.51, 0,  // 1
+            2.37, 3.07, 0,  // 2
+            1.78, 3.40, 0,  // 3
+            1.39, 3.82, 0,  // 4
+            1.66, 3.82, 0,  // 5
+            2.37, 3.40, 0,  // 6
+        ]);
+        const tailIndices = [
+            0, 1, 2,
+            0, 2, 3,
+            3, 4, 5,
+            3, 6, 5,
+        ];
 
         const bodyVertices = new Float32Array([
             2.37, 3.07, 0,  // 0
@@ -300,6 +315,7 @@ class MyShark extends THREE.Object3D {
             return new THREE.Mesh(geometry, material);
         }
 
+        const tail = createPart(tailVertices, tailIndices, color);
         const body = createPart(bodyVertices, bodyIndices, color);
         const head = createPart(headVertices, headIndices, color);
         const lowerTopFin = createPart(lowerTopfinVertices, lowerTopfinIndices, color);
@@ -310,6 +326,7 @@ class MyShark extends THREE.Object3D {
         const teeth = createPart(teethVertices, teethIndices, "#ffffff");
 
         body.add(head);
+        body.add(tail);
         head.add(teeth);
         body.add(lowerTopFin);
         body.add(lowerBottomFin);
