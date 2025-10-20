@@ -20,6 +20,7 @@ import { MyTurtle } from './MyTurtle.js';
 import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
 import { My2DShark } from './My2DShark.js';
 import { MySign } from './MySign.js';
+import { MyShark } from './MyShark.js';
 
 
 /**
@@ -165,7 +166,9 @@ class MyContents  {
         turtle.position.set(-4, 0.3, 4);
         this.app.scene.add(turtle);
 
-
+        const shark = new MyShark();
+        shark.position.set(-5, 10, 0);
+        this.app.scene.add(shark);
 
         const sign = new MySign();
         sign.position.set(0,0,15);

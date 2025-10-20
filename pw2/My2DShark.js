@@ -194,18 +194,21 @@ class My2DShark extends THREE.Object3D {
         const upperBottomFin = createPart(upperBottomfinVertices, upperBottomfinIndices, color);
         const teeth = createPart(teethVertices, teethIndices, "#ffffff");
 
+
         const eyeWhite = new THREE.Mesh(
-            new THREE.CircleGeometry(0.12, 8),
+            new THREE.CircleGeometry(0.12, 8, 7 / 8 * Math.PI, Math.PI),
             new THREE.MeshStandardMaterial({ color: "#ffffff", side: THREE.DoubleSide })
         );
 
         const eyeBlack = new THREE.Mesh(
-            new THREE.CircleGeometry(0.06, 8),
+            new THREE.CircleGeometry(0.06, 8, 7/8 * Math.PI, Math.PI),
             new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
         );
 
         eyeWhite.position.set(6.9, 3.1, -0.01);
         eyeBlack.position.set(6.9, 3.1, -0.02); 
+        eyeWhite.rotation.x = Math.PI;
+        eyeBlack.rotation.x = Math.PI;
         eyeBlack.scale.set(1,1,1);
         eyeWhite.scale.set(1,1,1);
 

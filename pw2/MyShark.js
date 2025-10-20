@@ -118,8 +118,11 @@ class MyShark extends THREE.Object3D {
             5.30, 2.60, bodyWidth/2,  // 5
             5.22, 3.82, bodyWidth/2,  // 6
             6.43, 2.77, bodyWidth/2,  // 7
-            6.01, 3.71, bodyWidth/2,  // 8
-            5.48, 3.55, bodyWidth/2,  // 9
+
+            6.30, 3.33, bodyWidth/2,  // 8
+
+
+            6.01, 3.71, bodyWidth/2,  // 9
 
             //back face
             1.78, 3.40, -tailWidth/2,  // 10  tail
@@ -130,20 +133,23 @@ class MyShark extends THREE.Object3D {
             5.30, 2.60, -bodyWidth/2,  // 15
             5.22, 3.82, -bodyWidth/2,  // 16
             6.43, 2.77, -bodyWidth/2,  // 17
-            6.01, 3.71, -bodyWidth/2,  // 18
-            5.48, 3.55, -bodyWidth/2,  // 19
+
+            6.30, 3.33, -bodyWidth/2,  // 18
+
+
+            6.01, 3.71, -bodyWidth/2,  // 19
 
         ]);
         const bodyIndices = [
             // front face
             0,1,2,
-            1,3,4, //<----- dumbass
+            1,3,4,
             2,1,4,
             3,5,4,
             4,5,6,
             5,7,6,
-            //6,9,8,
-            //9,7,8,
+            6,7,8,
+            6,8,9,
 
 
             // back face
@@ -153,8 +159,8 @@ class MyShark extends THREE.Object3D {
             13,15,14,
             14,15,16,
             15,17,16,
-            //16,19,18,
-            //19,17,18,
+            16,17,18,
+            16,18,19,
 
 
             // side faces
@@ -174,34 +180,27 @@ class MyShark extends THREE.Object3D {
             16,14,6,
 
             6,8,16,
-            18,16,8,
+            16,18,8,
+            8,9,18,
+            18,9,19,
         ];
 
         const headVertices = new Float32Array([
-            6.43, 2.77, 0,  // 0
-            6.30, 3.33, 0,  // 1
-            6.01, 3.71, 0,  // 2
-            6.61, 3.65, 0,  // 3
-            6.77, 3.41, 0,  // 4
-            7.10, 3.24, 0,  // 5
-            7.20, 3.00, 0,  // 6 
-            7.58, 3.21, 0,  // 7
-            7.17, 3.42, 0,  // 8
-            7.05, 3.53, 0,  // 9 
+            6.43, 2.77, 0,  // 0 body 
+            6.30, 3.33, 0,  // 1 body
+            7.58, 3.21, 0,  // 2
+            7.17, 3.42, 0,  // 3
+            7.05, 3.53, 0,  // 4
+            6.01, 3.71, 0,  // 5 body
+
+
         ]);
         const headIndices = [
             // upper jaw
-            0, 4, 1,  
-            0, 5, 4,
-            0, 6, 5,
-            5, 6, 7,
-            4, 5, 8,
-            5, 7, 8,
+            
 
             // lower jaw
-            1, 3, 2,  
-            1, 4, 3,
-            4, 9, 3,
+
         ];
 
         const teethVertices = new Float32Array([
