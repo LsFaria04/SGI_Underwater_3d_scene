@@ -17,6 +17,7 @@ import { MyFloor } from './MyFloor.js';
 import { MyWater } from './MyWater.js';
 import { MySeaUrchin } from './MySeaUrchin.js';
 import { MyTurtle } from './MyTurtle.js';
+import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
 
 
 /**
@@ -74,9 +75,9 @@ class MyContents  {
         //we can use groups to create some more complex geometry with groups of rocks and corals
         //we should use groups to aggregate fishes of the same species
 
-        const seaPlant = new MySeaPlant(0.1,2,0.05, "#00ff00");
-        this.app.scene.add(seaPlant);
-        seaPlant.position.set(1,0,1);
+        const seaPlantGroup = new MySeaPlantGroup(100, 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
+        this.app.scene.add(seaPlantGroup);
+        seaPlantGroup.position.set(5,0,-5);
 
         const seaStar = new MySeaStar(0.1,0.2,"#ff0000");
         this.app.scene.add(seaStar);
@@ -86,9 +87,15 @@ class MyContents  {
         this.app.scene.add(jelyFish);
         jelyFish.position.set(0,5,0);
 
-        const crab = new MyCrab();
-        this.app.scene.add(crab);
-        crab.position.set(3,0.3,1);
+        const crabLOD = new THREE.LOD()
+        const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
+        const crabDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "H");
+        const crabMediumDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "M");
+        crabLOD.addLevel(crab, 20);
+        crabLOD.addLevel(crabDetailed, 0);
+        crabLOD.addLevel(crabMediumDetailed, 5);
+        this.app.scene.add(crabLOD);
+        crabLOD.position.set(3,0.3,1);
 
         const carpBody = new MyCarp(1, 1, 1, 1, "#88ccff");
         this.app.scene.add(carpBody);
@@ -105,8 +112,8 @@ class MyContents  {
         fishGroup.position.set(-10,1,-10);
 
         const rockGroup = new MyRockGroup(10, 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], false);
-        this.app.scene.add(rockGroup)
         rockGroup.position.set(10,0,-10);
+        this.app.scene.add(rockGroup);
 
         const coralReef1 = new MyCoralReef(5, "fanCoral");
         coralReef1.position.y = 0;
@@ -116,9 +123,15 @@ class MyContents  {
         coralReef2.position.y = 0;
         this.app.scene.add(coralReef2);
 
-        const seaUrchin = new MySeaUrchin();
-        seaUrchin.position.set(4, 0.3, 4);
-        this.app.scene.add(seaUrchin);
+        const urchinLOD = new THREE.LOD();
+        const seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
+        const seaUrchinMid = new MySeaUrchin(0.1, 0.5, 100, "#000000", "M");
+        const seaUrchinHigh = new MySeaUrchin(0.1, 0.5, 100, "#000000", "H");
+        urchinLOD.addLevel(seaUrchin, 20);
+        urchinLOD.addLevel(seaUrchinMid, 10);
+        urchinLOD.addLevel(seaUrchinHigh, 0);
+        urchinLOD.position.set(4, 0.3, 4);
+        this.app.scene.add(urchinLOD);
 
         const turtle = new MyTurtle(1, 0.3);
         turtle.position.set(-4, 0.3, 4);
@@ -132,6 +145,7 @@ class MyContents  {
     update(delta) {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
+        
     }
 
     setWireframeMode(enabled) {

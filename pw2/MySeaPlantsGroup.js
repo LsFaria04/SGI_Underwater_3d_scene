@@ -1,49 +1,47 @@
 import * as THREE from 'three';
 import {getRandomInt} from './utils.js';
-import { MyRock } from './MyRock.js';
+import { MySeaPlant } from './MySeaPlant.js';
 
 
-class MyRockGroup extends THREE.Object3D {
-    constructor(numbRocks, minSpace,maxScale, minScale, colors, overlap){
+class MySeaPlantGroup extends THREE.Object3D {
+    constructor(numbSeaPlants, minSpace,maxScale, minScale, colors, overlap){
         super();
         
 
-        const rock = new MyRock(1,null, null,  "L"); //default rock
-        const gridSide = Math.ceil(Math.sqrt(numbRocks));
-        const rockGroup = new THREE.Group();
-        let rockCount = 0;
+        const plant = new MySeaPlant(0.05,1,0.05,null, null,  "L"); //default plant
+        const gridSide = Math.ceil(Math.sqrt(numbSeaPlants));
+        const plantGroup = new THREE.Group();
+        let plantCount = 0;
 
-
-
-        const baseWidth = rock.radius ;
-        const baseDepth = rock.radius ;
+        const baseWidth = plant.width ;
+        const baseDepth = plant.depth ;
 
         let baseCellWidth = baseWidth * maxScale + minSpace;
         let baseCellDepth = baseDepth * maxScale + minSpace;
 
-        for (let x = 0; x < gridSide && rockCount < numbRocks; x++) {
-            for (let y = 0; y < gridSide && rockCount < numbRocks; y++) {
-            const cloneRock = rock.clone();
-            const highLODRock = new MyRock(1,null,null, "H");
-            const midLODRock = new MyRock(1,null,null, "M");
+        for (let x = 0; x < gridSide && plantCount < numbSeaPlants; x++) {
+            for (let y = 0; y < gridSide && plantCount < numbSeaPlants; y++) {
+            const clonePlant = plant.clone();
+            const highLODPlant = new MySeaPlant(0.05,1,0.05,null, null,  "H");
+            const midLODPlant = new MySeaPlant(0.05,1,0.05,null, null,  "M");
             const lod = new THREE.LOD();
 
             // Random scale
             const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());
-            cloneRock.scale.set(scaleFactor, scaleFactor, scaleFactor);
-            highLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
-            midLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
+            clonePlant.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            highLODPlant.scale.set(scaleFactor, scaleFactor,scaleFactor);
+            midLODPlant.scale.set(scaleFactor, scaleFactor,scaleFactor);
 
             //Random color
             const randomColor = getRandomInt(0,colors.length - 1);
             const color = colors[randomColor];
-            cloneRock.traverse(child => {
+            clonePlant.traverse(child => {
                 if (child.isMesh) {
                     child.material = new THREE.MeshPhongMaterial({ color: color });
                     child.material.needsUpdate = true;
                 }
             });
-            highLODRock.traverse(
+            highLODPlant.traverse(
                 child => {
                 if (child.isMesh) {
                     child.material = new THREE.MeshPhongMaterial({ color: color });
@@ -51,7 +49,7 @@ class MyRockGroup extends THREE.Object3D {
                 }
             }
             )
-            midLODRock.traverse(
+            midLODPlant.traverse(
                 child => {
                 if (child.isMesh) {
                     child.material = new THREE.MeshPhongMaterial({ color: color });
@@ -67,23 +65,23 @@ class MyRockGroup extends THREE.Object3D {
                 cellDepth = THREE.MathUtils.lerp(baseDepth * minScale + minSpace, baseCellDepth, Math.random());
             }
             
-            // Position fish
+            // Position Plant
             lod.position.set(
                 cellWidth * x,
                 0,
                 cellDepth * y
             );
-            lod.addLevel(cloneRock, 30);
-            lod.addLevel(highLODRock,0);
-            lod.addLevel(midLODRock,15);
-            rockGroup.add(lod);
-            rockCount++;
+            lod.addLevel(clonePlant, 20);
+            lod.addLevel(highLODPlant,0);
+            lod.addLevel(midLODPlant,10);
+            plantGroup.add(lod);
+            plantCount++;
             }
             
         
         }
-        this.add(rockGroup);
+        this.add(plantGroup);
     }
 }
 
-export{ MyRockGroup};
+export{ MySeaPlantGroup};
