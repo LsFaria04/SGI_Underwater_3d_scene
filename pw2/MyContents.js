@@ -79,9 +79,15 @@ class MyContents  {
         this.app.scene.add(seaPlantGroup);
         seaPlantGroup.position.set(5,0,-5);
 
-        const seaStar = new MySeaStar(0.1,0.2,"#ff0000");
-        this.app.scene.add(seaStar);
-        seaStar.position.set(2,0.25,2);
+        const seaStarLOD = new THREE.LOD();
+        const seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined, "H");
+        const seaStarMid = new MySeaStar(0.1,0.2,"#ff0000", undefined, "M");
+        const seaStarLow = new MySeaStar(0.1,0.2,"#ff0000", undefined, "L");
+        seaStarLOD.addLevel(seaStar, 0);
+        seaStarLOD.addLevel(seaStarMid, 5);
+        seaStarLOD.addLevel(seaStarLow, 20);
+        this.app.scene.add(seaStarLOD);
+        seaStarLOD.position.set(2,0.25,2);
 
         const jelyFishLOD = new THREE.LOD();
         const jelyFish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
