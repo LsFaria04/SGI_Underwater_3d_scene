@@ -73,23 +73,37 @@ class MyContents  {
         const water = new MyWater();
         this.app.scene.add(water);
 
+        //plant position and size [x, z, number of plants]
+        const plantGroupsPosSize = [[-20, -1, 100], [1, 8, 50], [10,5, 10]];
+        for(let i = 0; i < plantGroupsPosSize.length; i++){
+            const pos = plantGroupsPosSize[i];
+            const seaPlantGroup = new MySeaPlantGroup(pos[2], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
+            this.app.scene.add(seaPlantGroup);
+            seaPlantGroup.position.set(pos[0],0,pos[1]);
+        }
+        
 
-        //we can use groups to create some more complex geometry with groups of rocks and corals
-        //we should use groups to aggregate fishes of the same species
+        const seaStarLOD = new THREE.LOD();
+        const seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined, "H");
+        const seaStarMid = new MySeaStar(0.1,0.2,"#ff0000", undefined, "M");
+        const seaStarLow = new MySeaStar(0.1,0.2,"#ff0000", undefined, "L");
+        seaStarLOD.addLevel(seaStar, 0);
+        seaStarLOD.addLevel(seaStarMid, 5);
+        seaStarLOD.addLevel(seaStarLow, 20);
+        this.app.scene.add(seaStarLOD);
+        seaStarLOD.position.set(2,0.25,2);
 
-        const seaPlantGroup = new MySeaPlantGroup(100, 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
-        this.app.scene.add(seaPlantGroup);
-        seaPlantGroup.position.set(5,0,-5);
+        const jelyFishLOD = new THREE.LOD();
+        const jelyFish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
+        const jelyFishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
+        const jelyFishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
+        jelyFishLOD.addLevel(jelyFish, 0);
+        jelyFishLOD.addLevel(jelyFishMedium, 15);
+        jelyFishLOD.addLevel(jelyFishLow, 30);
+        this.app.scene.add(jelyFishLOD);
+        jelyFishLOD.position.set(0,5,0);
 
-        const seaStar = new MySeaStar(0.1,0.2,"#ff0000");
-        this.app.scene.add(seaStar);
-        seaStar.position.set(2,0.25,2);
-
-        const jelyFish = new MyJellyFish(0.5, 1);
-        this.app.scene.add(jelyFish);
-        jelyFish.position.set(0,5,0);
-
-        const crabLOD = new THREE.LOD()
+        const crabLOD = new THREE.LOD();
         const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
         const crabDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "H");
         const crabMediumDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "M");
@@ -108,14 +122,26 @@ class MyContents  {
             this.app.scene.add(bubble);
             this.bubbles.push(bubble);
         }
-       
-        const fishGroup = new MySchoolfOfFish(10, 0.5, 1,0.2, "Carp", 1,1,1,1);
-        this.app.scene.add(fishGroup);
-        fishGroup.position.set(-10,1,-10);
+        
+        //carps position and size [x, y, z, number of carps]
+        const carpsGroupsPosSize = [[-10, 1, -10, 10], [10, 1, 5, 5]];
+        for(let i = 0; i < carpsGroupsPosSize.length; i++){
+            const pos = carpsGroupsPosSize[i];
+            const fishGroup = new MySchoolfOfFish(pos[3], 0.5, 1,0.2, "Carp", 1,1,1,1);
+            this.app.scene.add(fishGroup);
+            fishGroup.position.set(pos[0],pos[1],pos[2]);
+        }
+        
 
-        const rockGroup = new MyRockGroup(10, 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], false);
-        rockGroup.position.set(10,0,-10);
-        this.app.scene.add(rockGroup);
+        //rock position and size [x, z, number of rocks]
+        const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [1, 4, 3], [-10, 4, 8], [3, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
+        for(let i = 0; i < rockPosSize.length; i++){
+            const pos = rockPosSize[i];
+            const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], true);
+            rockGroup.position.set(pos[0],0,pos[1]);
+            this.app.scene.add(rockGroup);
+        }
+        
 
         const coralReef1 = new MyCoralReef(5, "fanCoral");
         coralReef1.position.y = 0;
