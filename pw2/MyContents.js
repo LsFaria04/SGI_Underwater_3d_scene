@@ -18,6 +18,8 @@ import { MyWater } from './MyWater.js';
 import { MySeaUrchin } from './MySeaUrchin.js';
 import { MyTurtle } from './MyTurtle.js';
 import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
+import { My2DShark } from './My2DShark.js';
+import { MySign } from './MySign.js';
 
 
 /**
@@ -136,6 +138,20 @@ class MyContents  {
         const turtle = new MyTurtle(1, 0.3);
         turtle.position.set(-4, 0.3, 4);
         this.app.scene.add(turtle);
+
+
+
+        const sign = new MySign();
+        sign.position.set(0,0,15);
+        sign.scale.set(2,2,2);
+        this.app.scene.add(sign);
+
+        const twoDShark = new My2DShark();
+        twoDShark.scale.set(0.2, 0.2, 0.2);
+        twoDShark.position.set(-0.8, 0.5, sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
+        sign.board.add(twoDShark);
+
+        
     }
 
     initTextures() {

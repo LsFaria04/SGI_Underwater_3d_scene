@@ -1,180 +1,64 @@
 import * as THREE from 'three';
 
-class MyShark extends THREE.Object3D {
+class My2DShark extends THREE.Object3D {
     /**
      * 
      * @param {string} color Body color
      */
-    constructor(tailWidth = 0.1, bodyWidth = 0.6, color = "#2244aa") {
+    constructor(depth = 1,color = "#2244aa") {
         super();
 
-        /*
-        const vertices = new Float32Array([
-        0.38, 2.44, 0,  // 0
-        0.98, 2.51, 0,  // 1
-        2.37, 3.07, 0,  // 2
-        1.78, 3.40, 0,  // 3
-        1.39, 3.82, 0,  // 4
-        1.66, 3.82, 0,  // 5
-        2.37, 3.40, 0,  // 6
-        3.05, 3.40, 0,  // 7
-        3.23, 2.88, 0,  // 8
-        2.63, 3.02, 0,  // 9
-        2.47, 2.73, 0,  // 10
-        2.68, 3.40, 0,  // 11
-        2.47, 3.50, 0,  // 12
-        2.67, 3.50, 0,  // 13
-        2.58, 3.71, 0,  // 14
-        0, 0, 0,  // 15 - mistake, it was a repeated vertex
-        3.48, 3.50, 0,  // 16
-        4.37, 2.69, 0,  // 17
-        4.07, 3.64, 0,  // 18
-        3.60, 4.00, 0,  // 19
-        0, 0, 0,  // 20 - mistake, it was a repeated vertex
-        5.48, 3.55, 0,  // 21 
-        5.22, 3.82, 0,  // 22
-        5.30, 2.60, 0,  // 23
-        4.08, 2.74, 0,  // 24
-        4.44, 2.55, 0,  // 25
-        4.40, 2.44, 0,  // 26
-        4.18, 1.69, 0,  // 27
-        4.67, 1.89, 0,  // 28
-        6.43, 2.77, 0,  // 29
-        6.30, 3.33, 0,  // 30
-        6.01, 3.71, 0,  // 31
-        5.42, 4.23, 0,  // 32
-        5.16, 4.69, 0,  // 33
-        5.52, 4.47, 0,  // 34
-        6.61, 3.65, 0,  // 35 
-        6.77, 3.41, 0,  // 36 
-        7.10, 3.24, 0,  // 37 
-        7.20, 3.00, 0,  // 38 
-        7.58, 3.21, 0,  // 39 
-        7.17, 3.42, 0,  // 40 
-        7.05, 3.53, 0,  // 41 
-
-        //teeth
-        6.8, 3.48, 0,  // 42 - tooth 1
-        6.92, 3.42, 0,  // 43 - tooth 1
-        6.92, 3.49, 0,  // 44 - tooth 1
-        6.96, 3.52, 0,  // 45 - tooth 2
-        7.02, 3.45, 0,  // 46 - tooth 2
-        7.02, 3.53, 0,  // 47 - tooth 2
-        6.92, 3.40, 0,  // 48 - tooth 3
-        6.96, 3.47, 0,  // 49 - tooth 3
-        7.01, 3.40, 0,  // 50 - tooth 3
-        7.05, 3.40, 0,  // 51 - tooth 4
-        7.08, 3.49, 0,  // 52 - tooth 4
-        7.13, 3.40, 0,  // 53 - tooth 4
-        ]);
-        */
-
         const tailVertices = new Float32Array([
-            //front face
-            0.38, 2.44, tailWidth/2,  // 0
-            2.37, 3.07, tailWidth/2,  // 1   
-            1.78, 3.40, tailWidth/2,  // 2   body 
-            1.39, 3.82, tailWidth/2,  // 3
-            2.37, 3.40, tailWidth/2,  // 4   
-            
-            //back face
-            0.38, 2.44, -tailWidth/2,  // 5
-            2.37, 3.07, -tailWidth/2,  // 6  
-            1.78, 3.40, -tailWidth/2,  // 7  body
-            1.39, 3.82, -tailWidth/2,  // 8
-            2.37, 3.40, -tailWidth/2,  // 9  
+            0.38, 2.44, 0,  // 0
+            0.98, 2.51, 0,  // 1
+            2.37, 3.07, 0,  // 2
+            1.78, 3.40, 0,  // 3
+            1.39, 3.82, 0,  // 4
+            1.66, 3.82, 0,  // 5
+            2.37, 3.40, 0,  // 6
         ]);
-
         const tailIndices = [
-            //front face
-            0,1,2,
-            2,4,3,
-
-            //back face
-            5,6,7,
-            7,9,8,
-
-            //side faces
-            0,1,5,
-            5,1,6,
-
-            0,5,2,
-            5,7,2,
-
-            2,7,3,
-            8,3,7,
-
-            3,4,8,
-            9,8,4,
+            0, 1, 2,
+            0, 2, 3,
+            4, 3, 5,
+            3, 6, 5,
         ];
 
         const bodyVertices = new Float32Array([
-            //front face
-            1.78, 3.40, tailWidth/2,  // 0  tail
-            2.37, 3.07, tailWidth/2,  // 1 tail
-            2.37, 3.40, tailWidth/2,  // 2 tail
-            3.23, 2.88, bodyWidth/2,  // 3
-            3.05, 3.40, bodyWidth/2,  // 4
-            5.30, 2.60, bodyWidth/2,  // 5
-            5.22, 3.82, bodyWidth/2,  // 6
-            6.43, 2.77, bodyWidth/2,  // 7
-            6.01, 3.71, bodyWidth/2,  // 8
-            5.48, 3.55, bodyWidth/2,  // 9
-
-            //back face
-            1.78, 3.40, -tailWidth/2,  // 10  tail
-            2.37, 3.07, -tailWidth/2,  // 11  tail
-            2.37, 3.40, -tailWidth/2,  // 12 tail
-            3.23, 2.88, -bodyWidth/2,  // 13
-            3.05, 3.40, -bodyWidth/2,  // 14
-            5.30, 2.60, -bodyWidth/2,  // 15
-            5.22, 3.82, -bodyWidth/2,  // 16
-            6.43, 2.77, -bodyWidth/2,  // 17
-            6.01, 3.71, -bodyWidth/2,  // 18
-            5.48, 3.55, -bodyWidth/2,  // 19
-
+            2.37, 3.07, 0,  // 0
+            1.78, 3.40, 0,  // 1
+            3.05, 3.40, 0,  // 2
+            3.23, 2.88, 0,  // 3
+            3.48, 3.50, 0,  // 4
+            4.37, 2.69, 0,  // 5
+            4.07, 3.64, 0,  // 6
+            5.48, 3.55, 0,  // 7
+            5.22, 3.82, 0,  // 8
+            5.30, 2.60, 0,  // 9
+            6.43, 2.77, 0,  // 10
+            6.30, 3.33, 0,  // 11
+            6.01, 3.71, 0,  // 12
         ]);
+
         const bodyIndices = [
-            // front face
-            0,1,2,
-            1,3,4, //<----- dumbass
-            2,1,4,
-            3,5,4,
-            4,5,6,
-            5,7,6,
-            //6,9,8,
-            //9,7,8,
+            // body 1   (1 is closer to tail, 4 is closer to head)
+            0, 2, 1,
+            0, 3, 2,
+            3, 2, 4,
 
+            // body 2
+            3, 4, 5,
+            4, 5, 6,
 
-            // back face
-            10,11,12,
-            11,13,14,
-            12,11,14,
-            13,15,14,
-            14,15,16,
-            15,17,16,
-            //16,19,18,
-            //19,17,18,
+            // body 3
+            6, 5, 7,
+            6, 7, 8,
+            5, 9, 7,
 
-
-            // side faces
-            1,3,11,
-            3,13,11,
-            
-            3,5,13,
-            13,5,15,
-
-            5,7,15,
-            17,15,7,
-
-            2,4,12,
-            12,4,14,
-
-            4,6,14,
-            16,14,6,
-
-            6,8,16,
-            18,16,8,
+            // body 4
+            9, 10, 7,
+            7, 10, 11,
+            7, 11, 12 
         ];
 
         const headVertices = new Float32Array([
@@ -294,7 +178,7 @@ class MyShark extends THREE.Object3D {
             const material = new THREE.MeshStandardMaterial({
                 color,
                 side: THREE.DoubleSide,
-                flatShading: false,
+                flatShading: true
             });
 
             return new THREE.Mesh(geometry, material);
@@ -302,7 +186,6 @@ class MyShark extends THREE.Object3D {
         
         const tail = createPart(tailVertices, tailIndices, color);
         const body = createPart(bodyVertices, bodyIndices, color);
-        /*
         const head = createPart(headVertices, headIndices, color);
         const lowerTopFin = createPart(lowerTopfinVertices, lowerTopfinIndices, color);
         const lowerBottomFin = createPart(lowerBottomfinVertices, lowerBottomfinIndices, color);
@@ -310,8 +193,22 @@ class MyShark extends THREE.Object3D {
         const upperTopFin = createPart(upperTopfinVertices, upperTopfinIndices, color);
         const upperBottomFin = createPart(upperBottomfinVertices, upperBottomfinIndices, color);
         const teeth = createPart(teethVertices, teethIndices, "#ffffff");
-        /*  
-        /*
+
+        const eyeWhite = new THREE.Mesh(
+            new THREE.CircleGeometry(0.12, 8),
+            new THREE.MeshStandardMaterial({ color: "#ffffff", side: THREE.DoubleSide })
+        );
+
+        const eyeBlack = new THREE.Mesh(
+            new THREE.CircleGeometry(0.06, 8),
+            new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
+        );
+
+        eyeWhite.position.set(6.9, 3.1, -0.01);
+        eyeBlack.position.set(6.9, 3.1, -0.02); 
+        eyeBlack.scale.set(1,1,1);
+        eyeWhite.scale.set(1,1,1);
+
         body.add(head);
         body.add(tail);
         head.add(teeth);
@@ -320,10 +217,9 @@ class MyShark extends THREE.Object3D {
         body.add(midBottomFin);
         body.add(upperTopFin);
         body.add(upperBottomFin);
-
-        */
+        head.add(eyeWhite);
+        head.add(eyeBlack);
         
-        body.add(tail);
         this.add(body);
 
         body.rotation.set(Math.PI, 0, 0); // made shark on the wrong pose initially
@@ -331,4 +227,4 @@ class MyShark extends THREE.Object3D {
     }
 }
 
-export { MyShark };
+export { My2DShark };
