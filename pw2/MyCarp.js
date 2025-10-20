@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {MyTriangle} from './MyTriangle.js';
 
 /**
  * This class contains a 3D representation of a common carp fish
@@ -20,8 +21,8 @@ class MyCarp extends THREE.Object3D {
         this.widthFin = widthFin;
         this.lengthFin = lengthFin;
         this.color = color;
-        this.lodMediumThreshold = 20;
-        this.lodBasicThreshold = 40;
+        this.lodMediumThreshold = 15;
+        this.lodBasicThreshold = 30;
         
 
         this.init();
@@ -82,10 +83,11 @@ class MyCarp extends THREE.Object3D {
             3, 2, 5,
             3, 5, 4,
 
-            /*
             // Back Fin
             5, 6, 8,
             5, 7, 8,
+
+            /*
 
             // Top Fin
             9, 10, 11,
@@ -100,10 +102,6 @@ class MyCarp extends THREE.Object3D {
 
         if (includeSmallFins) {
             indices = indices.concat([
-                // Back Fin
-                5, 6, 8,
-                5, 7, 8,
-
                 // Top Fin
                 9, 10, 11,
                 9, 11, 12,
@@ -131,15 +129,32 @@ class MyCarp extends THREE.Object3D {
      */
     createSimplifiedMesh() {
         // Use a simple BoxGeometry as the basic block
-        const geometry = new THREE.BoxGeometry(this.lengthBody, this.widthBody, this.widthBody);
+        const simpleFish = new THREE.Group();
+        const geometry = new THREE.PlaneGeometry(this.lengthBody * 2, this.widthBody /2 );
+        const face = new MyTriangle(this.lengthBody * 1.5,this.widthBody / 4,0,this.lengthBody * 2,0,0,this.lengthBody * 2,this.widthBody /2,0);
+        const back = new MyTriangle(this.lengthBody * 1.5,this.widthBody / 2,0,this.lengthBody * 2,0,0,this.lengthBody * 2,this.widthBody ,0);
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
         const simplifiedMesh = new THREE.Mesh(geometry, material);
+        const simplifiedHead = new THREE.Mesh(face,material);
+        const simplifiedBack = new THREE.Mesh(back, material);
 
         simplifiedMesh.position.x = this.lengthBody * 1.5;
-        simplifiedMesh.position.y = this.widthBody * 1.5;
+        simplifiedMesh.position.y = this.widthBody;
         simplifiedMesh.position.z = 0;
 
-        return simplifiedMesh;
+        simplifiedHead.position.x = -this.lengthBody * 1.5;
+        simplifiedHead.position.y = this.widthBody * 0.75;
+        simplifiedHead.position.z = 0;
+
+        simplifiedBack.position.x = this.lengthBody;
+        simplifiedBack.position.y = this.widthBody * 0.5;
+        simplifiedBack.position.z = 0;
+
+        simpleFish.add(simplifiedMesh);
+        simpleFish.add(simplifiedHead);
+        simpleFish.add(simplifiedBack);
+
+        return simpleFish;
     }
 
     /**
