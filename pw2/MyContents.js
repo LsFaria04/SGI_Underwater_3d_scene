@@ -83,11 +83,17 @@ class MyContents  {
         this.app.scene.add(seaStar);
         seaStar.position.set(2,0.25,2);
 
-        const jelyFish = new MyJellyFish(0.5, 1);
-        this.app.scene.add(jelyFish);
-        jelyFish.position.set(0,5,0);
+        const jelyFishLOD = new THREE.LOD();
+        const jelyFish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
+        const jelyFishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
+        const jelyFishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
+        jelyFishLOD.addLevel(jelyFish, 0);
+        jelyFishLOD.addLevel(jelyFishMedium, 15);
+        jelyFishLOD.addLevel(jelyFishLow, 30);
+        this.app.scene.add(jelyFishLOD);
+        jelyFishLOD.position.set(0,5,0);
 
-        const crabLOD = new THREE.LOD()
+        const crabLOD = new THREE.LOD();
         const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
         const crabDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "H");
         const crabMediumDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "M");
