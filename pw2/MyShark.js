@@ -5,7 +5,7 @@ class MyShark extends THREE.Object3D {
      * 
      * @param {string} color Body color
      */
-    constructor(tailWidth = 0.1, bodyWidth = 0.6, headWidth = 0.4, color = "#2244aa") {
+    constructor(tailWidth = 0.1, bodyWidth = 0.6, headWidth = 0.4, finWidth = 0.05, color = "#2244aa") {
         super();
 
         /*
@@ -258,9 +258,13 @@ class MyShark extends THREE.Object3D {
         ];
 
         const lowerTopfinVertices = new Float32Array([
-            3.23, 2.88, 0,  // 0
-            2.63, 3.02, 0,  // 1
-            2.47, 2.73, 0,  // 2
+            3.23, 2.88, finWidth / 2,  // 0
+            2.63, 3.02, finWidth / 2,  // 1
+            2.47, 2.73, finWidth / 2,  // 2
+
+            3.23, 2.88, -finWidth / 2,  // 0
+            2.63, 3.02, -finWidth / 2,  // 1
+            2.47, 2.73, -finWidth / 2,  // 2
         ]);
         const lowerTopfinIndices = [
             0,2,1
