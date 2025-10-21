@@ -5,7 +5,7 @@ class MyShark extends THREE.Object3D {
      * 
      * @param {string} color Body color
      */
-    constructor(tailWidth = 0.1, bodyWidth = 0.6, color = "#2244aa") {
+    constructor(tailWidth = 0.1, bodyWidth = 0.6, headWidth = 0.4, color = "#2244aa") {
         super();
 
         /*
@@ -117,27 +117,21 @@ class MyShark extends THREE.Object3D {
             3.05, 3.40, bodyWidth/2,  // 4
             5.30, 2.60, bodyWidth/2,  // 5
             5.22, 3.82, bodyWidth/2,  // 6
-            6.43, 2.77, bodyWidth/2,  // 7
-
-            6.30, 3.33, bodyWidth/2,  // 8
-
-
-            6.01, 3.71, bodyWidth/2,  // 9
+            6.43, 2.77, bodyWidth/2,  // 7  body
+            6.30, 3.33, bodyWidth/2,  // 8  body
+            6.01, 3.71, bodyWidth/2,  // 9  body
 
             //back face
             1.78, 3.40, -tailWidth/2,  // 10  tail
             2.37, 3.07, -tailWidth/2,  // 11  tail
-            2.37, 3.40, -tailWidth/2,  // 12 tail
+            2.37, 3.40, -tailWidth/2,  // 12  tail
             3.23, 2.88, -bodyWidth/2,  // 13
             3.05, 3.40, -bodyWidth/2,  // 14
             5.30, 2.60, -bodyWidth/2,  // 15
             5.22, 3.82, -bodyWidth/2,  // 16
-            6.43, 2.77, -bodyWidth/2,  // 17
-
-            6.30, 3.33, -bodyWidth/2,  // 18
-
-
-            6.01, 3.71, -bodyWidth/2,  // 19
+            6.43, 2.77, -bodyWidth/2,  // 17  body
+            6.30, 3.33, -bodyWidth/2,  // 18  body
+            6.01, 3.71, -bodyWidth/2,  // 19  body
 
         ]);
         const bodyIndices = [
@@ -179,28 +173,66 @@ class MyShark extends THREE.Object3D {
             4,6,14,
             16,14,6,
 
-            6,8,16,
-            16,18,8,
+            6,9,19,
+            6,19,16,
+
             8,9,18,
             18,9,19,
         ];
 
         const headVertices = new Float32Array([
-            6.43, 2.77, 0,  // 0 body 
-            6.30, 3.33, 0,  // 1 body
-            7.58, 3.21, 0,  // 2
-            7.17, 3.42, 0,  // 3
-            7.05, 3.53, 0,  // 4
-            6.01, 3.71, 0,  // 5 body
+            6.43, 2.77, bodyWidth/2,  // 0 body 
+            6.30, 3.33, bodyWidth/2,  // 1 body
+            7.58, 3.21, headWidth/2,  // 2
+            7.17, 3.42, headWidth/2,  // 3
+            7.10, 3.24, headWidth/2,  // 4
+            7.05, 3.53, headWidth/2,  // 5
+            6.01, 3.71, bodyWidth/2,  // 6 body
+
+            6.43, 2.77, -bodyWidth/2,  // 7 body 
+            6.30, 3.33, -bodyWidth/2,  // 8 body
+            7.58, 3.21, -headWidth/2,  // 9
+            7.17, 3.42, -headWidth/2,  // 10
+            7.10, 3.24, -headWidth/2,  // 11
+            7.05, 3.53, -headWidth/2,  // 12
+            6.01, 3.71, -bodyWidth/2,  // 13 body
 
 
         ]);
         const headIndices = [
-            // upper jaw
-            
+            // front faces
+            1,0,4,
+            4,0,2,
+            3,4,2,
+            1,4,3,
+            6,1,5,
 
-            // lower jaw
+            // back faces
+            8,7,11,
+            11,7,9,
 
+            10,11,9,
+            8,11,10,
+            13,8,12,
+
+            // side faces
+            0,2,7,
+            7,2,9,
+
+            5,6,12,
+            13,12,6,
+
+            1,5,8,
+            8,5,12,
+
+            2,3,9,
+            10,9,3,
+
+            3,4,10,
+            10,4,11,
+
+            1,3,10,
+            1,10,8
         ];
 
         const teethVertices = new Float32Array([
@@ -301,8 +333,9 @@ class MyShark extends THREE.Object3D {
         
         const tail = createPart(tailVertices, tailIndices, color);
         const body = createPart(bodyVertices, bodyIndices, color);
-        /*
         const head = createPart(headVertices, headIndices, color);
+
+        /*
         const lowerTopFin = createPart(lowerTopfinVertices, lowerTopfinIndices, color);
         const lowerBottomFin = createPart(lowerBottomfinVertices, lowerBottomfinIndices, color);
         const midBottomFin = createPart(midBottomfinVertices, midBottomfinIndices, color);
@@ -311,7 +344,6 @@ class MyShark extends THREE.Object3D {
         const teeth = createPart(teethVertices, teethIndices, "#ffffff");
         /*  
         /*
-        body.add(head);
         body.add(tail);
         head.add(teeth);
         body.add(lowerTopFin);
@@ -324,6 +356,7 @@ class MyShark extends THREE.Object3D {
         
         body.add(tail);
         this.add(body);
+        body.add(head);
 
         body.rotation.set(Math.PI, 0, 0); // made shark on the wrong pose initially
 
