@@ -109,6 +109,165 @@ class MyShark extends THREE.Object3D {
         ];
 
         const bodyVertices = new Float32Array([
+            // front face
+            1.78, 3.40, tailWidth/2,  // 0  tail
+            2.37, 3.07, tailWidth/2,  // 1 tail
+            2.37, 3.40, tailWidth/2,  // 2 tail
+            2.4, 3.2, bodyWidth/2,  // 3
+            2.63, 3.02, 0,  // 4 lowerTopFin
+            2.65, 3.2, bodyWidth/2, // 5
+            2.68, 3.40, 0,  // 6 lowerBottomFin
+            3.05, 3.40, 0,  // 7 lowerBottomFin
+            3.13, 3.2, bodyWidth/2,  // 8
+            3.23, 2.88, 0,  // 9 lowerTopFin
+            3.37, 3.22, bodyWidth/2,  // 10
+            3.48, 3.50, 0,  // 11 midBottomFin
+            3.75, 3.25, bodyWidth/2,  // 12
+            4.07, 3.64, 0,  // 13 midBottomFin
+            4.18, 3.28, bodyWidth/2,  // 14
+            4.08, 2.74, 0,  // 15 upperTopFin
+            5.22, 3.82, 0,  // 16 upperBottomFin
+            5.45, 3.30, bodyWidth/2,  // 17
+            5.30, 2.60, 0,  // 18 upperTopFin
+            6.43, 2.77, 0,  // 19 head
+            6.01, 3.71, 0,  // 20 head and upperBottomFin
+            6.30, 3.33, bodyWidth/2,  // 21 head    
+            5.74, 3.34, bodyWidth/2,  // 22 
+            
+            // back faces
+            1.78, 3.40, -tailWidth/2,  // 23 0  tail
+            2.37, 3.07, -tailWidth/2,  // 24 1 tail
+            2.37, 3.40, -tailWidth/2,  // 25 2 tail
+            2.4, 3.2, -bodyWidth/2,  // 26 3
+            2.63, 3.02, 0,  // 27 4 lowerTopFin
+            2.65, 3.2, -bodyWidth/2, // 28 5
+            2.68, 3.40, 0,  // 29 6 lowerBottomFin
+            3.05, 3.40, 0,  // 30 7 lowerBottomFin
+            3.13, 3.2, -bodyWidth/2,  // 31 8
+            3.23, 2.88, 0,  // 32 9 lowerTopFin
+            3.37, 3.22, -bodyWidth/2,  // 33 10
+            3.48, 3.50, 0,  // 34 11 midBottomFin
+            3.75, 3.25, -bodyWidth/2,  // 35 12
+            4.07, 3.64, 0,  // 36 13 midBottomFin
+            4.18, 3.28, -bodyWidth/2,  // 37 14
+            4.08, 2.74, 0,  // 38 15 upperTopFin
+            5.22, 3.82, 0,  // 39 16 upperBottomFin
+            5.45, 3.30, -bodyWidth/2,  // 40 17
+            5.30, 2.60, 0,  // 41 18 upperTopFin
+            6.43, 2.77, 0,  // 42 19 head
+            6.01, 3.71, 0,  // 43 20 head and upperBottomFin
+            6.30, 3.33, -bodyWidth/2,  // 44 21 head
+            5.74, 3.34, -bodyWidth/2,  // 45 22
+        ]);
+
+        const bodyIndices = [
+            // mid plane
+            0,3,23,
+            23,3,26,
+
+            3,5,26,
+            26,5,28,
+
+            5,10,28,
+            28,10,33,
+
+            10,14,33,
+            33,14,37,
+
+            14,17,37,
+            37,17,40,
+
+            17,22,40,
+            40,22,45,
+
+            22,21,45,
+            45,21,44,
+
+            // front face
+
+            0,3,2,
+            23,26,25,
+
+            0,1,3,
+            23,24,26,
+
+            3,1,5,
+            26,24,28,
+
+            1,4,5,
+            24,27,28,
+
+            2,3,6,
+            25,26,29,
+
+            3,5,6,
+            26,28,29,
+
+            5,7,6,
+            28,30,29,
+
+            5,8,7,
+            28,31,30,
+
+            4,10,5,
+            27,33,28,
+
+            4,9,10,
+            27,32,33,
+
+            7,8,11,
+            30,31,34,
+
+            8,10,11,
+            31,33,34,
+
+            11,10,12,
+            34,33,35,
+
+            11,12,13,
+            34,35,36,
+
+            9,14,10,
+            32,37,33,
+
+            9,15,14,
+            32,38,37,
+
+            14,15,17,
+            37,38,40,
+
+            15,18,17,
+            38,41,40,
+
+            18,19,17,
+            41,42,40,
+
+            17,19,22,
+            40,42,45,
+
+            22,19,21,
+            45,42,44,
+
+            12,14,13,
+            35,37,36,
+
+            13,14,16,
+            36,37,39,
+
+            14,17,16,
+            37,40,39,
+
+            16,22,20,
+            39,45,43,
+
+            22,21,20,
+            45,44,43,
+
+            16,17,22,
+            39,40,45,
+        ];
+        /*
+        const bodyVertices = new Float32Array([
             //front face
             1.78, 3.40, tailWidth/2,  // 0  tail
             2.37, 3.07, tailWidth/2,  // 1 tail
@@ -234,6 +393,7 @@ class MyShark extends THREE.Object3D {
             1,3,10,
             1,10,8
         ];
+        */
 
         const teethVertices = new Float32Array([
             6.85, 3.44, 0,  // 0 - tooth 1
@@ -261,7 +421,7 @@ class MyShark extends THREE.Object3D {
             3.23, 2.88, finWidth / 2,  // 0
             2.63, 3.02, finWidth / 2,  // 1
             2.47, 2.73, finWidth / 2,  // 2
-
+ 
             3.23, 2.88, -finWidth / 2,  // 0
             2.63, 3.02, -finWidth / 2,  // 1
             2.47, 2.73, -finWidth / 2,  // 2
@@ -337,9 +497,10 @@ class MyShark extends THREE.Object3D {
         
         const tail = createPart(tailVertices, tailIndices, color);
         const body = createPart(bodyVertices, bodyIndices, color);
+                /*
         const head = createPart(headVertices, headIndices, color);
 
-        /*
+
         const lowerTopFin = createPart(lowerTopfinVertices, lowerTopfinIndices, color);
         const lowerBottomFin = createPart(lowerBottomfinVertices, lowerBottomfinIndices, color);
         const midBottomFin = createPart(midBottomfinVertices, midBottomfinIndices, color);
@@ -348,7 +509,7 @@ class MyShark extends THREE.Object3D {
         const teeth = createPart(teethVertices, teethIndices, "#ffffff");
         /*  
         /*
-        body.add(tail);
+        body.add(head);
         head.add(teeth);
         body.add(lowerTopFin);
         body.add(lowerBottomFin);
@@ -357,10 +518,10 @@ class MyShark extends THREE.Object3D {
         body.add(upperBottomFin);
 
         */
+
         
         body.add(tail);
         this.add(body);
-        body.add(head);
 
         body.rotation.set(Math.PI, 0, 0); // made shark on the wrong pose initially
 
