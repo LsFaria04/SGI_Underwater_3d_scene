@@ -114,9 +114,6 @@ class MyContents  {
         this.app.scene.add(crabLOD);
         crabLOD.position.set(3,0.3,1);
 
-        const carpBody = new MyCarp(1, 1, 1, 1, "#88ccff");
-        this.app.scene.add(carpBody);
-
         this.bubbles = [];
         for (let i = 0; i < 10; i++) {
             const bubble = new MyBubble(0.10 + Math.random() * 0.08, 1); 
@@ -144,11 +141,11 @@ class MyContents  {
         }
         
 
-        const coralReef1 = new MyCoralReef(5, "fanCoral");
+        const coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4);
         coralReef1.position.y = 0;
         this.app.scene.add(coralReef1);
 
-        const coralReef2 = new MyCoralReef();
+        const coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4);
         coralReef2.position.y = 0;
         this.app.scene.add(coralReef2);
 
