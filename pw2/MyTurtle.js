@@ -8,7 +8,7 @@ class MyTurtle extends THREE.Object3D {
      * @param {string|number} colorShell Shell color
      * @param {string|number} colorBody Body color
      */
-    constructor(shellRadius = 1, bodyRadius = 0.3, colorShell = 0x228B22, colorBody = 0x556B2F) {
+    constructor(shellRadius = 0.5, bodyRadius = 0.15, colorShell = 0x228B22, colorBody = 0x556B2F) {
         super();
 
         this.shellRadius = shellRadius;
@@ -21,7 +21,7 @@ class MyTurtle extends THREE.Object3D {
 
     init() {
         // Shell (slightly flattened sphere)
-        const shellGeom = new THREE.SphereGeometry(this.shellRadius, 32, 8);
+        const shellGeom = new THREE.SphereGeometry(this.shellRadius, 10, 8);
         shellGeom.scale(1, 0.6, 1); // flatten vertically
         const shellMat = new THREE.MeshStandardMaterial({ color: this.colorShell });
         const shellMesh = new THREE.Mesh(shellGeom, shellMat);
@@ -36,17 +36,19 @@ class MyTurtle extends THREE.Object3D {
 
         // Tail
         const tailGeom = new THREE.SphereGeometry(this.bodyRadius * 0.5, 8, 8);
+        tailGeom.scale(1, 0.5, 1); // flatten vertically
         const tailMesh = new THREE.Mesh(tailGeom, headMat);
         tailMesh.position.set(0, 0, -this.shellRadius - this.bodyRadius * 0.25);
         this.add(tailMesh);
 
         // Legs
         const legGeom = new THREE.SphereGeometry(this.bodyRadius, 8, 8);
+        legGeom.scale(1 + 1 * this.shellRadius, 0.5, 1 + 1 * this.shellRadius * 0.2); // flatten vertically
         const legPositions = [
-            [ this.shellRadius * 0.7, -0.3,  this.shellRadius * 0.4],
-            [-this.shellRadius * 0.7, -0.3,  this.shellRadius * 0.4],
-            [ this.shellRadius * 0.7, -0.3, -this.shellRadius * 0.4],
-            [-this.shellRadius * 0.7, -0.3, -this.shellRadius * 0.4],
+            [ this.shellRadius * 0.7, -this.shellRadius * 0.6 * 0.7,  this.shellRadius * 0.7],
+            [-this.shellRadius * 0.7, -this.shellRadius * 0.6 * 0.7,  this.shellRadius * 0.7],
+            [ this.shellRadius * 0.7, -this.shellRadius * 0.6 * 0.7, -this.shellRadius * 0.7],
+            [-this.shellRadius * 0.7, -this.shellRadius * 0.6 * 0.7, -this.shellRadius * 0.7],
         ];
         for (const pos of legPositions) {
             const legMesh = new THREE.Mesh(legGeom, headMat);
@@ -59,8 +61,8 @@ class MyTurtle extends THREE.Object3D {
         const eyeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
         const leftEye = new THREE.Mesh(eyeGeom, eyeMat);
         const rightEye = new THREE.Mesh(eyeGeom, eyeMat);
-        leftEye.position.set(-this.bodyRadius * 0.5, this.bodyRadius * 0.3, this.shellRadius + this.bodyRadius * 0.5);
-        rightEye.position.set(this.bodyRadius * 0.5, this.bodyRadius * 0.3, this.shellRadius + this.bodyRadius * 0.5);
+        leftEye.position.set(-this.bodyRadius * 0.5, this.bodyRadius * 0.3, this.shellRadius + this.bodyRadius * 1.2);
+        rightEye.position.set(this.bodyRadius * 0.5, this.bodyRadius * 0.3, this.shellRadius + this.bodyRadius * 1.2);
         this.add(leftEye);
         this.add(rightEye);
     }
