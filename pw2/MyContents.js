@@ -1,17 +1,11 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
-import { MyCarp} from './MyCarp.js';
 import { MyBubble } from './MyBubble.js';
-import { MyRock } from './MyRock.js';
-import { MyCoral } from './MyCoral.js';
-import { MySeaPlant } from './MySeaPlant.js';
 import { MySeaStar } from './MySeaStar.js';
 import { MyJellyFish } from './MyJellyFish.js';
 import { MyCrab } from './MyCrab.js';
 import { MySchoolfOfFish } from './MySchoolOfFish.js';
 import { MyRockGroup } from './MyRockGroup.js';
-import { MyCoralGroup } from './MyCoralGroup.js';
-//import {MyTriangle} from './MyTriangle.js';
 import { MyCoralReef } from './MyCoralReef.js';
 import { MyFloor } from './MyFloor.js';
 import { MyWater } from './MyWater.js';
