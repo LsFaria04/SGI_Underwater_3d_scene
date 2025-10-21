@@ -153,7 +153,7 @@ class MyContents  {
         urchinLOD.position.set(4, 0.3, 4);
         this.app.scene.add(urchinLOD);
 
-        const turtle = new MyTurtle(1, 0.3);
+        const turtle = new MyTurtle(0.5, 0.15);
         turtle.position.set(-4, 0.3, 4);
         this.app.scene.add(turtle);
 
