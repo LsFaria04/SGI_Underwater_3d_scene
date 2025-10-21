@@ -24,7 +24,7 @@ class MySign extends THREE.Object3D {
     boardDepth = 0.05,
     stickColor = 0x8b5a2b,
     boardColor = 0xdeb887,
-    text = "BE AWARE OF THE SHARK",
+    text = "BEWARE OF THE SHARK",
     boardTexture = null,
   ) {
     super();
