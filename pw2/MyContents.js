@@ -1,17 +1,11 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
-import { MyCarp} from './MyCarp.js';
 import { MyBubble } from './MyBubble.js';
-import { MyRock } from './MyRock.js';
-import { MyCoral } from './MyCoral.js';
-import { MySeaPlant } from './MySeaPlant.js';
 import { MySeaStar } from './MySeaStar.js';
 import { MyJellyFish } from './MyJellyFish.js';
 import { MyCrab } from './MyCrab.js';
 import { MySchoolfOfFish } from './MySchoolOfFish.js';
 import { MyRockGroup } from './MyRockGroup.js';
-import { MyCoralGroup } from './MyCoralGroup.js';
-//import {MyTriangle} from './MyTriangle.js';
 import { MyCoralReef } from './MyCoralReef.js';
 import { MyFloor } from './MyFloor.js';
 import { MyWater } from './MyWater.js';
@@ -114,9 +108,6 @@ class MyContents  {
         this.app.scene.add(crabLOD);
         crabLOD.position.set(3,0.3,1);
 
-        const carpBody = new MyCarp(1, 1, 1, 1, "#88ccff");
-        this.app.scene.add(carpBody);
-
         this.bubbles = [];
         for (let i = 0; i < 10; i++) {
             const bubble = new MyBubble(0.10 + Math.random() * 0.08, 1); 
@@ -144,11 +135,11 @@ class MyContents  {
         }
         
 
-        const coralReef1 = new MyCoralReef(5, "fanCoral");
+        const coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4);
         coralReef1.position.y = 0;
         this.app.scene.add(coralReef1);
 
-        const coralReef2 = new MyCoralReef();
+        const coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4);
         coralReef2.position.y = 0;
         this.app.scene.add(coralReef2);
 
@@ -162,7 +153,7 @@ class MyContents  {
         urchinLOD.position.set(4, 0.3, 4);
         this.app.scene.add(urchinLOD);
 
-        const turtle = new MyTurtle(1, 0.3);
+        const turtle = new MyTurtle(0.5, 0.15);
         turtle.position.set(-4, 0.3, 4);
         this.app.scene.add(turtle);
 
