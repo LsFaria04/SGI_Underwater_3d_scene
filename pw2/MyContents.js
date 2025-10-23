@@ -15,6 +15,7 @@ import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
 import { My2DShark } from './My2DShark.js';
 import { MySign } from './MySign.js';
 import { MyShark } from './MyShark.js';
+import { MySwordFish } from './MySwordFish.js';
 
 
 /**
@@ -171,7 +172,9 @@ class MyContents  {
         twoDShark.position.set(-0.8, 0.5, sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
         sign.board.add(twoDShark);
 
-        
+        const swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
+        swordFish.position.set(0,3,0);
+        this.app.scene.add(swordFish);
     }
 
     initTextures() {
