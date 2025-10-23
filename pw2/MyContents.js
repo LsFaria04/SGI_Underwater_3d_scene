@@ -185,6 +185,12 @@ class MyContents  {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
         
+        // Update all LOD objects with the active camera
+        this.app.scene.traverse((child) => {
+            if (child instanceof THREE.LOD) {
+                child.update(this.app.activeCamera);
+            }
+        });
     }
 
     setWireframeMode(enabled) {
