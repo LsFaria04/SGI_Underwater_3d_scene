@@ -206,13 +206,12 @@ export class MyCoral {
         }
 
         group.scale.setScalar(0.4);
-        // Don't set position on the group - let LOD handle positioning
-
+        
         // Detailed coral
         LOD.addLevel(group, 0);
 
 
-        // Simple coral - don't set position, it will inherit from LOD
+        // Simple coral 
         const simpleCoralGeo = new THREE.CylinderGeometry(0.10, 0.05, 2);
         const simpleCoralMat = new THREE.MeshStandardMaterial({ color: this.colorZ, metalness: 0.1, roughness: 0.8 });
         const simpleCoralMesh = new THREE.Mesh(simpleCoralGeo, simpleCoralMat);
