@@ -5,8 +5,13 @@ class MyShark extends THREE.Object3D {
      * 
      * @param {string} color Body color
      */
-    constructor(tailWidth = 0.1, bodyWidth = 0.6, headWidth = 0.4, color = "#2244aa") {
+    constructor(scale = 1,color = "#2244aa") {
         super();
+
+        const tailWidth = 0.1;
+        const bodyWidth = 0.6;
+        const headWidth = 0.4;
+
 
         /*
         const vertices = new Float32Array([
@@ -266,135 +271,6 @@ class MyShark extends THREE.Object3D {
             16,17,22,
             39,40,45,
         ];
-        /*
-        const bodyVertices = new Float32Array([
-            //front face
-            1.78, 3.40, tailWidth/2,  // 0  tail
-            2.37, 3.07, tailWidth/2,  // 1 tail
-            2.37, 3.40, tailWidth/2,  // 2 tail
-            3.23, 2.88, bodyWidth/2,  // 3
-            3.05, 3.40, bodyWidth/2,  // 4
-            5.30, 2.60, bodyWidth/2,  // 5
-            5.22, 3.82, bodyWidth/2,  // 6
-            6.43, 2.77, bodyWidth/2,  // 7  body
-            6.30, 3.33, bodyWidth/2,  // 8  body
-            6.01, 3.71, bodyWidth/2,  // 9  body
-
-            //back face
-            1.78, 3.40, -tailWidth/2,  // 10  tail
-            2.37, 3.07, -tailWidth/2,  // 11  tail
-            2.37, 3.40, -tailWidth/2,  // 12  tail
-            3.23, 2.88, -bodyWidth/2,  // 13
-            3.05, 3.40, -bodyWidth/2,  // 14
-            5.30, 2.60, -bodyWidth/2,  // 15
-            5.22, 3.82, -bodyWidth/2,  // 16
-            6.43, 2.77, -bodyWidth/2,  // 17  body
-            6.30, 3.33, -bodyWidth/2,  // 18  body
-            6.01, 3.71, -bodyWidth/2,  // 19  body
-
-        ]);
-        const bodyIndices = [
-            // front face
-            0,1,2,
-            1,3,4,
-            2,1,4,
-            3,5,4,
-            4,5,6,
-            5,7,6,
-            6,7,8,
-            6,8,9,
-
-
-            // back face
-            10,11,12,
-            11,13,14,
-            12,11,14,
-            13,15,14,
-            14,15,16,
-            15,17,16,
-            16,17,18,
-            16,18,19,
-
-
-            // side faces
-            1,3,11,
-            3,13,11,
-            
-            3,5,13,
-            13,5,15,
-
-            5,7,15,
-            17,15,7,
-
-            2,4,12,
-            12,4,14,
-
-            4,6,14,
-            16,14,6,
-
-            6,9,19,
-            6,19,16,
-
-            8,9,18,
-            18,9,19,
-        ];
-        */
-
-        /*
-        const headVertices = new Float32Array([
-            6.43, 2.77, bodyWidth/2,  // 0 body 
-            6.30, 3.33, bodyWidth/2,  // 1 body
-            7.58, 3.21, headWidth/2,  // 2
-            7.17, 3.42, headWidth/2,  // 3
-            7.10, 3.24, headWidth/2,  // 4
-            7.05, 3.53, headWidth/2,  // 5
-            6.01, 3.71, bodyWidth/2,  // 6 body
-
-            6.43, 2.77, -bodyWidth/2,  // 7 body  
-            6.30, 3.33, -bodyWidth/2,  // 8 body
-            7.58, 3.21, -headWidth/2,  // 9
-            7.17, 3.42, -headWidth/2,  // 10
-            7.10, 3.24, -headWidth/2,  // 11
-            7.05, 3.53, -headWidth/2,  // 12
-            6.01, 3.71, -bodyWidth/2,  // 13 body
-        ]);
-
-        const headIndices = [
-            // front faces
-            1,0,4,
-            4,0,2,
-            3,4,2,
-            1,4,3,
-            6,1,5,
-
-            // back faces
-            8,7,11,
-            11,7,9,
-
-            10,11,9,
-            8,11,10,
-            13,8,12,
-
-            // side faces
-            0,2,7,
-            7,2,9,
-
-            5,6,12,
-            13,12,6,
-
-            1,5,8,
-            8,5,12,
-
-            2,3,9,
-            10,9,3,
-
-            3,4,10,
-            10,4,11,
-
-            1,3,10,
-            1,10,8             
-        ];
-        */
 
         const headVertices = new Float32Array([
             6.43, 2.77, 0,  // 0 body
@@ -599,67 +475,49 @@ class MyShark extends THREE.Object3D {
         const lowerTopFin = createPart(lowerTopfinVertices, lowerTopfinIndices, color);
         const lowerBottomFin = createPart(lowerBottomfinVertices, lowerBottomfinIndices, color);
         const midBottomFin = createPart(midBottomfinVertices, midBottomfinIndices, color);
-
-        centerGeometry(midBottomFin)
-const midBottomFinRight = midBottomFin.clone();
-const midBottomFinLeft = midBottomFin.clone();
-
-// Position them relative to the body
-midBottomFinRight.position.set(3.6, 3.47, 0.2); // tweak to fit shark’s body
-midBottomFinLeft.position.set(3.6, 3.5, -0.2);
-
-// Rotate slightly outward for realism
-midBottomFinRight.rotation.set(Math.PI / 12, 0, -Math.PI / 12);
-midBottomFinLeft.rotation.set(-Math.PI / 12, 0 , -Math.PI / 12);
-
-body.add(midBottomFinRight);
-body.add(midBottomFinLeft);
-
-
-
         const upperTopFin = createPart(upperTopfinVertices, upperTopfinIndices, color);
         const upperBottomFin = createPart(upperBottomfinVertices, upperBottomfinIndices, color);
-
-        centerGeometry(upperBottomFin);
-
-const upperBottomFinRight = upperBottomFin.clone();
-const upperBottomFinLeft = upperBottomFin.clone();
-
-// Position them near the top rear of the shark body (adjust as needed)
-upperBottomFinLeft.position.set(5.3, 3.9, 0.2);
-upperBottomFinRight.position.set(5.3, 4, -0.2);
-
-// Slight outward tilt
-upperBottomFinLeft.rotation.set(Math.PI / 12, 0, 0);
-upperBottomFinRight.rotation.set(-Math.PI / 12, 0, 0);
-
-// Add both instead of a single center fin
-body.add(upperBottomFinRight);
-body.add(upperBottomFinLeft);
-
         const teeth = createPart(teethVertices, teethIndices, "#ffffff");
 
-        head.add(teeth);
+        centerGeometry(midBottomFin)
+        const midBottomFinRight = midBottomFin.clone();
+        const midBottomFinLeft = midBottomFin.clone();
+        midBottomFinRight.position.set(3.6, 3.47, 0.2);
+        midBottomFinLeft.position.set(3.6, 3.5, -0.2);
+        midBottomFinRight.rotation.set(Math.PI / 12, 0, -Math.PI / 12);
+        midBottomFinLeft.rotation.set(-Math.PI / 12, 0 , -Math.PI / 12);
 
-        
+        centerGeometry(upperBottomFin);
+        const upperBottomFinRight = upperBottomFin.clone();
+        const upperBottomFinLeft = upperBottomFin.clone();
+        upperBottomFinLeft.position.set(5.3, 3.9, 0.2);
+        upperBottomFinRight.position.set(5.3, 4, -0.2);
+        upperBottomFinLeft.rotation.set(Math.PI / 12, 0, 0);
+        upperBottomFinRight.rotation.set(-Math.PI / 12, 0, 0);
+
+        head.add(teeth);
         body.add(tail);
         this.add(body);
         body.add(head);
         body.add(lowerTopFin);
         body.add(lowerBottomFin);
-        //body.add(midBottomFin);
         body.add(upperTopFin);
-        //body.add(upperBottomFin);
+        body.add(midBottomFinRight);
+        body.add(midBottomFinLeft);
+        body.add(upperBottomFinRight);
+        body.add(upperBottomFinLeft);
 
         body.rotation.set(Math.PI, 0, 0); // made shark on the wrong pose initially
 
+        body.scale.set(scale, scale, scale);
+
         function centerGeometry(mesh) {
-    mesh.geometry.computeBoundingBox();
-    const box = mesh.geometry.boundingBox;
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    mesh.geometry.translate(-center.x, -center.y, -center.z);
-}
+            mesh.geometry.computeBoundingBox();
+            const box = mesh.geometry.boundingBox;
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            mesh.geometry.translate(-center.x, -center.y, -center.z);
+        }
 
     }
 }
