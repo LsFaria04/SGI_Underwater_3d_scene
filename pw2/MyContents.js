@@ -158,7 +158,7 @@ class MyContents  {
         this.app.scene.add(turtle);
 
         const shark = new MyShark();
-        shark.position.set(-5, 10, 0);
+        shark.position.set(-8, 10, 0);
         this.app.scene.add(shark);
 
         const sign = new MySign();
