@@ -61,7 +61,7 @@ export class MyCoral {
         const defaultCoral = this.coralPresets.fanCoral;
         const coral = this.generateCoralMesh(defaultCoral, complexity);
         
-        coral.position.y = -4; 
+        // Position is already set in generateCoralMesh on the LOD
         return coral;
     }
 
@@ -166,6 +166,7 @@ export class MyCoral {
             }
         }
 
+        const LOD = new THREE.LOD();
 
         const group = new THREE.Group();
 
@@ -205,8 +206,22 @@ export class MyCoral {
         }
 
         group.scale.setScalar(0.4);
-        group.position.y = -4;
-        return group;
+        
+        // Detailed coral
+        LOD.addLevel(group, 0);
+
+
+        // Simple coral 
+        const simpleCoralGeo = new THREE.CylinderGeometry(0.10, 0.05, 2);
+        const simpleCoralMat = new THREE.MeshStandardMaterial({ color: this.colorZ, metalness: 0.1, roughness: 0.8 });
+        const simpleCoralMesh = new THREE.Mesh(simpleCoralGeo, simpleCoralMat);
+        simpleCoralMesh.name = "simpleCoral";
+        LOD.addLevel(simpleCoralMesh, 25);
+
+        // Set position on the LOD itself
+        LOD.position.y = -4;
+
+        return LOD;
     }   
 
     dispose(object) {
