@@ -30,7 +30,7 @@ class MySwordFish extends THREE.Object3D {
 
     /**
      * Creates a high detail fish fin body (without fins)
-     * @returns {THREE.Mesh} Returns a high detail fish body
+     * @returns {THREE.SkinnedMesh} Returns a high detail fish body
      */
     createFishBody() {
         // Scaling factors
@@ -168,10 +168,86 @@ class MySwordFish extends THREE.Object3D {
         geometry.setIndex(indices);
         geometry.computeVertexNormals();
 
-        const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
+        //Bones
+        let bones = [];
 
-        const detailedMesh = new THREE.Mesh(geometry, material);
-        return detailedMesh;
+        const boneCount = 4;
+        
+        for(let i = 0; i < boneCount; i++){
+            const bone = new THREE.Bone();
+            if (i > 0) {
+                // distance between consecutive bones
+                bone.position.x = bl / (boneCount -1);
+                bone.position.y = 0;
+                bones[i - 1].add(bone);
+            } else {
+                // root bone at the start of the fish
+                bone.position.x = -bl / 2;
+                bone.position.y = 0;
+            }
+
+            bones.push(bone);
+        }
+
+
+        // --- Skinning attributes ---
+        const skinIndices = [];
+        const skinWeights = [];
+
+        // Assign weights based on vertex x position
+        const vertexCount = vertices.length / 3; // number of vertices
+        const vertsPerRow = 9;                   // you said 9 per line
+
+        for (let v = 0; v < vertexCount; v++) {
+            // Column index along the fish (0 = Head, 6 = tail)
+            const col = v % vertsPerRow;
+            const t = 1- (col / (vertsPerRow - 1)); // normalized [0..1] along body
+
+            if(col > 5){
+                //the head vertex should stay fixed between the first and second bones
+                    const bonePos = t * (boneCount - 1);
+                    const w1 = bonePos - 0;
+                    const w0 = 1.0 - w1;
+                    skinIndices.push(0, 1, 0, 0);
+                    skinWeights.push(w0, w1, 0, 0);
+                }
+            else{
+                
+                // Map to bone space
+                const bonePos = t * (boneCount - 1);
+
+                const boneIndex0 = Math.floor(bonePos);
+                const boneIndex1 = Math.min(boneIndex0 + 1, boneCount - 1);
+
+                const w1 = bonePos - boneIndex0;
+                const w0 = 1.0 - w1;
+
+                // Assign indices and weights
+                skinIndices.push(boneIndex0, boneIndex1, 0, 0);
+                skinWeights.push(w0, w1, 0, 0);
+                
+            } 
+            
+        }
+
+
+        geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
+        geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
+
+        // --- Material ---
+        const material = new THREE.MeshStandardMaterial({
+            color: this.color,
+            side: THREE.DoubleSide,
+        });
+
+        // --- Skinned Mesh ---
+        const skinnedMesh = new THREE.SkinnedMesh(geometry, material);
+        const skeleton = new THREE.Skeleton(bones);
+
+        skinnedMesh.add(bones[0]);
+        skinnedMesh.bind(skeleton);
+       
+        return skinnedMesh;
     }
 
     /**
@@ -463,18 +539,22 @@ class MySwordFish extends THREE.Object3D {
         const lod = new THREE.LOD();
         
         // 1. Detailed Mesh (Level 0) - Distance 0
-        const fish = this.createFishBody();
+        this.fish = this.createFishBody();
         const fishBackFin = this.createFishFinBack();
         const fishTopFin = this.createTopFin();
         const fishBottomFin = this.createBottomFin();
-        fishBackFin.position.set(this.lengthBody / 2 ,0,0);
-        fishTopFin.position.set(-this.lengthBody/ 2 * 0.5,this.lengthFin / 4 + this.widthBody / 2,0);
-        fishBottomFin.position.set(-this.lengthBody/ 2 * 0.5,-this.lengthFin / 8 - this.widthBody / 2,0);
         const detailedWrapper = new THREE.Object3D();
-        detailedWrapper.add(fish);
-        detailedWrapper.add(fishBackFin);
-        detailedWrapper.add(fishTopFin);
-        detailedWrapper.add(fishBottomFin);
+        detailedWrapper.add(this.fish);
+
+        //attach the fins to a bone in the body
+        const midFinsBone = this.fish.skeleton.bones[2];
+        const backFinBone = this.fish.skeleton.bones[3];
+        midFinsBone.add(fishTopFin);
+        midFinsBone.add(fishBottomFin);
+        backFinBone.add(fishBackFin);
+        fishTopFin.position.set(-this.lengthBody / 4 * 1.2,this.lengthFin / 4 + this.widthBody / 2,0);
+        fishBottomFin.position.set(-this.lengthBody / 4 * 1.2,-this.lengthFin / 8 - this.widthBody / 2,0);
+
         lod.addLevel(detailedWrapper, 0);
 
         // 2. Medium-Detail Mesh (Level 1)
@@ -496,6 +576,24 @@ class MySwordFish extends THREE.Object3D {
         this.position.y = this.widthBody / 2;
 
         this.add(lod);
+    }
+
+    update(delta){
+        // Accumulate elapsed time
+        if (!this.elapsed) this.elapsed = 0;
+        this.elapsed += delta;
+
+        const bones = this.fish.skeleton.bones;
+        const waveSpeed = 2;      // how fast the wave moves
+        const waveAmplitude = 0.3;  // radians (~17°)
+        
+        bones.forEach((bone, i) => {
+            // Head stays stable, tail moves more
+            
+            const influence = i / bones.length;
+            const rotation = Math.sin(this.elapsed * waveSpeed + (bones.length - i)) * waveAmplitude * influence;
+            bone.rotation.y = rotation;
+        });
     }
 }
 

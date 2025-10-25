@@ -172,9 +172,9 @@ class MyContents  {
         twoDShark.position.set(-0.8, 0.5, sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
         sign.board.add(twoDShark);
 
-        const swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
-        swordFish.position.set(0,3,0);
-        this.app.scene.add(swordFish);
+        this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
+        this.swordFish.position.set(0,3,0);
+        this.app.scene.add(this.swordFish);
     }
 
     initTextures() {
@@ -184,6 +184,7 @@ class MyContents  {
     update(delta) {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
+        this.swordFish.update(delta);
         
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
