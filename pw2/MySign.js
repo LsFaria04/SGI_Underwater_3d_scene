@@ -47,7 +47,7 @@ class MySign extends THREE.Object3D {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = 'bold 32px Arial';
-      ctx.fillStyle = 'black';
+      ctx.fillStyle = 'red';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       ctx.fillText(text, canvas.width / 2, 25);
