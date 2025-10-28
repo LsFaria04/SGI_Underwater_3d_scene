@@ -21,15 +21,15 @@ class MySwordFish extends THREE.Object3D {
         this.widthFin = widthFin;
         this.lengthFin = lengthFin;
         this.color = color;
-        this.lodMediumThreshold = 15;
-        this.lodBasicThreshold = 30;
+        this.lodMediumThreshold = 25;
+        this.lodBasicThreshold = 35;
         
 
         this.init();
     }
 
     /**
-     * Creates a high detail fish fin body (without fins)
+     * Creates a high detail fish body (without fins) with skinning 
      * @returns {THREE.SkinnedMesh} Returns a high detail fish body
      */
     createFishBody() {
@@ -558,12 +558,16 @@ class MySwordFish extends THREE.Object3D {
         lod.addLevel(detailedWrapper, 0);
 
         // 2. Medium-Detail Mesh (Level 1)
-        const fishMedium = this.createFishBody();
+        this.fishMedium = this.createFishBody();
         const fishBackFinMedium = this.createFishFinBack();
-        fishBackFinMedium.position.set(this.lengthBody / 2 ,0,0);
         const mediumWrapper = new THREE.Object3D();
-        mediumWrapper.add(fishMedium);
+        mediumWrapper.add(this.fishMedium);
         mediumWrapper.add(fishBackFinMedium);
+
+        //attach the back fin to a bone in the body
+        const backFinBoneMedium = this.fishMedium.skeleton.bones[3];
+        backFinBoneMedium.add(fishBackFinMedium);
+
    
         lod.addLevel(mediumWrapper, this.lodMediumThreshold);
 
@@ -584,8 +588,10 @@ class MySwordFish extends THREE.Object3D {
         this.elapsed += delta;
 
         const bones = this.fish.skeleton.bones;
-        const waveSpeed = 2;      // how fast the wave moves
-        const waveAmplitude = 0.3;  // radians (~17°)
+        const waveSpeed = 2;   
+        const waveAmplitude = 0.3; 
+
+        const bonesMedium = this.fishMedium.skeleton.bones;
         
         bones.forEach((bone, i) => {
             // Head stays stable, tail moves more
@@ -594,6 +600,14 @@ class MySwordFish extends THREE.Object3D {
             const rotation = Math.sin(this.elapsed * waveSpeed + (bones.length - i)) * waveAmplitude * influence;
             bone.rotation.y = rotation;
         });
+        bonesMedium.forEach((bone, i) => {
+            // Head stays stable, tail moves more
+            
+            const influence = i / bones.length;
+            const rotation = Math.sin(this.elapsed * waveSpeed + (bones.length - i)) * waveAmplitude * influence;
+            bone.rotation.y = rotation;
+        });
+
     }
 }
 
