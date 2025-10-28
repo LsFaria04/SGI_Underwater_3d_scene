@@ -100,7 +100,7 @@ class MySeaPlant extends THREE.Object3D {
         this.add(this.plant);
     }
     initHighLOD(){
-        const plantGeometry = new THREE.BoxGeometry(this.width, this.height, this.depth, this.width / 0.05,this.height / 0.05,this.depth /0.05);
+        const plantGeometry = new THREE.BoxGeometry(this.width, this.height, this.depth, 5,40,5);
 
         const pos = plantGeometry.attributes.position;
         const vect = new THREE.Vector3();
