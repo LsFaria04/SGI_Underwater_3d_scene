@@ -52,7 +52,7 @@ class MyRock extends THREE.Object3D {
         const rockGeometry = new THREE.DodecahedronGeometry(this.radius * 0.8);
         const rockMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.rockTexture ? this.rockTexture : null});
         const rock = new THREE.Mesh(rockGeometry, rockMaterial);
-        //rock.position.y = this.radius;
+    
 
         this.add(rock);
     }
@@ -70,7 +70,7 @@ class MyRock extends THREE.Object3D {
 
         const rockMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.rockTexture ? this.rockTexture : null});
         const rock = new THREE.Mesh(geometry, rockMaterial);
-        //rock.position.y = this.radius;
+        
         this.add(rock)
     }
 

@@ -3,50 +3,51 @@ import {getRandomInt} from './utils.js';
 import { MyRock } from './MyRock.js';
 
 
-class MyRockGroup extends THREE.Object3D {
-    constructor(numbRocks, minSpace,maxScale, minScale, colors, overlap){
+class MyRockGroup extends THREE.Group {
+    constructor(numbRocks, minSpace,maxScale, minScale, colors, overlap, textures){
         super();
         
 
-        const rock = new MyRock(1,null, null,  "L"); //default rock
         const gridSide = Math.ceil(Math.sqrt(numbRocks));
-        const rockGroup = new THREE.Group();
         let rockCount = 0;
 
-
-
-        const baseWidth = rock.radius ;
-        const baseDepth = rock.radius ;
+        const baseWidth = 1 ;
+        const baseDepth = 1 ;
 
         let baseCellWidth = baseWidth * maxScale + minSpace;
         let baseCellDepth = baseDepth * maxScale + minSpace;
 
         for (let x = 0; x < gridSide && rockCount < numbRocks; x++) {
             for (let y = 0; y < gridSide && rockCount < numbRocks; y++) {
-            const cloneRock = rock.clone();
+            const rock = new MyRock(1,null, null,  "L");
             const highLODRock = new MyRock(1,null,null, "H");
             const midLODRock = new MyRock(1,null,null, "M");
             const lod = new THREE.LOD();
 
             // Random scale
             const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());
-            cloneRock.scale.set(scaleFactor, scaleFactor, scaleFactor);
+            rock.scale.set(scaleFactor, scaleFactor, scaleFactor);
             highLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
             midLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
 
-            //Random color
+            //Random color and texture
             const randomColor = getRandomInt(0,colors.length - 1);
             const color = colors[randomColor];
-            cloneRock.traverse(child => {
+            const randomTexture = getRandomInt(0,textures.length - 1);
+            const texture = textures[randomTexture];
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(4, 4);
+            rock.traverse(child => {
                 if (child.isMesh) {
-                    child.material = new THREE.MeshPhongMaterial({ color: color });
+                    child.material = new THREE.MeshPhongMaterial({ color: color, map: texture});
                     child.material.needsUpdate = true;
                 }
             });
             highLODRock.traverse(
                 child => {
                 if (child.isMesh) {
-                    child.material = new THREE.MeshPhongMaterial({ color: color });
+                    child.material = new THREE.MeshStandardMaterial({ color: color, map: texture, roughness: 0.7});
                     child.material.needsUpdate = true;
                 }
             }
@@ -54,7 +55,7 @@ class MyRockGroup extends THREE.Object3D {
             midLODRock.traverse(
                 child => {
                 if (child.isMesh) {
-                    child.material = new THREE.MeshPhongMaterial({ color: color });
+                    child.material = new THREE.MeshPhongMaterial({ color: color, map: texture});
                     child.material.needsUpdate = true;
                 }
             }
@@ -73,16 +74,15 @@ class MyRockGroup extends THREE.Object3D {
                 0,
                 cellDepth * y
             );
-            lod.addLevel(cloneRock, 30);
+            lod.addLevel(rock, 30);
             lod.addLevel(highLODRock,0);
             lod.addLevel(midLODRock,15);
-            rockGroup.add(lod);
+            this.add(lod);
             rockCount++;
             }
             
         
         }
-        this.add(rockGroup);
     }
 }
 
