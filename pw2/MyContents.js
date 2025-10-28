@@ -71,10 +71,12 @@ class MyContents  {
 
         //plant position and size [x, z, number of plants]
         const plantGroupsPosSize = [[-20, -1, 100], [1, 8, 50], [10,5, 10]];
+        this.seaPlantGroups = [];
         for(let i = 0; i < plantGroupsPosSize.length; i++){
             const pos = plantGroupsPosSize[i];
             const seaPlantGroup = new MySeaPlantGroup(pos[2], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
             this.app.scene.add(seaPlantGroup);
+            this.seaPlantGroups.push(seaPlantGroup);
             seaPlantGroup.position.set(pos[0],0,pos[1]);
         }
         
@@ -186,6 +188,9 @@ class MyContents  {
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
         
+        //update the animation in the sea plants
+        for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
+
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
             if (child instanceof THREE.LOD) {

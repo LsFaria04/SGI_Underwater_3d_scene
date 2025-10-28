@@ -3,14 +3,13 @@ import {getRandomInt} from './utils.js';
 import { MySeaPlant } from './MySeaPlant.js';
 
 
-class MySeaPlantGroup extends THREE.Object3D {
+class MySeaPlantGroup extends THREE.Group {
     constructor(numbSeaPlants, minSpace,maxScale, minScale, colors, overlap){
         super();
         
 
         const plant = new MySeaPlant(0.05,1,0.05,null, null,  "L"); //default plant
         const gridSide = Math.ceil(Math.sqrt(numbSeaPlants));
-        const plantGroup = new THREE.Group();
         let plantCount = 0;
 
         const baseWidth = plant.width ;
@@ -74,13 +73,29 @@ class MySeaPlantGroup extends THREE.Object3D {
             lod.addLevel(clonePlant, 20);
             lod.addLevel(highLODPlant,0);
             lod.addLevel(midLODPlant,10);
-            plantGroup.add(lod);
+            this.add(lod);
             plantCount++;
-            }
-            
-        
+            }         
         }
-        this.add(plantGroup);
+    }
+
+    update(delta){
+        //traverse the plant group to 
+        this.traverse(
+             child => {
+                //child is a LOD
+                if (child instanceof THREE.LOD) {
+                    let visibleLevel = child.getObjectForDistance(0);
+                    if (visibleLevel) {
+                        visibleLevel.update(delta);
+                    }
+                    visibleLevel = child.getObjectForDistance(10);
+                    if (visibleLevel) {
+                        visibleLevel.update(delta);
+                    }
+                }
+            }
+        );
     }
 }
 
