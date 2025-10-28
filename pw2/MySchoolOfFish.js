@@ -21,6 +21,7 @@ class MySchoolfOfFish extends THREE.Group {
         const gridSide = Math.ceil(Math.cbrt(numbFish));
         let fishCount = 0;
 
+        this.fishes = []; // Store all fish instances
 
          const cellWidth = baseWidth * maxScale + minSpace;
         const cellLen = baseLen * maxScale + minSpace;
@@ -49,12 +50,22 @@ class MySchoolfOfFish extends THREE.Group {
                     );
 
                     this.add(cloneSpecie);
+                    this.fishes.push(cloneSpecie); // Add to fish array
                     fishCount++;
                 }
                 
             }
         }
     
+    }
+
+    update(delta){
+        // Update each fish in the school
+        for (const fish of this.fishes) {
+            if (fish.update) {
+                fish.update(delta);
+            }
+        }
     }
 }
 

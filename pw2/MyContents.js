@@ -121,10 +121,12 @@ class MyContents  {
         
         //carps position and size [x, y, z, number of carps]
         const carpsGroupsPosSize = [[-10, 1, -10, 10], [10, 1, 5, 5]];
+        this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
             const fishGroup = new MySchoolfOfFish(pos[3], 0.5, 1,0.2, "Carp", 1,1,1,1);
             this.app.scene.add(fishGroup);
+            this.fishGroups.push(fishGroup);
             fishGroup.position.set(pos[0],pos[1],pos[2]);
         }
         
@@ -188,6 +190,11 @@ class MyContents  {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
+        
+        // Update all fish groups (carps)
+        for(const fishGroup of this.fishGroups) {
+            fishGroup.update(delta);
+        }
         
         //update the animation in the sea plants
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
