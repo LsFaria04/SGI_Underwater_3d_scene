@@ -581,36 +581,12 @@ class MySwordFish extends THREE.Object3D {
 
         this.add(lod);
 
-        const radius = 10;
-        const duration = 30; // seconds
-        const segments = 60; // number of keyframes
-        const times = [];
-        const values = [];
-
-        for (let i = 0; i <= segments; i++) {
-            const t = (i / segments) * duration;
-            const angle = (t / duration) * Math.PI * 2;
-            const x = Math.cos(angle) * radius;
-            const z = Math.sin(angle) * radius;
-
-            times.push(t);
-            values.push(x, 0, z);
-        }
-        const positionTrack = new THREE.VectorKeyframeTrack('.position', times, values, THREE.InterpolateSmooth);
-        this.mixer = new THREE.AnimationMixer(this.detailedWrapper); // or SkinnedMesh
-        this.clip = new THREE.AnimationClip('swim', -1, [positionTrack]);
-        this.action = this.mixer.clipAction(this.clip);
-        this.action.play();
     }
 
     update(delta){
         // Accumulate elapsed time
         if (!this.elapsed) this.elapsed = 0;
         this.elapsed += delta;
-        if (!this.previousPos) this.previousPos = this.detailedWrapper.position;
-        
-        const deltaPos = this.detailedWrapper.position.sub(this.previousPos);
-        this.previousPos = this.detailedWrapper.position;
 
         const bones = this.fish.skeleton.bones;
         const waveSpeed = 2;   
@@ -632,11 +608,6 @@ class MySwordFish extends THREE.Object3D {
             const rotation = Math.sin(this.elapsed * waveSpeed + (bones.length - i)) * waveAmplitude * influence;
             bone.rotation.y = rotation;
         });
-
-        //update the keyframe animation
-        this.mixer.update(delta);
-        const rootBone = this.fish.skeleton.bones[0];
-        rootBone.rotation.y = Math.atan2(deltaPos.x, deltaPos.z);
     }
 }
 

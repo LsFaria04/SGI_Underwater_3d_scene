@@ -17,6 +17,7 @@ import { MySign } from './MySign.js';
 import { MyShark } from './MyShark.js';
 import { MySwordFish } from './MySwordFish.js';
 import { MySeaPlant } from './MySeaPlant.js';
+import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
 
 
 /**
@@ -162,7 +163,8 @@ class MyContents  {
         this.app.scene.add(turtle);
 
         const shark = new MyShark();
-        shark.position.set(-8, 10, 0);
+        shark.rotation.y = Math.PI;
+        shark.position.set(5, 10, 0);
         this.app.scene.add(shark);
 
         const sign = new MySign();
@@ -178,6 +180,10 @@ class MyContents  {
         this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
         this.swordFish.position.set(0,3,0);
         this.app.scene.add(this.swordFish);
+        
+        
+        this.animationShark = new MyKeyFrameAnimation(shark, "random", 2,50, 30);
+        this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10,50, 60);
     }
 
     initTextures() {
@@ -191,6 +197,9 @@ class MyContents  {
         
         //update the animation in the sea plants
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
+
+        this.animationShark.update(delta);
+        this.animationSwordFish.update(delta);
 
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
