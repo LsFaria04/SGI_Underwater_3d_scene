@@ -13,15 +13,42 @@ class MySeaPlant extends THREE.Object3D {
      * @param {*} plantTexture Texture of the plant
      * @param {string} LOD Level of detail ("L", "M", "H")
      */
-    constructor(width = 0.2, height = 1, depth = 0.05, color = "#000000", plantTexture, LOD){
+    constructor(width = 0.2, height = 1, depth = 0.05, color = "#000000",LOD){
         super();
         
         this.width = width;
         this.height = height;
         this.depth = depth;
-        this.plantTexture = plantTexture;
         this.color = color;
         
+        //create a common shader material to allow a performante calculation of the animation (in the GPU)
+        let uniforms = {
+            uTime: { value: 0 },
+            uBend: { value: 0.1 },
+            height: {value: height},
+            uColor: {value: new THREE.Color(color)}
+        };
+        this.material = new THREE.ShaderMaterial({
+            uniforms,
+            vertexShader: `
+                uniform float uTime;
+                uniform float uBend;
+                uniform float height;
+                void main() {
+                float influence = (position.y + height * 0.5 ) / height;
+                vec3 transformed = position;
+                transformed.x += sin(uTime + position.y) * uBend * influence;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 uColor;
+                void main() {
+                gl_FragColor = vec4(uColor, 1.0);
+                }
+            `,
+        });
+
         switch (LOD){
             case "L":
                 this.initLowLOD();
@@ -35,15 +62,14 @@ class MySeaPlant extends THREE.Object3D {
             default:
                 this.initLowLOD();
         }
-        
+   
     }
 
     initLowLOD(){
         //simple box 
         const plantGeometry = new THREE.BoxGeometry(this.width, this.height, this.depth);
 
-        const plantMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.plantTexture ? this.plantTexture : null});
-        this.plant = new THREE.Mesh(plantGeometry, plantMaterial);
+        this.plant = new THREE.Mesh(plantGeometry, this.material);
         this.plant.position.y = this.height / 2;
 
         this.add(this.plant);
@@ -68,8 +94,7 @@ class MySeaPlant extends THREE.Object3D {
         pos.needsUpdate = true;
         plantGeometry.computeVertexNormals();
 
-        const plantMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.plantTexture ? this.plantTexture : null});
-        this.plant = new THREE.Mesh(plantGeometry, plantMaterial);
+        this.plant = new THREE.Mesh(plantGeometry, this.material);
         this.plant.position.y = this.height / 2;
 
         this.add(this.plant);
@@ -94,12 +119,14 @@ class MySeaPlant extends THREE.Object3D {
         pos.needsUpdate = true;
         plantGeometry.computeVertexNormals();
 
-        
-        const plantMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.plantTexture ? this.plantTexture : null});
-        this.plant = new THREE.Mesh(plantGeometry, plantMaterial);
+        this.plant = new THREE.Mesh(plantGeometry, this.material);
         this.plant.position.y = this.height / 2;
 
         this.add(this.plant);
+    }
+
+    updateColor(color){
+        this.material.uniforms.uColor.value.set(new THREE.Color(color));
     }
 
     update(delta){
@@ -107,22 +134,8 @@ class MySeaPlant extends THREE.Object3D {
         if (!this.elapsed) this.elapsed = 0;
         this.elapsed += delta;
 
-        const pos = this.plant.geometry.attributes.position;
-        const vect = new THREE.Vector3();
-        
-        const frequency = 1;// speed
-        const maxY = this.height;
-
-        for (let i = 0; i < pos.count; i++) {
-            vect.fromBufferAttribute(pos, i);
-            const bend = 0.005;
-            const influence = ((vect.y + maxY / 2) / maxY);
-            vect.x += Math.sin(this.elapsed * frequency + vect.y) * bend * influence;
-
-            pos.setXYZ(i, vect.x, vect.y, vect.z);
-        }
-        pos.needsUpdate = true;
-        this.plant.geometry.computeVertexNormals();
+        //update the time in the shader to animate the plant
+        this.material.uniforms.uTime.value = this.elapsed;
     }
 }
 

@@ -16,6 +16,7 @@ import { My2DShark } from './My2DShark.js';
 import { MySign } from './MySign.js';
 import { MyShark } from './MyShark.js';
 import { MySwordFish } from './MySwordFish.js';
+import { MySeaPlant } from './MySeaPlant.js';
 
 
 /**
