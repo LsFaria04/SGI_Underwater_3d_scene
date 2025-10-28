@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { MyCoral } from './MyCoral.js';
 
-class MyCoralReef extends THREE.Object3D {
+class MyCoralReef extends THREE.Group {
       /**
      * 
      * @param {number} numbCorals Number of corals in the reef

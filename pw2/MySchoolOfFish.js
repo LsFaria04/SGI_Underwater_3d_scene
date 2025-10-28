@@ -4,7 +4,7 @@ import { MyCarp } from './MyCarp.js';
 /**
  * This class represents a school of fish (fish group)
  */
-class MySchoolfOfFish extends THREE.Object3D {
+class MySchoolfOfFish extends THREE.Group {
     /**
      * 
      * @param {*} numbFish Number of fish in the group
@@ -19,9 +19,9 @@ class MySchoolfOfFish extends THREE.Object3D {
         super();
         
         const gridSide = Math.ceil(Math.cbrt(numbFish));
-        const fishGroup = new THREE.Group();
         let fishCount = 0;
 
+        this.fishes = []; // Store all fish instances
 
          const cellWidth = baseWidth * maxScale + minSpace;
         const cellLen = baseLen * maxScale + minSpace;
@@ -49,14 +49,23 @@ class MySchoolfOfFish extends THREE.Object3D {
                         cellLen * z
                     );
 
-                    fishGroup.add(cloneSpecie);
+                    this.add(cloneSpecie);
+                    this.fishes.push(cloneSpecie); // Add to fish array
                     fishCount++;
                 }
                 
             }
         }
     
-        this.add(fishGroup);
+    }
+
+    update(delta){
+        // Update each fish in the school
+        for (const fish of this.fishes) {
+            if (fish.update) {
+                fish.update(delta);
+            }
+        }
     }
 }
 

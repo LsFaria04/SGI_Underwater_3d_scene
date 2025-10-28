@@ -16,6 +16,8 @@ import { My2DShark } from './My2DShark.js';
 import { MySign } from './MySign.js';
 import { MyShark } from './MyShark.js';
 import { MySwordFish } from './MySwordFish.js';
+import { MySeaPlant } from './MySeaPlant.js';
+import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
 
 
 /**
@@ -36,8 +38,8 @@ class MyContents  {
     // initializes the scene contents
     init() {
         this.initLights();
-        this.initObjects();
         this.initTextures();
+        this.initObjects(); 
     }
 
     initLights() {
@@ -63,7 +65,7 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        const floor = new MyFloor();
+        const floor = new MyFloor(50, 128, this.sandTexture);
         this.app.scene.add(floor);
 
         const water = new MyWater();
@@ -71,10 +73,12 @@ class MyContents  {
 
         //plant position and size [x, z, number of plants]
         const plantGroupsPosSize = [[-20, -1, 100], [1, 8, 50], [10,5, 10]];
+        this.seaPlantGroups = [];
         for(let i = 0; i < plantGroupsPosSize.length; i++){
             const pos = plantGroupsPosSize[i];
             const seaPlantGroup = new MySeaPlantGroup(pos[2], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
             this.app.scene.add(seaPlantGroup);
+            this.seaPlantGroups.push(seaPlantGroup);
             seaPlantGroup.position.set(pos[0],0,pos[1]);
         }
         
@@ -118,10 +122,12 @@ class MyContents  {
         
         //carps position and size [x, y, z, number of carps]
         const carpsGroupsPosSize = [[-10, 1, -10, 10], [10, 1, 5, 5]];
+        this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
             const fishGroup = new MySchoolfOfFish(pos[3], 0.5, 1,0.2, "Carp", 1,1,1,1);
             this.app.scene.add(fishGroup);
+            this.fishGroups.push(fishGroup);
             fishGroup.position.set(pos[0],pos[1],pos[2]);
         }
         
@@ -130,7 +136,7 @@ class MyContents  {
         const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [1, 4, 3], [-10, 4, 8], [3, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
         for(let i = 0; i < rockPosSize.length; i++){
             const pos = rockPosSize[i];
-            const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], true);
+            const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], true, [this.rockTexture, this.rockTexture2]);
             rockGroup.position.set(pos[0],0,pos[1]);
             this.app.scene.add(rockGroup);
         }
@@ -159,7 +165,8 @@ class MyContents  {
         this.app.scene.add(turtle);
 
         const shark = new MyShark();
-        shark.position.set(-8, 10, 0);
+        shark.rotation.y = Math.PI;
+        shark.position.set(5, 10, 0);
         this.app.scene.add(shark);
 
         const sign = new MySign();
@@ -175,10 +182,17 @@ class MyContents  {
         this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
         this.swordFish.position.set(0,3,0);
         this.app.scene.add(this.swordFish);
+        
+        
+        this.animationShark = new MyKeyFrameAnimation(shark, "random", 2,50, 30);
+        this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10,50, 60);
     }
 
     initTextures() {
-        
+        this.rockTexture = new THREE.TextureLoader().load("./textures/Rock1.jpeg");
+        this.rockTexture2 = new THREE.TextureLoader().load("./textures/Rock2.jpg");
+
+        this.sandTexture = new THREE.TextureLoader().load("./textures/sand.jpg");
     }
 
     update(delta) {
@@ -186,6 +200,17 @@ class MyContents  {
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
         
+        // Update all fish groups (carps)
+        for(const fishGroup of this.fishGroups) {
+            fishGroup.update(delta);
+        }
+        
+        //update the animation in the sea plants
+        for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
+
+        this.animationShark.update(delta);
+        this.animationSwordFish.update(delta);
+
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
             if (child instanceof THREE.LOD) {

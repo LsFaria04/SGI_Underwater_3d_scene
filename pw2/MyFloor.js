@@ -8,7 +8,7 @@ class MyFloor extends THREE.Mesh {
      * @param {*} size Floor size
      * @param {*} segments Floor segments
      */
-    constructor(size = 50, segments = 128) {
+    constructor(size = 50, segments = 128, texture) {
         const geometry = new THREE.PlaneGeometry(size, size, segments, segments);
 
         const positions = geometry.attributes.position;
@@ -21,10 +21,14 @@ class MyFloor extends THREE.Mesh {
         positions.needsUpdate = true;
         geometry.computeVertexNormals();
 
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(10, 10);
         const material = new THREE.MeshPhongMaterial({
             color: 0xC2B280,   // sand color
             shininess: 8,
-            specular: 0x222222
+            specular: 0x222222,
+            map: texture
         });
 
         super(geometry, material);
