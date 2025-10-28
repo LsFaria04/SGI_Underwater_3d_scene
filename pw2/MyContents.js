@@ -130,6 +130,7 @@ class MyContents  {
             this.fishGroups.push(fishGroup);
             fishGroup.position.set(pos[0],pos[1],pos[2]);
         }
+
         
 
         //rock position and size [x, z, number of rocks]
@@ -186,6 +187,12 @@ class MyContents  {
         
         this.animationShark = new MyKeyFrameAnimation(shark, "random", 2,50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10,50, 60);
+
+        this.fishGroupsAnimations = []
+        for (const fishGroup of this.fishGroups){
+            this.fishGroupsAnimations.push(fishGroup.getAnimations());
+        }
+
     }
 
     initTextures() {
@@ -200,7 +207,7 @@ class MyContents  {
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
         
-        // Update all fish groups (carps)
+        // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
             fishGroup.update(delta);
         }
@@ -208,8 +215,13 @@ class MyContents  {
         //update the animation in the sea plants
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
 
+        // Update keyframe animations
         this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
+        
+        for (const fishAnimations of this.fishGroupsAnimations) {
+            for (const animation of fishAnimations) animation.update(delta);
+        }
 
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
