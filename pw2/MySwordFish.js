@@ -246,6 +246,10 @@ class MySwordFish extends THREE.Object3D {
 
         skinnedMesh.add(bones[0]);
         skinnedMesh.bind(skeleton);
+
+        skinnedMesh.castShadow = true;
+        skinnedMesh.receiveShadow = true;
+        material.shadowSide = THREE.BackSide;
        
         return skinnedMesh;
     }
@@ -329,6 +333,8 @@ class MySwordFish extends THREE.Object3D {
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
         const detailedMesh = new THREE.Mesh(geometry, material);
+        detailedMesh.castShadow = true;
+
         return detailedMesh;
     }
 
@@ -418,6 +424,8 @@ class MySwordFish extends THREE.Object3D {
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
         const detailedMesh = new THREE.Mesh(geometry, material);
+        detailedMesh.castShadow = true;
+
         return detailedMesh;
 
     }
