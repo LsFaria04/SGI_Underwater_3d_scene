@@ -24,11 +24,13 @@ class MyCarp extends THREE.Object3D {
         this.lodMediumThreshold = 15;
         this.lodBasicThreshold = 30;
         
+        // Animation properties
+        this.elapsed = 0;
 
         this.init();
     }
 
-    createFishMesh(includeSmallFins = true) {
+    createFishMesh(includeSmallFins = true, useSkinnedMesh = false) {
         // Scaling factors
         const bw = this.widthBody;
         const bl = this.lengthBody;
@@ -119,6 +121,65 @@ class MyCarp extends THREE.Object3D {
 
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
+        if (useSkinnedMesh) {
+            // Create bones for skeletal animation
+            const bones = [];
+            const boneCount = 3; // Head, middle, tail
+
+            // Calculate fish length based on vertices (head at 0, tail at ~3*bl)
+            const fishLength = bl * 3;
+
+            for (let i = 0; i < boneCount; i++) {
+                const bone = new THREE.Bone();
+                if (i > 0) {
+                    // Position each bone along the fish body length
+                    bone.position.x = fishLength / (boneCount - 1);
+                    bone.position.y = 0;
+                    bones[i - 1].add(bone);
+                } else {
+                    // Root bone at the head of the fish
+                    bone.position.x = 0;
+                    bone.position.y = bw;
+                }
+                bones.push(bone);
+            }
+
+            // Add skinning attributes
+            const skinIndices = [];
+            const skinWeights = [];
+
+            const vertexCount = vertices.length / 3;
+
+            for (let v = 0; v < vertexCount; v++) {
+                const vx = vertices[v * 3]; // x position of vertex
+
+                // Map vertex x position to bone influence
+                // Normalize based on actual fish length
+                const normalizedX = vx / fishLength; // normalize to [0, 1]
+                const bonePos = normalizedX * (boneCount - 1);
+                
+                const boneIndex0 = Math.floor(bonePos);
+                const boneIndex1 = Math.min(boneIndex0 + 1, boneCount - 1);
+                
+                const w1 = bonePos - boneIndex0;
+                const w0 = 1.0 - w1;
+                
+                skinIndices.push(boneIndex0, boneIndex1, 0, 0);
+                skinWeights.push(w0, w1, 0, 0);
+            }
+
+            geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
+            geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
+
+            // Create SkinnedMesh
+            const skinnedMesh = new THREE.SkinnedMesh(geometry, material);
+            const skeleton = new THREE.Skeleton(bones);
+            skinnedMesh.add(bones[0]);
+            skinnedMesh.bind(skeleton);
+
+            return skinnedMesh;
+        }
+
         const detailedMesh = new THREE.Mesh(geometry, material);
         return detailedMesh;
     }
@@ -161,14 +222,14 @@ class MyCarp extends THREE.Object3D {
      * Creates the high-detail geometry for the fish
     */
     createDetailedMesh() {
-        return this.createFishMesh(true);
+        return this.createFishMesh(true, true); // true for small fins, true for skinned mesh
     }
 
     /**
      * Creates the medium-detail geometry for the fish (Level 1) - small fins removed.
     */
     createMediumDetailMesh() {
-        return this.createFishMesh(false);
+        return this.createFishMesh(false, true); // false for small fins, true for skinned mesh
     }
 
 
@@ -177,15 +238,15 @@ class MyCarp extends THREE.Object3D {
         const lod = new THREE.LOD();
         
         // 1. Detailed Mesh (Level 0) - Distance 0
-        const detailedFish = this.createDetailedMesh();
+        this.detailedFish = this.createDetailedMesh();
         const detailedWrapper = new THREE.Object3D();
-        detailedWrapper.add(detailedFish);
+        detailedWrapper.add(this.detailedFish);
         lod.addLevel(detailedWrapper, 0);
 
         // 2. Medium-Detail Mesh (Level 1)
-        const mediumDetailFish = this.createMediumDetailMesh();
+        this.mediumDetailFish = this.createMediumDetailMesh();
         const mediumWrapper = new THREE.Object3D();
-        mediumWrapper.add(mediumDetailFish);
+        mediumWrapper.add(this.mediumDetailFish);
    
         lod.addLevel(mediumWrapper, this.lodMediumThreshold);
 
@@ -196,6 +257,43 @@ class MyCarp extends THREE.Object3D {
         this.position.y = this.widthBody * 1.5;
 
         this.add(lod);
+    }
+
+    /**
+     * Update method to animate the fish skeleton
+     * @param {number} delta Time elapsed since last frame
+     */
+    update(delta) {
+        
+        // Accumulate elapsed time
+        this.elapsed += delta;
+
+        // Animate detailed fish
+        if (this.detailedFish && this.detailedFish.skeleton) {
+            const bones = this.detailedFish.skeleton.bones;
+            const waveSpeed = 3;        // Speed of the swimming motion
+            const waveAmplitude = 0.4;  // How much the fish bends
+            
+            bones.forEach((bone, i) => {
+                // Head stays more stable, tail moves more
+                const influence = i / (bones.length - 1);
+                const rotation = Math.sin(this.elapsed * waveSpeed + i * 0.5) * waveAmplitude * influence;
+                bone.rotation.y = rotation;
+            });
+        }
+
+        // Animate medium detail fish
+        if (this.mediumDetailFish && this.mediumDetailFish.skeleton) {
+            const bones = this.mediumDetailFish.skeleton.bones;
+            const waveSpeed = 3;
+            const waveAmplitude = 0.4;
+            
+            bones.forEach((bone, i) => {
+                const influence = i / (bones.length - 1);
+                const rotation = Math.sin(this.elapsed * waveSpeed + i * 0.5) * waveAmplitude * influence;
+                bone.rotation.y = rotation;
+            });
+        }
     }
 }
 
