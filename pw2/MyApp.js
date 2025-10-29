@@ -62,6 +62,10 @@ class MyApp  {
         // Configure renderer size
         this.renderer.setSize( window.innerWidth, window.innerHeight );
 
+        //initialize the shadows
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
         // Append Renderer to DOM
         document.getElementById("canvas").appendChild( this.renderer.domElement);
 

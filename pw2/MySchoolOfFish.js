@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MyCarp } from './MyCarp.js';
+import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
 
 /**
  * This class represents a school of fish (fish group)
@@ -23,7 +24,9 @@ class MySchoolfOfFish extends THREE.Group {
 
         this.fishes = []; // Store all fish instances
 
-         const cellWidth = baseWidth * maxScale + minSpace;
+        this.fishGroupsAnimations = []; // Store all animations for the fishes
+
+        const cellWidth = baseWidth * maxScale + minSpace;
         const cellLen = baseLen * maxScale + minSpace;
 
         for (let x = 0; x < gridSide && fishCount < numbFish; x++) {
@@ -49,6 +52,7 @@ class MySchoolfOfFish extends THREE.Group {
                         cellLen * z
                     );
 
+                    this.fishGroupsAnimations.push(new MyKeyFrameAnimation(cloneSpecie, "random", 2,50, 30));
                     this.add(cloneSpecie);
                     this.fishes.push(cloneSpecie); // Add to fish array
                     fishCount++;
@@ -66,6 +70,10 @@ class MySchoolfOfFish extends THREE.Group {
                 fish.update(delta);
             }
         }
+    }
+
+    getAnimations(){
+        return this.fishGroupsAnimations;
     }
 }
 

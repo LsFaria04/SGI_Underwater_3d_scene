@@ -96,8 +96,6 @@ class MyCrab extends THREE.Object3D {
         for(let i = 2; i < 4; i++){
             const legCopy = leg.clone();
             legCopy.position.x = this.depth * 0.7 - spaceBetweenLegs * i;
-            console.log(legCopy.position.x)
-    
             legsGroup.add(legCopy);
         }
 
@@ -199,7 +197,6 @@ class MyCrab extends THREE.Object3D {
         for(let i = 2; i < 4; i++){
             const legCopy = leg.clone();
             legCopy.position.x = this.depth * 0.7 - spaceBetweenLegs * i;
-            console.log(legCopy.position.x)
     
             legsGroup.add(legCopy);
         }
