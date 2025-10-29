@@ -168,6 +168,10 @@ class MyContents  {
         shark.rotation.y = Math.PI;
         shark.position.set(5, 10, 0);
         this.app.scene.add(shark);
+        
+        this.shark = new MyShark();
+        this.shark.position.set(-8, 10, 0);
+        this.app.scene.add(this.shark);
 
         const sign = new MySign();
         sign.position.set(0,0,15);
@@ -199,6 +203,7 @@ class MyContents  {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
+        this.shark.update(delta);
         
         // Update all fish groups (carps)
         for(const fishGroup of this.fishGroups) {

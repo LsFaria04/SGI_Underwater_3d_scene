@@ -12,6 +12,45 @@ class MyShark extends THREE.Object3D {
         const bodyWidth = 0.6;
         const headWidth = 0.4;
 
+        const rootBone = new THREE.Bone();
+        const bodyBone1 = new THREE.Bone(); //body part near the tail
+        const bodyBone2 = new THREE.Bone(); //body part in the middle
+        const bodyBone3 = new THREE.Bone(); //body part near the head
+        const headBone = new THREE.Bone();
+        const tailBone = new THREE.Bone();
+        const finsBone1 = new THREE.Bone(); //back fins
+        const finsBone2 = new THREE.Bone(); // pair of fins on the middle
+        const finsBone3 = new THREE.Bone(); // pair of fins on the front and top fin
+
+        this.rootBone = rootBone;
+        this.bodyBone1 = bodyBone1;
+        this.bodyBone2 = bodyBone2;
+        this.bodyBone3 = bodyBone3;
+        this.headBone = headBone;
+        this.tailBone = tailBone;
+        this.finsBone1 = finsBone1; 
+        this.finsBone2 = finsBone2; 
+        this.finsBone3 = finsBone3; 
+
+        rootBone.add(bodyBone1);
+        bodyBone1.add(bodyBone2);
+        bodyBone2.add(bodyBone3);
+        bodyBone3.add(headBone);
+        bodyBone1.add(tailBone); 
+
+        bodyBone1.add(finsBone1);
+        bodyBone2.add(finsBone2);
+        bodyBone3.add(finsBone3);
+
+        this.rootPivot = new THREE.Object3D();
+        this.rootPivot.add(rootBone); 
+        this.add(this.rootPivot);
+
+        this.rootPivot.rotation.x = Math.PI; // shark was on the wrong pose initially
+
+        const skeleton = new THREE.Skeleton([rootBone, bodyBone1, bodyBone2, bodyBone3,
+            headBone, tailBone, finsBone1, finsBone2, finsBone3]);
+
 
         /*
         const vertices = new Float32Array([
@@ -454,6 +493,94 @@ class MyShark extends THREE.Object3D {
             1,4,2,
 
         ];
+        
+        const tailPart = createPart(tailVertices, tailIndices, color);
+        const tail = new THREE.SkinnedMesh(tailPart.geometry, tailPart.material);
+
+        const bodyPart = createPart(bodyVertices, bodyIndices, color);
+        const body = new THREE.SkinnedMesh(bodyPart.geometry, bodyPart.material);
+        
+        const headPart = createPart(headVertices, headIndices, color);
+        const head = new THREE.SkinnedMesh(headPart.geometry, headPart.material);
+
+        const lowerTopFinPart =  createPart(lowerTopfinVertices, lowerTopfinIndices, color);
+        const lowerTopFin = new THREE.SkinnedMesh(lowerTopFinPart.geometry, lowerTopFinPart.material);
+
+        const lowerBottomFinPart = createPart(lowerBottomfinVertices, lowerBottomfinIndices, color);
+        const lowerBottomFin = new THREE.SkinnedMesh(lowerBottomFinPart.geometry, lowerBottomFinPart.material);
+
+        const midBottomFinPart = createPart(midBottomfinVertices, midBottomfinIndices, color);
+        const midBottomFin = new THREE.SkinnedMesh(midBottomFinPart.geometry, midBottomFinPart.material);
+        
+        const upperTopFinPart = createPart(upperTopfinVertices, upperTopfinIndices, color);
+        const upperTopFin = new THREE.SkinnedMesh(upperTopFinPart.geometry, upperTopFinPart.material);
+
+        const upperBottomFinPart = createPart(upperBottomfinVertices, upperBottomfinIndices, color);
+        const upperBottomFin = new THREE.SkinnedMesh(upperBottomFinPart.geometry, upperBottomFinPart.material);
+
+        const teethPart = createPart(teethVertices, teethIndices, "#ffffff");
+        const teeth = new THREE.Mesh(teethPart.geometry, teethPart.material);
+
+        const bonesArray = [rootBone, bodyBone1, headBone, tailBone, finsBone1];
+
+        centerGeometry(midBottomFin)
+        const midBottomFinRight = cloneSkinnedMesh(midBottomFin, skeleton, bonesArray);
+        const midBottomFinLeft = cloneSkinnedMesh(midBottomFin, skeleton, bonesArray);
+        midBottomFinRight.position.set(3.6, 3.47, 0.2);
+        midBottomFinLeft.position.set(3.6, 3.5, -0.2);
+        midBottomFinRight.rotation.set(Math.PI / 12, 0, -Math.PI / 12);
+        midBottomFinLeft.rotation.set(-Math.PI / 12, 0 , -Math.PI / 12);
+
+        centerGeometry(upperBottomFin);
+        const upperBottomFinRight = cloneSkinnedMesh(upperBottomFin, skeleton, bonesArray);
+        const upperBottomFinLeft = cloneSkinnedMesh(upperBottomFin, skeleton, bonesArray);
+        upperBottomFinLeft.position.set(5.3, 3.9, 0.2);
+        upperBottomFinRight.position.set(5.3, 4, -0.2);
+        upperBottomFinLeft.rotation.set(Math.PI / 12, 0, 0);
+        upperBottomFinRight.rotation.set(-Math.PI / 12, 0, 0);
+
+
+        skinMesh(tail, bonesArray, skeleton);
+        skinMesh(body, bonesArray, skeleton);
+        skinMesh(head, bonesArray, skeleton);
+
+        // fins
+        skinMesh(lowerTopFin, bonesArray, skeleton);
+        skinMesh(lowerBottomFin, bonesArray, skeleton);
+        skinMesh(midBottomFinRight, bonesArray, skeleton);
+        skinMesh(midBottomFinLeft, bonesArray, skeleton);
+        skinMesh(upperTopFin, bonesArray, skeleton);
+        skinMesh(upperBottomFinRight, bonesArray, skeleton);
+        skinMesh(upperBottomFinLeft, bonesArray, skeleton);
+
+        bodyBone1.add(body);
+        headBone.add(head);
+        tailBone.add(tail);
+        finsBone1.add(lowerTopFin);
+        finsBone1.add(lowerBottomFin);
+        finsBone1.add(upperTopFin);
+        finsBone1.add(midBottomFinRight);
+        finsBone1.add(midBottomFinLeft);
+        finsBone1.add(upperBottomFinRight);
+        finsBone1.add(upperBottomFinLeft);
+        head.add(teeth);
+
+        /*
+        head.add(teeth);
+        body.add(tail);
+        this.add(body);
+        body.add(head);
+        body.add(lowerTopFin);
+        body.add(lowerBottomFin);
+        body.add(upperTopFin);
+        body.add(midBottomFinRight);
+        body.add(midBottomFinLeft);
+        body.add(upperBottomFinRight);
+        body.add(upperBottomFinLeft);
+        */
+
+        body.scale.set(scale, scale, scale);
+
         function createPart(vertices, indices, color = "#2244aa") {
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
@@ -468,48 +595,46 @@ class MyShark extends THREE.Object3D {
  
             return new THREE.Mesh(geometry, material);
         }
-        
-        const tail = createPart(tailVertices, tailIndices, color);
-        const body = createPart(bodyVertices, bodyIndices, color);
-        const head = createPart(headVertices, headIndices, color);
-        const lowerTopFin = createPart(lowerTopfinVertices, lowerTopfinIndices, color);
-        const lowerBottomFin = createPart(lowerBottomfinVertices, lowerBottomfinIndices, color);
-        const midBottomFin = createPart(midBottomfinVertices, midBottomfinIndices, color);
-        const upperTopFin = createPart(upperTopfinVertices, upperTopfinIndices, color);
-        const upperBottomFin = createPart(upperBottomfinVertices, upperBottomfinIndices, color);
-        const teeth = createPart(teethVertices, teethIndices, "#ffffff");
 
-        centerGeometry(midBottomFin)
-        const midBottomFinRight = midBottomFin.clone();
-        const midBottomFinLeft = midBottomFin.clone();
-        midBottomFinRight.position.set(3.6, 3.47, 0.2);
-        midBottomFinLeft.position.set(3.6, 3.5, -0.2);
-        midBottomFinRight.rotation.set(Math.PI / 12, 0, -Math.PI / 12);
-        midBottomFinLeft.rotation.set(-Math.PI / 12, 0 , -Math.PI / 12);
+        function skinMesh(mesh, bones, skeleton) {
+            const numVertices = mesh.geometry.attributes.position.count;
+            const skinIndices = [];
+            const skinWeights = [];
+            
+            mesh.geometry.computeBoundingBox();
+            const minX = mesh.geometry.boundingBox.min.x;
+            const maxX = mesh.geometry.boundingBox.max.x;
+            const numBones = bones.length;
 
-        centerGeometry(upperBottomFin);
-        const upperBottomFinRight = upperBottomFin.clone();
-        const upperBottomFinLeft = upperBottomFin.clone();
-        upperBottomFinLeft.position.set(5.3, 3.9, 0.2);
-        upperBottomFinRight.position.set(5.3, 4, -0.2);
-        upperBottomFinLeft.rotation.set(Math.PI / 12, 0, 0);
-        upperBottomFinRight.rotation.set(-Math.PI / 12, 0, 0);
+            for (let i = 0; i < numVertices; i++) {
+                const vertex = new THREE.Vector3().fromBufferAttribute(mesh.geometry.attributes.position, i);
 
-        head.add(teeth);
-        body.add(tail);
-        this.add(body);
-        body.add(head);
-        body.add(lowerTopFin);
-        body.add(lowerBottomFin);
-        body.add(upperTopFin);
-        body.add(midBottomFinRight);
-        body.add(midBottomFinLeft);
-        body.add(upperBottomFinRight);
-        body.add(upperBottomFinLeft);
+                const t = (vertex.x - minX) / (maxX - minX);
 
-        body.rotation.set(Math.PI, 0, 0); // made shark on the wrong pose initially
+                const bonePos = t * (numBones - 1);
+                const b0 = Math.floor(bonePos);
+                const b1 = Math.min(b0 + 1, numBones - 1);
 
-        body.scale.set(scale, scale, scale);
+                const w1 = bonePos - b0;
+                const w0 = 1 - w1;
+
+                skinIndices.push(b0, b1, 0, 0);
+                skinWeights.push(w0, w1, 0, 0);
+            }
+
+            mesh.geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
+            mesh.geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
+
+            mesh.bind(skeleton);
+        }
+
+        function cloneSkinnedMesh(originalMesh, skeleton, bones) {
+            const geometry = originalMesh.geometry.clone();
+            const material = originalMesh.material.clone();
+            const clone = new THREE.SkinnedMesh(geometry, material);
+            skinMesh(clone, bones, skeleton);
+            return clone;
+        }
 
         function centerGeometry(mesh) {
             mesh.geometry.computeBoundingBox();
@@ -518,6 +643,22 @@ class MyShark extends THREE.Object3D {
             box.getCenter(center);
             mesh.geometry.translate(-center.x, -center.y, -center.z);
         }
+    }
+
+    update(delta) {
+        if (!this.elapsed) this.elapsed = 0;
+        this.elapsed += delta;
+
+        const t = this.elapsed;
+
+        // Tail swing (left-right)
+        this.tailBone.rotation.y = Math.sin(t * 3) * 0.5; // amplitude in radians
+
+        // Slight body sway
+        this.bodyBone1.rotation.y = Math.sin(t * 1.5) * 0.1;
+
+        // Head counter-sway
+        this.headBone.rotation.y = Math.sin(t * 3 + Math.PI) * 0.2;
 
     }
 }
