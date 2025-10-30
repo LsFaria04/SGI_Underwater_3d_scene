@@ -5,14 +5,13 @@ class MyShark2 extends THREE.Object3D {
      * 
      * @param {string} color Body color
      */
-constructor(scale = 1, color = "#2244aa") {
+    constructor(scale = 1, color = "#2244aa") {
         super();
 
         const tailWidth = 0.1;
         const bodyWidth = 0.6;
         const headWidth = 0.4;
 
-        // Your existing bone setup remains the same...
         const rootBone = new THREE.Bone();
         const bodyBone1 = new THREE.Bone();
         const bodyBone2 = new THREE.Bone();
@@ -63,104 +62,7 @@ constructor(scale = 1, color = "#2244aa") {
         sharkBody.add(rootBone);
         sharkBody.bind(skeleton);
 
-                const lowerTopfinVertices = new Float32Array([
-            3.23, 2.90, 0.05,  // 0 
-            2.63, 3.04, 0.05,  // 1 
-            2.47, 2.75, 0,  // 2          
- 
-            3.23, 2.90, -0.05,  // 3
-            2.63, 3.04, -0.05,  // 4
-            2.47, 2.75, 0,  // 5   duplicate
-        ]);
-        const lowerTopfinIndices = [
-            2,0,1,
-            2,4,3,
 
-            2,1,4,
-            2,3,0,
-        ];
-
-        
-        const lowerBottomfinVertices = new Float32Array([
-            3.05, 3.40, 0.05,  // 0
-            2.68, 3.40, 0.05,  // 1
-
-            2.58, 3.71, 0,  // 2
-
-            3.05, 3.40, -0.05,  // 3
-            2.68, 3.40, -0.05,  // 4
-        ]);
-        const lowerBottomfinIndices = [
-            0,1,2,
-            2,3,4,
-            0,3,2,
-            1,4,2,
-        ];
-
-        const midBottomfinVertices = new Float32Array([
-            3.48, 3.38, 0.1,  // 0  
-            4.07, 3.52, 0.1,  // 1
-
-            3.60, 4.00, 0,  // 2
-
-            3.48, 3.38, -0.1,  // 3
-            4.07, 3.52, -0.1,  // 4
-
-
-        ]);
-        const midBottomfinIndices = [
-            0,1,2,
-            2,3,4,
-            0,3,2,
-            1,4,2,
-            
-        ];
-
-        const upperTopfinVertices = new Float32Array([
-        4.08, 2.84, 0.05,  // 0
-        5.30, 2.70, 0.05,  // 1
-
-        4.40, 2.54, 0,  // 2
-        4.18, 1.79, 0,  // 3
-
-        4.08, 2.84, -0.05,  // 4
-        5.30, 2.70, -0.05,  // 5
-
-        4.08, 2.84, 0,  // 6
-        5.30, 2.70, 0,  // 7
-
-        ]);
-        const upperTopfinIndices = [
-            0,2,1,
-            2,3,1,
-
-            4,2,5,
-            2,3,5,
-
-            0,2,6,
-            4,6,2,
-
-            1,7,3,
-            5,3,7,
-        ];
-
-        const upperBottomfinVertices = new Float32Array([
-            5.22, 3.72, 0.05,  // 0
-            6.01, 3.61, 0.05,  // 1
-
-            5.16, 4.59, 0,  // 2
-
-            5.22, 3.72, -0.05,  // 3
-            6.01, 3.61, -0.05,  // 4
-        ]);
-        const upperBottomfinIndices = [   
-            0,1,2,
-            2,3,4,
-            
-            0,3,2,
-            1,4,2,
-
-        ];
 
         
 
@@ -185,15 +87,15 @@ constructor(scale = 1, color = "#2244aa") {
             6, 7, 8,
             9, 10, 11,
         ];
+        const teeth = this.createFinMesh(teethVertices, teethIndices, "#ffffff");
 
-
+/*
         // Create fins as regular meshes (not skinned)
         const lowerTopFin = this.createFinMesh(lowerTopfinVertices, lowerTopfinIndices, color);
         const lowerBottomFin = this.createFinMesh(lowerBottomfinVertices, lowerBottomfinIndices, color);
         const midBottomFin = this.createFinMesh(midBottomfinVertices, midBottomfinIndices, color);
         const upperTopFin = this.createFinMesh(upperTopfinVertices, upperTopfinIndices, color);
         const upperBottomFin = this.createFinMesh(upperBottomfinVertices, upperBottomfinIndices, color);
-        const teeth = this.createFinMesh(teethVertices, teethIndices, "#ffffff");
 
         // Create and position mirrored fins
         centerGeometry(midBottomFin);
@@ -212,12 +114,14 @@ constructor(scale = 1, color = "#2244aa") {
         upperBottomFinLeft.rotation.set(Math.PI / 12, 0, 0);
         upperBottomFinRight.rotation.set(-Math.PI / 12, 0, 0);
 
+        */
         // --- Scene hierarchy ---
         this.rootPivot = new THREE.Object3D();
         this.rootPivot.add(sharkBody);
         this.add(this.rootPivot);
         this.rootPivot.rotation.x = Math.PI;
 
+        /*
         // Attach fins to bones as regular meshes
         finsBone1.add(lowerTopFin);
         finsBone1.add(lowerBottomFin);
@@ -226,6 +130,7 @@ constructor(scale = 1, color = "#2244aa") {
         finsBone3.add(upperTopFin);
         finsBone3.add(upperBottomFinLeft);
         finsBone3.add(upperBottomFinRight);
+        */
 
         // Attach teeth to head bone
         headBone.add(teeth);
@@ -500,12 +405,118 @@ constructor(scale = 1, color = "#2244aa") {
             6,15,7,
         ];
 
+        const lowerTopfinVertices = [
+            3.23, 2.90, 0.05,  // 0 
+            2.63, 3.04, 0.05,  // 1 
+            2.47, 2.75, 0,  // 2          
+ 
+            3.23, 2.90, -0.05,  // 3
+            2.63, 3.04, -0.05,  // 4
+            2.47, 2.75, 0,  // 5   duplicate
+        ];
+        const lowerTopfinIndices = [
+            2,0,1,
+            2,4,3,
+
+            2,1,4,
+            2,3,0,
+        ];
+
+        
+        const lowerBottomfinVertices =[
+            3.05, 3.40, 0.05,  // 0
+            2.68, 3.40, 0.05,  // 1
+
+            2.58, 3.71, 0,  // 2
+
+            3.05, 3.40, -0.05,  // 3
+            2.68, 3.40, -0.05,  // 4
+        ];
+        const lowerBottomfinIndices = [
+            0,1,2,
+            2,3,4,
+            0,3,2,
+            1,4,2,
+        ];
+
+        const midBottomfinVertices = [
+            3.48, 3.38, 0.1,  // 0  
+            4.07, 3.52, 0.1,  // 1
+
+            3.60, 4.00, 0,  // 2
+
+            3.48, 3.38, -0.1,  // 3
+            4.07, 3.52, -0.1,  // 4
+
+
+        ];
+        const midBottomfinIndices = [
+            0,1,2,
+            2,3,4,
+            0,3,2,
+            1,4,2,
+            
+        ];
+
+        const upperTopfinVertices = [
+        4.08, 2.84, 0.05,  // 0
+        5.30, 2.70, 0.05,  // 1
+
+        4.40, 2.54, 0,  // 2
+        4.18, 1.79, 0,  // 3
+
+        4.08, 2.84, -0.05,  // 4
+        5.30, 2.70, -0.05,  // 5
+
+        4.08, 2.84, 0,  // 6
+        5.30, 2.70, 0,  // 7
+
+        ];
+        const upperTopfinIndices = [
+            0,2,1,
+            2,3,1,
+
+            4,2,5,
+            2,3,5,
+
+            0,2,6,
+            4,6,2,
+
+            1,7,3,
+            5,3,7,
+        ];
+
+        const upperBottomfinVertices = [
+            5.22, 3.72, 0.05,  // 0
+            6.01, 3.61, 0.05,  // 1
+
+            5.16, 4.59, 0,  // 2
+
+            5.22, 3.72, -0.05,  // 3
+            6.01, 3.61, -0.05,  // 4
+        ];
+        const upperBottomfinIndices = [   
+            0,1,2,
+            2,3,4,
+            
+            0,3,2,
+            1,4,2,
+
+        ];
+
         // Combine all vertices
-        allVertices.push(...tailVertices, ...bodyVertices, ...headVertices);
+        allVertices.push(...tailVertices, ...bodyVertices, ...headVertices, ...lowerTopfinVertices, ...lowerBottomfinVertices,
+            ...midBottomfinVertices, ...upperTopfinVertices, ...upperBottomfinVertices);
         
         // Combine all indices with proper offsets
         const tailVertexCount = tailVertices.length / 3;
         const bodyVertexCount = bodyVertices.length / 3;
+        const headVertexCount = headVertices.length / 3;
+const lowerTopFinVertexCount = lowerTopfinVertices.length / 3;
+const lowerBottomFinVertexCount = lowerBottomfinVertices.length / 3;
+const midBottomFinVertexCount = midBottomfinVertices.length / 3;
+const upperTopFinVertexCount = upperTopfinVertices.length / 3;
+const upperBottomFinVertexCount = upperBottomfinVertices.length / 3;
         
         // Add tail indices as-is
         allIndices.push(...tailIndices);
@@ -518,6 +529,22 @@ constructor(scale = 1, color = "#2244aa") {
         const headOffset = tailVertexCount + bodyVertexCount;
         allIndices.push(...headIndices.map(index => index + headOffset));
 
+        // Add fin indices with proper offsets
+const lowerTopFinOffset = tailVertexCount + bodyVertexCount + headVertexCount;
+allIndices.push(...lowerTopfinIndices.map(index => index + lowerTopFinOffset));
+
+const lowerBottomFinOffset = lowerTopFinOffset + lowerTopFinVertexCount;
+allIndices.push(...lowerBottomfinIndices.map(index => index + lowerBottomFinOffset));
+
+const midBottomFinOffset = lowerBottomFinOffset + lowerBottomFinVertexCount;
+allIndices.push(...midBottomfinIndices.map(index => index + midBottomFinOffset));
+
+const upperTopFinOffset = midBottomFinOffset + midBottomFinVertexCount;
+allIndices.push(...upperTopfinIndices.map(index => index + upperTopFinOffset));
+
+const upperBottomFinOffset = upperTopFinOffset + upperTopFinVertexCount;
+allIndices.push(...upperBottomfinIndices.map(index => index + upperBottomFinOffset));
+
         // Create the merged geometry
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(allVertices), 3));
@@ -527,13 +554,13 @@ constructor(scale = 1, color = "#2244aa") {
         return geometry;
     }
 
-    applyMergedSkinning(mesh, skeleton) {
+    applyMergedSkinning(mesh) {
         const skinIndices = [];
         const skinWeights = [];
         const geometry = mesh.geometry;
         const pos = geometry.attributes.position;
         
-        // Define bone influences based on vertex X position (from tail to head)
+        // bone influences based on vertex X position (from tail to head)
         geometry.computeBoundingBox();
         const minX = geometry.boundingBox.min.x;
         const maxX = geometry.boundingBox.max.x;
@@ -542,25 +569,25 @@ constructor(scale = 1, color = "#2244aa") {
             const vertex = new THREE.Vector3().fromBufferAttribute(pos, i);
             const t = (vertex.x - minX) / (maxX - minX);
             
-            // Assign bone weights based on position along the body
+            // bone weights based on position along the body
             if (t < 0.2) {
-                // Tail region - mostly tailBone (5) with some bodyBone1 (1)
+                // tail - mostly tailBone (5) with some bodyBone1 (1)
                 skinIndices.push(5, 1, 0, 0);
                 skinWeights.push(0.8, 0.2, 0, 0);
             } else if (t < 0.4) {
-                // Rear body - bodyBone1 (1) with some bodyBone2 (2)
+                // rear body - bodyBone1 (1) with some bodyBone2 (2)
                 skinIndices.push(1, 2, 5, 0);
                 skinWeights.push(0.7, 0.2, 0.1, 0);
             } else if (t < 0.6) {
-                // Middle body - bodyBone2 (2) with some bodyBone1 (1) and bodyBone3 (3)
+                // middle body - bodyBone2 (2) with some bodyBone1 (1) and bodyBone3 (3)
                 skinIndices.push(2, 1, 3, 0);
                 skinWeights.push(0.6, 0.2, 0.2, 0);
             } else if (t < 0.8) {
-                // Front body - bodyBone3 (3) with some bodyBone2 (2) and headBone (4)
+                // front body - bodyBone3 (3) with some bodyBone2 (2) and headBone (4)
                 skinIndices.push(3, 2, 4, 0);
                 skinWeights.push(0.6, 0.2, 0.2, 0);
             } else {
-                // Head region - mostly headBone (4) with some bodyBone3 (3)
+                // head - mostly headBone (4) with some bodyBone3 (3)
                 skinIndices.push(4, 3, 0, 0);
                 skinWeights.push(0.8, 0.2, 0, 0);
             }
@@ -591,7 +618,6 @@ constructor(scale = 1, color = "#2244aa") {
         return new THREE.Mesh(geometry, material);
     }
 
-    // Your existing update method remains the same...
     update(delta) {
         if (!this.elapsed) this.elapsed = 0;
         this.elapsed += delta;
@@ -616,8 +642,7 @@ constructor(scale = 1, color = "#2244aa") {
         this.headBone.rotation.y *= 0.4; 
     }
 }
-    
-// Keep your existing helper functions
+
 function centerGeometry(mesh) {
     mesh.geometry.computeBoundingBox();
     const box = mesh.geometry.boundingBox;
@@ -625,64 +650,5 @@ function centerGeometry(mesh) {
     box.getCenter(center);
     mesh.geometry.translate(-center.x, -center.y, -center.z);
 }
-
-function update(delta) {
-        this.elapsed += delta;
-
-        // Swimming animation - tail swings side to side, body follows in a wave
-        const waveSpeed = 2.5;      // Controls speed of the swimming motion
-        const tailAmplitude = 0.4;  // How much the tail swings
-        const bodyAmplitude = 0.2;  // How much the body waves
-        const finFlapSpeed = 3.0;   // Fin flapping speed
-
-        // Main swimming motion - wave along the spine
-        const bones = [
-            this.tailBone,
-            this.bodyBone1, 
-            this.bodyBone2,
-            this.bodyBone3,
-            this.headBone
-        ];
-
-        bones.forEach((bone, i) => {
-            // Create a wave that travels from head to tail
-            const phaseOffset = i * 0.8; // Stagger the waves
-            const influence = 1 - (i / (bones.length - 1)); // More influence towards tail
-            
-            // Y rotation for side-to-side swimming motion
-            const yRotation = Math.sin(this.elapsed * waveSpeed + phaseOffset) * 
-                           tailAmplitude * influence;
-            
-            // Small Z rotation for more natural body roll
-            const zRotation = Math.sin(this.elapsed * waveSpeed + phaseOffset + 0.5) * 
-                           bodyAmplitude * influence * 0.3;
-            
-            bone.rotation.y = yRotation;
-            bone.rotation.z = zRotation;
-        });
-
-        // Fin animations - they flap with the swimming motion
-        const finFlap = Math.sin(this.elapsed * finFlapSpeed) * 0.3;
-        
-        // Back fins (finsBone1) - follow tail motion but with some delay
-        this.finsBone1.rotation.x = finFlap * 0.5;
-        this.finsBone1.rotation.z = Math.sin(this.elapsed * waveSpeed + 1.0) * 0.2;
-
-        // Middle fins (finsBone2) - moderate flapping
-        this.finsBone2.rotation.x = finFlap * 0.3;
-        this.finsBone2.rotation.z = Math.sin(this.elapsed * waveSpeed + 1.5) * 0.15;
-
-        // Front fins (finsBone3) - subtle movement
-        this.finsBone3.rotation.x = finFlap * 0.2;
-        this.finsBone3.rotation.z = Math.sin(this.elapsed * waveSpeed + 2.0) * 0.1;
-
-        // Head counter-sway - head moves opposite to reduce extreme movement
-        this.headBone.rotation.y *= 0.6;
-        this.headBone.rotation.z *= 0.7;
-
-        // Optional: Add some up/down movement to the root for diving motion
-        this.rootPivot.position.y = Math.sin(this.elapsed * waveSpeed * 0.5) * 0.1;
-    }
-
 
 export { MyShark2 };
