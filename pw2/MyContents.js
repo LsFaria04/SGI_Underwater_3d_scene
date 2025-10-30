@@ -15,6 +15,7 @@ import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
 import { My2DShark } from './My2DShark.js';
 import { MySign } from './MySign.js';
 import { MyShark } from './MyShark.js';
+import { MyShark2} from './MyShark2.js';
 import { MySwordFish } from './MySwordFish.js';
 import { MySeaPlant } from './MySeaPlant.js';
 import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
@@ -182,6 +183,10 @@ class MyContents  {
         this.shark.position.set(-8, 10, 0);
         this.app.scene.add(this.shark);
 
+        this.shark2 = new MyShark2();
+        this.shark2.position.set(-8, 15, 0);
+        this.app.scene.add(this.shark2);
+
         const sign = new MySign();
         sign.position.set(0,0,15);
         sign.scale.set(2,2,2);
@@ -219,6 +224,7 @@ class MyContents  {
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
         this.shark.update(delta);
+        this.shark2.update(delta);
         
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {

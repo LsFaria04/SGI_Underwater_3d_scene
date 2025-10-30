@@ -32,6 +32,8 @@ class MyShark extends THREE.Object3D {
         this.finsBone2 = finsBone2; 
         this.finsBone3 = finsBone3; 
 
+
+
         rootBone.add(bodyBone1);
         bodyBone1.add(bodyBone2);
         bodyBone2.add(bodyBone3);
@@ -42,11 +44,6 @@ class MyShark extends THREE.Object3D {
         bodyBone2.add(finsBone2);
         bodyBone3.add(finsBone3);
 
-        this.rootPivot = new THREE.Object3D();
-        this.rootPivot.add(rootBone); 
-        this.add(this.rootPivot);
-
-        this.rootPivot.rotation.x = Math.PI; // shark was on the wrong pose initially
 
         const skeleton = new THREE.Skeleton([rootBone, bodyBone1, bodyBone2, bodyBone3,
             headBone, tailBone, finsBone1, finsBone2, finsBone3]);
@@ -521,65 +518,109 @@ class MyShark extends THREE.Object3D {
         const teethPart = createPart(teethVertices, teethIndices, "#ffffff");
         const teeth = new THREE.Mesh(teethPart.geometry, teethPart.material);
 
-        const bonesArray = [rootBone, bodyBone1, headBone, tailBone, finsBone1];
+// --- Create and position mirrored fins ---
+centerGeometry(midBottomFin);
+const midBottomFinRight = cloneSkinnedMesh(midBottomFin, skeleton, [7, 0, 0, 0], [1, 0, 0, 0]); // finsBone2
+const midBottomFinLeft = cloneSkinnedMesh(midBottomFin, skeleton, [7, 0, 0, 0], [1, 0, 0, 0]);  // finsBone2
+midBottomFinRight.position.set(3.6, 3.47, 0.2);
+midBottomFinLeft.position.set(3.6, 3.5, -0.2);
+midBottomFinRight.rotation.set(Math.PI / 12, 0, -Math.PI / 12);
+midBottomFinLeft.rotation.set(-Math.PI / 12, 0, -Math.PI / 12);
 
-        centerGeometry(midBottomFin)
-        const midBottomFinRight = cloneSkinnedMesh(midBottomFin, skeleton, bonesArray);
-        const midBottomFinLeft = cloneSkinnedMesh(midBottomFin, skeleton, bonesArray);
-        midBottomFinRight.position.set(3.6, 3.47, 0.2);
-        midBottomFinLeft.position.set(3.6, 3.5, -0.2);
-        midBottomFinRight.rotation.set(Math.PI / 12, 0, -Math.PI / 12);
-        midBottomFinLeft.rotation.set(-Math.PI / 12, 0 , -Math.PI / 12);
-
-        centerGeometry(upperBottomFin);
-        const upperBottomFinRight = cloneSkinnedMesh(upperBottomFin, skeleton, bonesArray);
-        const upperBottomFinLeft = cloneSkinnedMesh(upperBottomFin, skeleton, bonesArray);
-        upperBottomFinLeft.position.set(5.3, 3.9, 0.2);
-        upperBottomFinRight.position.set(5.3, 4, -0.2);
-        upperBottomFinLeft.rotation.set(Math.PI / 12, 0, 0);
-        upperBottomFinRight.rotation.set(-Math.PI / 12, 0, 0);
+centerGeometry(upperBottomFin);
+const upperBottomFinRight = cloneSkinnedMesh(upperBottomFin, skeleton, [8, 0, 0, 0], [1, 0, 0, 0]); // finsBone3
+const upperBottomFinLeft = cloneSkinnedMesh(upperBottomFin, skeleton, [8, 0, 0, 0], [1, 0, 0, 0]);  // finsBone3
+upperBottomFinLeft.position.set(5.3, 3.9, 0.2);
+upperBottomFinRight.position.set(5.3, 4, -0.2);
+upperBottomFinLeft.rotation.set(Math.PI / 12, 0, 0);
+upperBottomFinRight.rotation.set(-Math.PI / 12, 0, 0);
 
 
-        skinMesh(tail, bonesArray, skeleton);
-        skinMesh(body, bonesArray, skeleton);
-        skinMesh(head, bonesArray, skeleton);
+// --- Assign manual skinning to each mesh ---
 
-        // fins
-        skinMesh(lowerTopFin, bonesArray, skeleton);
-        skinMesh(lowerBottomFin, bonesArray, skeleton);
-        skinMesh(midBottomFinRight, bonesArray, skeleton);
-        skinMesh(midBottomFinLeft, bonesArray, skeleton);
-        skinMesh(upperTopFin, bonesArray, skeleton);
-        skinMesh(upperBottomFinRight, bonesArray, skeleton);
-        skinMesh(upperBottomFinLeft, bonesArray, skeleton);
+// Tail (mostly tailBone = 5, a bit bodyBone1 = 1)
+const tailSkinIndices = [], tailSkinWeights = [];
+for (let i = 0; i < tail.geometry.attributes.position.count; i++) {
+    tailSkinIndices.push(5, 1, 0, 0);
+    tailSkinWeights.push(0.8, 0.2, 0, 0);
+}
+skinMesh(tail, skeleton, tailSkinIndices, tailSkinWeights);
 
-        bodyBone1.add(body);
-        headBone.add(head);
-        tailBone.add(tail);
-        finsBone1.add(lowerTopFin);
-        finsBone1.add(lowerBottomFin);
-        finsBone1.add(upperTopFin);
-        finsBone1.add(midBottomFinRight);
-        finsBone1.add(midBottomFinLeft);
-        finsBone1.add(upperBottomFinRight);
-        finsBone1.add(upperBottomFinLeft);
-        head.add(teeth);
+// Body (smooth blend along bodyBone1–3)
+const bodySkinIndices = [], bodySkinWeights = [];
+const pos = body.geometry.attributes.position;
+body.geometry.computeBoundingBox();
+const minX = body.geometry.boundingBox.min.x;
+const maxX = body.geometry.boundingBox.max.x;
+for (let i = 0; i < pos.count; i++) {
+    const vertex = new THREE.Vector3().fromBufferAttribute(pos, i);
+    const t = (vertex.x - minX) / (maxX - minX);
+    let b0, b1, w0, w1;
 
-        /*
-        head.add(teeth);
-        body.add(tail);
-        this.add(body);
-        body.add(head);
-        body.add(lowerTopFin);
-        body.add(lowerBottomFin);
-        body.add(upperTopFin);
-        body.add(midBottomFinRight);
-        body.add(midBottomFinLeft);
-        body.add(upperBottomFinRight);
-        body.add(upperBottomFinLeft);
-        */
+    if (t < 0.5) { // blend bodyBone1–bodyBone2
+        b0 = 1; b1 = 2;
+        w1 = t * 2;
+    } else { // blend bodyBone2–bodyBone3
+        b0 = 2; b1 = 3;
+        w1 = (t - 0.5) * 2;
+    }
+    w0 = 1 - w1;
+    bodySkinIndices.push(b0, b1, 0, 0);
+    bodySkinWeights.push(w0, w1, 0, 0);
+}
+skinMesh(body, skeleton, bodySkinIndices, bodySkinWeights);
 
-        body.scale.set(scale, scale, scale);
+// Head (mostly headBone = 4, some bodyBone3 = 3)
+const headSkinIndices = [], headSkinWeights = [];
+for (let i = 0; i < head.geometry.attributes.position.count; i++) {
+    headSkinIndices.push(4, 3, 0, 0);
+    headSkinWeights.push(0.9, 0.1, 0, 0);
+}
+skinMesh(head, skeleton, headSkinIndices, headSkinWeights);
+
+// Fins (each attached to its corresponding bone)
+function makeFullWeight(mesh, boneIndex) {
+    const indices = [], weights = [];
+    for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+        indices.push(boneIndex, 0, 0, 0);
+        weights.push(1, 0, 0, 0);
+    }
+    skinMesh(mesh, skeleton, indices, weights);
+}
+
+makeFullWeight(lowerTopFin, 6);     // finsBone1
+makeFullWeight(lowerBottomFin, 6);  // finsBone1
+makeFullWeight(midBottomFinRight, 7);
+makeFullWeight(midBottomFinLeft, 7);
+makeFullWeight(upperTopFin, 8);
+makeFullWeight(upperBottomFinRight, 8);
+makeFullWeight(upperBottomFinLeft, 8);
+
+
+// --- Skeleton and scene hierarchy ---
+
+body.add(rootBone);
+body.bind(skeleton);
+
+this.rootPivot = new THREE.Object3D();
+this.rootPivot.add(body);
+
+this.add(this.rootPivot);
+this.rootPivot.rotation.x = Math.PI;
+
+finsBone1.add(lowerTopFin);
+finsBone1.add(lowerBottomFin);
+finsBone2.add(midBottomFinLeft);
+finsBone2.add(midBottomFinRight);
+finsBone3.add(upperTopFin);
+finsBone3.add(upperBottomFinLeft);
+finsBone3.add(upperBottomFinRight);
+
+headBone.add(head);
+tailBone.add(tail);
+head.add(teeth);
+
+body.scale.set(scale, scale, scale);
 
         function createPart(vertices, indices, color = "#2244aa") {
             const geometry = new THREE.BufferGeometry();
@@ -596,43 +637,30 @@ class MyShark extends THREE.Object3D {
             return new THREE.Mesh(geometry, material);
         }
 
-        function skinMesh(mesh, bones, skeleton) {
-            const numVertices = mesh.geometry.attributes.position.count;
-            const skinIndices = [];
-            const skinWeights = [];
-            
-            mesh.geometry.computeBoundingBox();
-            const minX = mesh.geometry.boundingBox.min.x;
-            const maxX = mesh.geometry.boundingBox.max.x;
-            const numBones = bones.length;
-
-            for (let i = 0; i < numVertices; i++) {
-                const vertex = new THREE.Vector3().fromBufferAttribute(mesh.geometry.attributes.position, i);
-
-                const t = (vertex.x - minX) / (maxX - minX);
-
-                const bonePos = t * (numBones - 1);
-                const b0 = Math.floor(bonePos);
-                const b1 = Math.min(b0 + 1, numBones - 1);
-
-                const w1 = bonePos - b0;
-                const w0 = 1 - w1;
-
-                skinIndices.push(b0, b1, 0, 0);
-                skinWeights.push(w0, w1, 0, 0);
+        function skinMesh(mesh, skeleton, skinIndices, skinWeights) {
+            if (!skinIndices || !skinWeights) {
+                console.warn("skinMesh(): missing indices or weights");
+                return;
             }
 
-            mesh.geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
-            mesh.geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
+            mesh.geometry.setAttribute(
+                'skinIndex',
+                new THREE.Uint16BufferAttribute(skinIndices, 4)
+            );
+            mesh.geometry.setAttribute(
+                'skinWeight',
+                new THREE.Float32BufferAttribute(skinWeights, 4)
+            );
 
             mesh.bind(skeleton);
         }
 
-        function cloneSkinnedMesh(originalMesh, skeleton, bones) {
+
+        function cloneSkinnedMesh(originalMesh, skeleton, skinIndices, skinWeights) {
             const geometry = originalMesh.geometry.clone();
             const material = originalMesh.material.clone();
             const clone = new THREE.SkinnedMesh(geometry, material);
-            skinMesh(clone, bones, skeleton);
+            skinMesh(clone, skeleton, skinIndices, skinWeights);
             return clone;
         }
 
@@ -649,17 +677,29 @@ class MyShark extends THREE.Object3D {
         if (!this.elapsed) this.elapsed = 0;
         this.elapsed += delta;
 
-        const t = this.elapsed;
+        const bones = [
+            this.tailBone,
+            this.bodyBone1,
+            this.bodyBone2,
+            this.bodyBone3,
+            this.headBone
+        ];
 
-        // Tail swing (left-right)
-        this.tailBone.rotation.y = Math.sin(t * 3) * 0.5; // amplitude in radians
+        const waveSpeed = 1;      // controls speed of the wave
+        const waveAmplitude = 0.1; // maximum rotation in radians
 
-        // Slight body sway
-        this.bodyBone1.rotation.y = Math.sin(t * 1.5) * 0.1;
+        bones.forEach((bone, i) => {
+            // influence goes from 0 (bodyBone1) to 1 (tailBone)
+            const influence = i / (bones.length - 1);
 
-        // Head counter-sway
-        this.headBone.rotation.y = Math.sin(t * 3 + Math.PI) * 0.2;
+            // sine wave along the spine
+            const rotation = Math.sin(this.elapsed * waveSpeed + (1 - influence) * Math.PI) * waveAmplitude * influence;
 
+            bone.rotation.y = rotation;
+        });
+
+        // Optional: slightly offset the head counter-sway
+        this.headBone.rotation.y *= 0.4; 
     }
 }
 
