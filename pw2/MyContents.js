@@ -133,7 +133,7 @@ class MyContents  {
         this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
-            const fishGroup = new MySchoolfOfFish(pos[3], 0.5, 1,0.2, "Carp", 1,1,1,1);
+            const fishGroup = new MySchoolfOfFish(pos[3], 0.5, 1,0.2, "Carp", 1,1,1,1, this.fishTexture1);
             this.app.scene.add(fishGroup);
             this.fishGroups.push(fishGroup);
             fishGroup.position.set(pos[0],pos[1],pos[2]);
@@ -207,6 +207,8 @@ class MyContents  {
         this.rockTexture2 = new THREE.TextureLoader().load("./textures/Rock2.jpg");
 
         this.sandTexture = new THREE.TextureLoader().load("./textures/sand.jpg");
+
+        this.fishTexture1 = new THREE.TextureLoader().load("./textures/Fish1.jpg");
     }
 
     update(delta) {

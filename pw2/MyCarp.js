@@ -12,8 +12,9 @@ class MyCarp extends THREE.Object3D {
      * @param {number} widthFin Width of the fins
      * @param {number} lengthFin Length of the fins
      * @param {string|number} color Color of the carp
+     * @param {*} texture Texture of the carp
      */
-    constructor(widthBody = 1, lengthBody = 3, widthFin = 0.5, lengthFin = 0.5, color = 0xffaa00) {
+    constructor(widthBody = 1, lengthBody = 3, widthFin = 0.5, lengthFin = 0.5, color = 0xffaa00, texture = null) {
         super();
 
         this.widthBody = widthBody;
@@ -23,6 +24,7 @@ class MyCarp extends THREE.Object3D {
         this.color = color;
         this.lodMediumThreshold = 15;
         this.lodBasicThreshold = 30;
+        this.fishTexture = texture
         
         // Animation properties
         this.elapsed = 0;
@@ -118,8 +120,7 @@ class MyCarp extends THREE.Object3D {
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
         geometry.setIndex(indices);
         geometry.computeVertexNormals();
-
-        const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
+        const material = new THREE.MeshPhongMaterial({ color: this.color, side: THREE.DoubleSide , map: this.fishTexture});
 
         if (useSkinnedMesh) {
             // Create bones for skeletal animation
@@ -176,6 +177,9 @@ class MyCarp extends THREE.Object3D {
             const skeleton = new THREE.Skeleton(bones);
             skinnedMesh.add(bones[0]);
             skinnedMesh.bind(skeleton);
+            skinnedMesh.castShadow = true
+            skinnedMesh.receiveShadow = true;
+            material.shadowSide = THREE.BackSide;
 
             return skinnedMesh;
         }

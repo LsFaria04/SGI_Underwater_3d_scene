@@ -15,14 +15,16 @@ class MySchoolfOfFish extends THREE.Group {
      * @param {*} specie Specie of fish 
      * @param {*} baseLen Base lenght before scaling of the fishes
      * @param {*} baseWidth Base width before scaling of the fishes
+     * @param {*} fishTexture Texture of the fishes
      */
-    constructor(numbFish, minSpace,maxScale, minScale, specie, baseLen, baseWidth){
+    constructor(numbFish, minSpace,maxScale, minScale, specie, baseLen, baseWidth, fishTexture){
         super();
         
         const gridSide = Math.ceil(Math.cbrt(numbFish));
         let fishCount = 0;
 
         this.fishes = []; // Store all fish instances
+        this.fishTexture = fishTexture;
 
         this.fishGroupsAnimations = []; // Store all animations for the fishes
 
@@ -32,11 +34,12 @@ class MySchoolfOfFish extends THREE.Group {
         for (let x = 0; x < gridSide && fishCount < numbFish; x++) {
             for (let y = 0; y < gridSide && fishCount < numbFish; y++) {
                 for (let z = 0; z < gridSide && fishCount < numbFish; z++) {
-                    const cloneSpecie = new MyCarp(baseLen,baseWidth, baseWidth,baseLen);
-               
+                    const cloneSpecie = new MyCarp(baseLen,baseWidth, baseWidth,baseLen, this.fishTexture);
+                    
                     cloneSpecie.traverse(child => {
                         if (child.isMesh) {
-                            child.material = new THREE.MeshPhongMaterial({ color: "#00b3ff", side:THREE.DoubleSide  });
+                            // Don't use texture map since geometry doesn't have UV coordinates
+                            child.material = new THREE.MeshPhongMaterial({ color: "#00b3ff", side:THREE.DoubleSide});
                             child.material.needsUpdate = true;
                         }
                     });
