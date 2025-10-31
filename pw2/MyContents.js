@@ -15,7 +15,6 @@ import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
 import { My2DShark } from './My2DShark.js';
 import { MySign } from './MySign.js';
 import { MyShark } from './MyShark.js';
-import { MyShark2} from './MyShark2.js';
 import { MySwordFish } from './MySwordFish.js';
 import { MySeaPlant } from './MySeaPlant.js';
 import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
@@ -173,16 +172,10 @@ class MyContents  {
         const turtle = new MyTurtle(0.5, 0.15);
         turtle.position.set(-4, 0.3, 4);
         this.app.scene.add(turtle);
-
-        const shark = new MyShark();
-        shark.rotation.y = Math.PI;
-        shark.position.set(5, 10, 0);
-        this.app.scene.add(shark);
         
-
-        this.shark2 = new MyShark2();
-        this.shark2.position.set(-8, 10, 0);
-        this.app.scene.add(this.shark2);
+        this.shark = new MyShark();
+        this.shark.position.set(-8, 10, 0);
+        this.app.scene.add(this.shark);
 
         const sign = new MySign();
         sign.position.set(0,0,15);
@@ -199,7 +192,7 @@ class MyContents  {
         this.app.scene.add(this.swordFish);
         
         
-        this.animationShark = new MyKeyFrameAnimation(shark, "random", 2,50, 30);
+        this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2,50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10,50, 60);
 
         this.fishGroupsAnimations = []
@@ -220,7 +213,7 @@ class MyContents  {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
-        this.shark2.update(delta);
+        this.shark.update(delta);
         
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
