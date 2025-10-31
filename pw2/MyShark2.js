@@ -89,48 +89,11 @@ class MyShark2 extends THREE.Object3D {
         ];
         const teeth = this.createFinMesh(teethVertices, teethIndices, "#ffffff");
 
-/*
-        // Create fins as regular meshes (not skinned)
-        const lowerTopFin = this.createFinMesh(lowerTopfinVertices, lowerTopfinIndices, color);
-        const lowerBottomFin = this.createFinMesh(lowerBottomfinVertices, lowerBottomfinIndices, color);
-        const midBottomFin = this.createFinMesh(midBottomfinVertices, midBottomfinIndices, color);
-        const upperTopFin = this.createFinMesh(upperTopfinVertices, upperTopfinIndices, color);
-        const upperBottomFin = this.createFinMesh(upperBottomfinVertices, upperBottomfinIndices, color);
-
-        // Create and position mirrored fins
-        centerGeometry(midBottomFin);
-        const midBottomFinRight = midBottomFin.clone();
-        const midBottomFinLeft = midBottomFin.clone();
-        midBottomFinRight.position.set(3.6, 3.47, 0.2);
-        midBottomFinLeft.position.set(3.6, 3.5, -0.2);
-        midBottomFinRight.rotation.set(Math.PI / 12, 0, -Math.PI / 12);
-        midBottomFinLeft.rotation.set(-Math.PI / 12, 0, -Math.PI / 12);
-
-        centerGeometry(upperBottomFin);
-        const upperBottomFinRight = upperBottomFin.clone();
-        const upperBottomFinLeft = upperBottomFin.clone();
-        upperBottomFinLeft.position.set(5.3, 3.9, 0.2);
-        upperBottomFinRight.position.set(5.3, 4, -0.2);
-        upperBottomFinLeft.rotation.set(Math.PI / 12, 0, 0);
-        upperBottomFinRight.rotation.set(-Math.PI / 12, 0, 0);
-
-        */
         // --- Scene hierarchy ---
         this.rootPivot = new THREE.Object3D();
         this.rootPivot.add(sharkBody);
         this.add(this.rootPivot);
         this.rootPivot.rotation.x = Math.PI;
-
-        /*
-        // Attach fins to bones as regular meshes
-        finsBone1.add(lowerTopFin);
-        finsBone1.add(lowerBottomFin);
-        finsBone2.add(midBottomFinLeft);
-        finsBone2.add(midBottomFinRight);
-        finsBone3.add(upperTopFin);
-        finsBone3.add(upperBottomFinLeft);
-        finsBone3.add(upperBottomFinRight);
-        */
 
         // Attach teeth to head bone
         headBone.add(teeth);
@@ -405,154 +368,214 @@ class MyShark2 extends THREE.Object3D {
             6,15,7,
         ];
 
-        const lowerTopfinVertices = [
-            3.23, 2.90, 0.05,  // 0 
-            2.63, 3.04, 0.05,  // 1 
-            2.47, 2.75, 0,  // 2          
- 
-            3.23, 2.90, -0.05,  // 3
-            2.63, 3.04, -0.05,  // 4
-            2.47, 2.75, 0,  // 5   duplicate
-        ];
-        const lowerTopfinIndices = [
-            2,0,1,
-            2,4,3,
+        // BASE FIN GEOMETRIES (centered at origin)
+    const lowerTopfinBaseVertices = [
+        3.23, 2.90, 0.05,  // 0 
+        2.63, 3.04, 0.05,  // 1 
+        2.47, 2.75, 0,     // 2          
+        3.23, 2.90, -0.05, // 3
+        2.63, 3.04, -0.05, // 4
+        2.47, 2.75, 0,     // 5
+    ];
 
-            2,1,4,
-            2,3,0,
-        ];
+    const lowerBottomfinBaseVertices = [
+        3.05, 3.40, 0.05,  // 0
+        2.68, 3.40, 0.05,  // 1
+        2.58, 3.71, 0,     // 2
+        3.05, 3.40, -0.05, // 3
+        2.68, 3.40, -0.05, // 4
+    ];
 
-        
-        const lowerBottomfinVertices =[
-            3.05, 3.40, 0.05,  // 0
-            2.68, 3.40, 0.05,  // 1
+    const midBottomfinBaseVertices = [
+        3.48, 3.38, 0.1,   // 0  
+        4.07, 3.52, 0.1,   // 1
+        3.60, 4.00, 0,     // 2
+        3.48, 3.38, -0.1,  // 3
+        4.07, 3.52, -0.1,  // 4
+    ];
 
-            2.58, 3.71, 0,  // 2
-
-            3.05, 3.40, -0.05,  // 3
-            2.68, 3.40, -0.05,  // 4
-        ];
-        const lowerBottomfinIndices = [
-            0,1,2,
-            2,3,4,
-            0,3,2,
-            1,4,2,
-        ];
-
-        const midBottomfinVertices = [
-            3.48, 3.38, 0.1,  // 0  
-            4.07, 3.52, 0.1,  // 1
-
-            3.60, 4.00, 0,  // 2
-
-            3.48, 3.38, -0.1,  // 3
-            4.07, 3.52, -0.1,  // 4
-
-
-        ];
-        const midBottomfinIndices = [
-            0,1,2,
-            2,3,4,
-            0,3,2,
-            1,4,2,
-            
-        ];
-
-        const upperTopfinVertices = [
+    const upperTopfinBaseVertices = [
         4.08, 2.84, 0.05,  // 0
         5.30, 2.70, 0.05,  // 1
+        4.40, 2.54, 0,     // 2
+        4.18, 1.79, 0,     // 3
+        4.08, 2.84, -0.05, // 4
+        5.30, 2.70, -0.05, // 5
+        4.08, 2.84, 0,     // 6
+        5.30, 2.70, 0,     // 7
+    ];
 
-        4.40, 2.54, 0,  // 2
-        4.18, 1.79, 0,  // 3
+    const upperBottomfinBaseVertices = [
+        5.22, 3.72, 0.05,  // 0
+        6.01, 3.61, 0.05,  // 1
+        5.16, 5, 0,     // 2
+        5.22, 3.72, -0.05, // 3
+        6.01, 3.61, -0.05, // 4
+    ];
 
-        4.08, 2.84, -0.05,  // 4
-        5.30, 2.70, -0.05,  // 5
+    // First, center all base geometries
+    const centerGeometry = (vertices) => {
+        // Calculate center
+        let minX = Infinity, maxX = -Infinity;
+        let minY = Infinity, maxY = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        
+        for (let i = 0; i < vertices.length; i += 3) {
+            minX = Math.min(minX, vertices[i]);
+            maxX = Math.max(maxX, vertices[i]);
+            minY = Math.min(minY, vertices[i + 1]);
+            maxY = Math.max(maxY, vertices[i + 1]);
+            minZ = Math.min(minZ, vertices[i + 2]);
+            maxZ = Math.max(maxZ, vertices[i + 2]);
+        }
+        
+        const centerX = (minX + maxX) / 2;
+        const centerY = (minY + maxY) / 2;
+        const centerZ = (minZ + maxZ) / 2;
+        
+        // Translate to center
+        const centered = [];
+        for (let i = 0; i < vertices.length; i += 3) {
+            centered.push(
+                vertices[i] - centerX,
+                vertices[i + 1] - centerY,
+                vertices[i + 2] - centerZ
+            );
+        }
+        return centered;
+    };
 
-        4.08, 2.84, 0,  // 6
-        5.30, 2.70, 0,  // 7
+    // Center base geometries
+    const midBottomfinCentered = centerGeometry(midBottomfinBaseVertices);
+    const upperBottomfinCentered = centerGeometry(upperBottomfinBaseVertices);
 
-        ];
-        const upperTopfinIndices = [
-            0,2,1,
-            2,3,1,
-
-            4,2,5,
-            2,3,5,
-
-            0,2,6,
-            4,6,2,
-
-            1,7,3,
-            5,3,7,
-        ];
-
-        const upperBottomfinVertices = [
-            5.22, 3.72, 0.05,  // 0
-            6.01, 3.61, 0.05,  // 1
-
-            5.16, 4.59, 0,  // 2
-
-            5.22, 3.72, -0.05,  // 3
-            6.01, 3.61, -0.05,  // 4
-        ];
-        const upperBottomfinIndices = [   
-            0,1,2,
-            2,3,4,
+    // Now create positioned fin pairs
+    const transformVertices = (vertices, position, rotation) => {
+        const transformed = [];
+        const cosZ = Math.cos(rotation.z);
+        const sinZ = Math.sin(rotation.z);
+        const cosX = Math.cos(rotation.x);
+        const sinX = Math.sin(rotation.x);
+        
+        for (let i = 0; i < vertices.length; i += 3) {
+            let x = vertices[i];
+            let y = vertices[i + 1];
+            let z = vertices[i + 2];
             
-            0,3,2,
-            1,4,2,
+            // Apply Z rotation
+            const xz = x * cosZ - y * sinZ;
+            const yz = x * sinZ + y * cosZ;
+            const zz = z;
+            
+            // Apply X rotation
+            const xx = xz;
+            const yx = yz * cosX - zz * sinX;
+            const zx = yz * sinX + zz * cosX;
+            
+            // Apply position
+            transformed.push(
+                xx + position.x,
+                yx + position.y,
+                zx + position.z
+            );
+        }
+        return transformed;
+    };
 
-        ];
+    // Create positioned fin pairs (replicating your original setup)
+    const midBottomFinRight = transformVertices(midBottomfinCentered, 
+        { x: 3.6, y: 3.47, z: 0.2 }, 
+        { x: Math.PI/8, y: 0, z: -Math.PI/24 }
+    );
 
-        // Combine all vertices
-        allVertices.push(...tailVertices, ...bodyVertices, ...headVertices, ...lowerTopfinVertices, ...lowerBottomfinVertices,
-            ...midBottomfinVertices, ...upperTopfinVertices, ...upperBottomfinVertices);
-        
-        // Combine all indices with proper offsets
-        const tailVertexCount = tailVertices.length / 3;
-        const bodyVertexCount = bodyVertices.length / 3;
-        const headVertexCount = headVertices.length / 3;
-const lowerTopFinVertexCount = lowerTopfinVertices.length / 3;
-const lowerBottomFinVertexCount = lowerBottomfinVertices.length / 3;
-const midBottomFinVertexCount = midBottomfinVertices.length / 3;
-const upperTopFinVertexCount = upperTopfinVertices.length / 3;
-const upperBottomFinVertexCount = upperBottomfinVertices.length / 3;
-        
-        // Add tail indices as-is
-        allIndices.push(...tailIndices);
-        
-        // Add body indices with offset
-        const bodyOffset = tailVertexCount;
-        allIndices.push(...bodyIndices.map(index => index + bodyOffset));
-        
-        // Add head indices with offset
-        const headOffset = tailVertexCount + bodyVertexCount;
-        allIndices.push(...headIndices.map(index => index + headOffset));
+    const midBottomFinLeft = transformVertices(midBottomfinCentered,
+        { x: 3.6, y: 3.5, z: -0.2 },
+        { x: -Math.PI/8, y: 0, z: -Math.PI/24 }
+    );
 
-        // Add fin indices with proper offsets
-const lowerTopFinOffset = tailVertexCount + bodyVertexCount + headVertexCount;
-allIndices.push(...lowerTopfinIndices.map(index => index + lowerTopFinOffset));
+    const upperBottomFinRight = transformVertices(upperBottomfinCentered,
+        { x: 5.3, y: 3.7, z: -0.5 },
+        { x: -Math.PI/4, y: 0, z: 0 }
+    );
 
-const lowerBottomFinOffset = lowerTopFinOffset + lowerTopFinVertexCount;
-allIndices.push(...lowerBottomfinIndices.map(index => index + lowerBottomFinOffset));
+    const upperBottomFinLeft = transformVertices(upperBottomfinCentered,
+        { x: 5.3, y: 3.7, z: 0.5 },
+        { x: Math.PI/4, y: 0, z: 0 }
+    );
 
-const midBottomFinOffset = lowerBottomFinOffset + lowerBottomFinVertexCount;
-allIndices.push(...midBottomfinIndices.map(index => index + midBottomFinOffset));
+    // Use the original fin indices (they work for both left and right versions)
+    const lowerTopfinIndices = [2,0,1, 2,4,3, 2,1,4, 2,3,0];
+    const lowerBottomfinIndices = [0,1,2, 2,3,4, 0,3,2, 1,4,2];
+    const midBottomfinIndices = [0,1,2, 2,3,4, 0,3,2, 1,4,2];
+    const upperTopfinIndices = [0,2,1, 2,3,1, 4,2,5, 2,3,5, 0,2,6, 4,6,2, 1,7,3, 5,3,7];
+    const upperBottomfinIndices = [0,1,2, 2,3,4, 0,3,2, 1,4,2];
 
-const upperTopFinOffset = midBottomFinOffset + midBottomFinVertexCount;
-allIndices.push(...upperTopfinIndices.map(index => index + upperTopFinOffset));
+    // Combine all vertices
+    allVertices.push(
+        ...tailVertices, 
+        ...bodyVertices, 
+        ...headVertices, 
+        ...lowerTopfinBaseVertices, 
+        ...lowerBottomfinBaseVertices,
+        ...midBottomFinRight,      // Right positioned
+        ...midBottomFinLeft,       // Left positioned  
+        ...upperTopfinBaseVertices,
+        ...upperBottomFinRight,    // Right positioned
+        ...upperBottomFinLeft      // Left positioned
+    );
+    
+    // Calculate vertex counts
+    const tailVertexCount = tailVertices.length / 3;
+    const bodyVertexCount = bodyVertices.length / 3;
+    const headVertexCount = headVertices.length / 3;
+    const lowerTopFinVertexCount = lowerTopfinBaseVertices.length / 3;
+    const lowerBottomFinVertexCount = lowerBottomfinBaseVertices.length / 3;
+    const midBottomFinVertexCount = midBottomFinRight.length / 3;  // Same for left
+    const upperTopFinVertexCount = upperTopfinBaseVertices.length / 3;
+    const upperBottomFinVertexCount = upperBottomFinRight.length / 3; // Same for left
+    
+    // Add indices with offsets...
+    allIndices.push(...tailIndices);
+    
+    const bodyOffset = tailVertexCount;
+    allIndices.push(...bodyIndices.map(index => index + bodyOffset));
+    
+    const headOffset = tailVertexCount + bodyVertexCount;
+    allIndices.push(...headIndices.map(index => index + headOffset));
 
-const upperBottomFinOffset = upperTopFinOffset + upperTopFinVertexCount;
-allIndices.push(...upperBottomfinIndices.map(index => index + upperBottomFinOffset));
+    const lowerTopFinOffset = headOffset + headVertexCount;
+    allIndices.push(...lowerTopfinIndices.map(index => index + lowerTopFinOffset));
 
-        // Create the merged geometry
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(allVertices), 3));
-        geometry.setIndex(allIndices);
-        geometry.computeVertexNormals();
+    const lowerBottomFinOffset = lowerTopFinOffset + lowerTopFinVertexCount;
+    allIndices.push(...lowerBottomfinIndices.map(index => index + lowerBottomFinOffset));
 
-        return geometry;
-    }
+    // Mid bottom fin RIGHT
+    const midBottomFinOffset = lowerBottomFinOffset + lowerBottomFinVertexCount;
+    allIndices.push(...midBottomfinIndices.map(index => index + midBottomFinOffset));
+
+    // Mid bottom fin LEFT
+    const midBottomFinLeftOffset = midBottomFinOffset + midBottomFinVertexCount;
+    allIndices.push(...midBottomfinIndices.map(index => index + midBottomFinLeftOffset));
+
+    const upperTopFinOffset = midBottomFinLeftOffset + midBottomFinVertexCount;
+    allIndices.push(...upperTopfinIndices.map(index => index + upperTopFinOffset));
+
+    // Upper bottom fin RIGHT
+    const upperBottomFinOffset = upperTopFinOffset + upperTopFinVertexCount;
+    allIndices.push(...upperBottomfinIndices.map(index => index + upperBottomFinOffset));
+
+    // Upper bottom fin LEFT
+    const upperBottomFinLeftOffset = upperBottomFinOffset + upperBottomFinVertexCount;
+    allIndices.push(...upperBottomfinIndices.map(index => index + upperBottomFinLeftOffset));
+
+    // Create geometry...
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(allVertices), 3));
+    geometry.setIndex(allIndices);
+    geometry.computeVertexNormals();
+
+    return geometry;
+}
 
     applyMergedSkinning(mesh) {
         const skinIndices = [];
