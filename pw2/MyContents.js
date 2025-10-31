@@ -215,7 +215,7 @@ class MyContents  {
         if (!delta) return;
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
-        this.shark.update(delta);
+        //this.shark.update(delta);
         
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
@@ -226,7 +226,7 @@ class MyContents  {
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
 
         // Update keyframe animations
-        this.animationShark.update(delta);
+        //this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
         
         for (const fishAnimations of this.fishGroupsAnimations) {
