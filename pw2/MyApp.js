@@ -28,17 +28,26 @@ class MyApp  {
         this.controls = null
         this.gui = null
         this.axis = null
-        this.contents == null
+        this.contents = null
 
         this.clock = new THREE.Clock();
 
-        // free-fly camera
-        this.move = { forward: false, backward: false, left: false, right: false, up: false, down: false };
-        this.pitch = 0; // rotation around X (look up/down)
-        this.yaw = 0;   // rotation around Y (look left/right)
-        this.mouseSensitivity = 0.002;
-        this.speed = 10;
+        // free-fly/submarine camera
+        this.move = { 
+            forward: false,   // W - increase forward speed
+            backward: false,  // S - decrease forward speed  
+            left: false,      // A - rotate left
+            right: false,     // D - rotate right
+            up: false,        // P - increase vertical speed
+            down: false       // L - decrease vertical speed
+        };
+        
+        // submarine speeds
+        this.forwardSpeed = 8;  
+        this.verticalSpeed = 3; 
+        this.rotationSpeed = 2; 
     }
+    
     /**
      * initializes the application
      */
@@ -86,18 +95,18 @@ class MyApp  {
         const aspect = window.innerWidth / window.innerHeight;
 
         // Aquarium view
-        const aquariumCam = new THREE.PerspectiveCamera( 110, aspect, 1, 500);
+        const aquariumCam = new THREE.PerspectiveCamera(110, aspect, 1, 500);
         aquariumCam.position.set(0,10,20);
         this.cameras['Aquarium View'] = aquariumCam;
 
         // Underwater view
-        const underwaterCam = new THREE.PerspectiveCamera( 90, aspect, 1, 500);
+        const underwaterCam = new THREE.PerspectiveCamera(90, aspect, 1, 500);
         underwaterCam.position.set(3,5,10);
         this.cameras['UnderWater'] = underwaterCam;
 
         // Free-Fly view
-        const freeFlyCam = new THREE.PerspectiveCamera( 90, aspect, 1, 500);
-        freeFlyCam.position.set(3,5,10);
+        const freeFlyCam = new THREE.PerspectiveCamera(75, aspect, 1, 500);
+        freeFlyCam.position.set(5,4,5);
         this.cameras['Free-Fly'] = freeFlyCam;
     }
 
@@ -134,7 +143,6 @@ class MyApp  {
             // among other things
             this.onResize()
 
-            // are the controls yet?
             if (this.controls === null) {
                 // Orbit controls allow the camera to orbit around a target.
                 this.controls = new OrbitControls( this.activeCamera, this.renderer.domElement );
@@ -143,20 +151,59 @@ class MyApp  {
                 this.controls.object = this.activeCamera
             }
 
-            this.controls.enabled = true;
-            this.controls.enableZoom = true;
-            this.controls.enableRotate = true;
-            this.controls.enablePan = true;
-
             if (this.activeCameraName === 'Aquarium View') {
                 this.controls.enabled = false;
                 this.controls.enableZoom = false;
                 this.controls.enablePan = false;
                 this.controls.enableRotate = false;
+            } else if (this.activeCameraName === 'Free-Fly') {
+                this.controls.enabled = false;
+                this.controls.enableZoom = false;
+                this.controls.enablePan = false;
+                this.controls.enableRotate = false;
+            } else {
+                this.controls.enabled = true;
+                this.controls.enableZoom = true;
+                this.controls.enableRotate = true;
+                this.controls.enablePan = true;
             }
         }
         
-        this.controls.update();
+        if (this.controls && this.controls.enabled) {
+            this.controls.update();
+        }
+    }
+
+    updateSubmarineMovement(delta) {
+        if (this.activeCameraName !== 'Free-Fly') return;
+        
+        const camera = this.activeCamera;
+
+        if (this.move.left) {
+            camera.rotation.y += this.rotationSpeed * delta;
+        }
+        if (this.move.right) {
+            camera.rotation.y -= this.rotationSpeed * delta;
+        }
+
+        const forward = new THREE.Vector3();
+        camera.getWorldDirection(forward);
+        
+        if (this.move.forward) {
+            camera.position.add(forward.multiplyScalar(this.forwardSpeed * delta));
+        }
+        if (this.move.backward) {
+            camera.position.add(forward.multiplyScalar(-this.forwardSpeed * delta));
+        }
+        
+        if (this.move.up) {
+            camera.position.y += this.verticalSpeed * delta;
+        }
+        if (this.move.down) {
+            camera.position.y -= this.verticalSpeed * delta;
+        }
+        
+        camera.position.y = Math.max(0.5, Math.min(20, camera.position.y));
     }
 
     /**
@@ -202,11 +249,13 @@ class MyApp  {
 
         // free-fly camera movement
         if (this.activeCameraName === 'Free-Fly') {
-            this.updateFreeFlyMovement(delta);
+            this.updateSubmarineMovement(delta);
         }
 
         // required if controls.enableDamping or controls.autoRotate are set to true
-        if (this.controls) this.controls.update();
+        if (this.controls && this.activeCameraName !== 'Free-Fly') {
+            this.controls.update();
+        }
 
         // render the scene
         this.renderer.render(this.scene, this.activeCamera);
@@ -218,28 +267,6 @@ class MyApp  {
         this.stats.end()
     }
 
-    // free-fly camera movement logic
-    updateFreeFlyMovement(delta) {
-        const camera = this.activeCamera;
-        const speed = this.speed * delta;
-
-        camera.rotation.order = 'YXZ';
-        camera.rotation.y = this.yaw;  
-        camera.rotation.x = this.pitch;
-
-        const forward = new THREE.Vector3(0, 0, -1).applyEuler(camera.rotation);
-        const right = new THREE.Vector3(forward.z, 0, -forward.x).normalize();
-        const up = new THREE.Vector3(0, 1, 0);
-
-        // Apply movement
-        if (this.move.forward) camera.position.addScaledVector(forward, speed);
-        if (this.move.backward) camera.position.addScaledVector(forward, -speed);
-        if (this.move.left) camera.position.addScaledVector(right, -speed);
-        if (this.move.right) camera.position.addScaledVector(right, speed);
-        if (this.move.up) camera.position.addScaledVector(up, speed);
-        if (this.move.down) camera.position.addScaledVector(up, -speed);
-    };
-
     // handle keyboard input
     onKeyChange(e, isPressed) {
         switch (e.code) {
@@ -247,8 +274,8 @@ class MyApp  {
             case 'KeyS': this.move.backward = isPressed; break;
             case 'KeyA': this.move.left = isPressed; break;
             case 'KeyD': this.move.right = isPressed; break;
-            case 'Space': this.move.up = isPressed; break;
-            case 'ShiftLeft': this.move.down = isPressed; break;
+            case 'KeyP': this.move.up = isPressed; break;
+            case 'KeyL': this.move.down = isPressed; break;
         }
     }
 }

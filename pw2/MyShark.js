@@ -85,7 +85,7 @@ class MyShark extends THREE.Object3D {
         this.rootPivot = new THREE.Object3D();
         this.rootPivot.add(sharkBody);
         this.add(this.rootPivot);
-        this.rootPivot.rotation.x = Math.PI;
+        this.rootPivot.rotation.x = Math.PI; //shark was on the wrong pose initially
 
         headBone.add(teeth);
 

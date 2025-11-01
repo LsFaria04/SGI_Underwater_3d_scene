@@ -18,6 +18,7 @@ import { MyShark } from './MyShark.js';
 import { MySwordFish } from './MySwordFish.js';
 import { MySeaPlant } from './MySeaPlant.js';
 import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
+import { MySubmarine } from './MySubmarine.js';
 
 
 /**
@@ -190,8 +191,12 @@ class MyContents  {
         this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
         this.swordFish.position.set(0,3,0);
         this.app.scene.add(this.swordFish);
-        
-        
+
+        this.submarine = new MySubmarine();
+        this.submarine.position.set(5,4,5);
+        this.app.scene.add(this.submarine);
+
+
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2,50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10,50, 60);
 
@@ -213,9 +218,19 @@ class MyContents  {
 
     update(delta) {
         if (!delta) return;
+
+        // update submarine model to follow free-fly camera 
+        if (this.submarine && this.app.activeCameraName === 'Free-Fly') {
+            this.submarine.position.copy(this.app.activeCamera.position);
+            this.submarine.rotation.copy(this.app.activeCamera.rotation);
+
+            // rotate submarine to match camera direction
+            this.submarine.rotation.y += Math.PI / 2; 
+        }
+
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
-        //this.shark.update(delta);
+        this.shark.update(delta);
         
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
@@ -226,7 +241,7 @@ class MyContents  {
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
 
         // Update keyframe animations
-        //this.animationShark.update(delta);
+        this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
         
         for (const fishAnimations of this.fishGroupsAnimations) {
