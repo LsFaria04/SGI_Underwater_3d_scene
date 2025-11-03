@@ -200,10 +200,11 @@ class MyContents  {
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2,50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10,50, 60);
 
+        /*
         this.fishGroupsAnimations = []
         for (const fishGroup of this.fishGroups){
             this.fishGroupsAnimations.push(fishGroup.getAnimations());
-        }
+        }*/
 
     }
 
@@ -244,9 +245,10 @@ class MyContents  {
         this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
         
+        /*
         for (const fishAnimations of this.fishGroupsAnimations) {
             for (const animation of fishAnimations) animation.update(delta);
-        }
+        }*/
 
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
