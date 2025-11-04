@@ -41,12 +41,12 @@ class MyKeyFrameAnimation  {
     }
     initRandom(){
         const controlPoints = [];
-        for (let i = 0; i <= 6; i++) {
-            const angle = (i / 6) * Math.PI * 2;
+        for (let i = 0; i < 7; i++) {
+            const angle = (i / 7) * Math.PI * 2;
             const r = this.radius * (0.7 + Math.random() * 0.6); // randomize the radius
             const x = this.object.position.x + Math.cos(angle) * r;
             const z = this.object.position.z + Math.sin(angle) * r;
-            const y = this.object.position.y + (Math.random() - 0.5) * 2;
+            const y = this.object.position.y + (Math.random() - 0.5) * 1.5;
             controlPoints.push(new THREE.Vector3(x, y, z));
         }
 

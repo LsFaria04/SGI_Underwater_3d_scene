@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {MyTriangle} from './MyTriangle.js';
+import {MyTriangle} from '../objects/MyTriangle.js';
 
 /**
  * This class contains a 3D representation of a common carp fish
