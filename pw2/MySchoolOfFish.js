@@ -93,26 +93,26 @@ class MySchoolfOfFish extends THREE.Group {
             
             //use the three rules to change the velocity and position
             fish.velocity
-            .addScaledVector(v1, 0.5 * delta)
-            .addScaledVector(v2, 0.5 * delta)
-            .addScaledVector(v3, 0.5 * delta)
-            .addScaledVector(v4, 0.5 * delta);
+            .addScaledVector(v1, delta)
+            .addScaledVector(v2, delta)
+            .addScaledVector(v3, delta)
+            .addScaledVector(v4, delta);
 
-            //limit the maximum possible speed
-            const maxSpeed = 0.02; 
+            const maxSpeed = 2; // tune this
             if (fish.velocity.length() > maxSpeed) {
                 fish.velocity.setLength(maxSpeed);
             }
 
             // update position
-            fish.position.add(fish.velocity);
+            fish.position.addScaledVector(fish.velocity, delta);
+
             
             //update rotation
             if (fish.velocity.lengthSq() > 0) {
                 const dir = fish.velocity.clone().normalize();
                 const forward = new THREE.Vector3(-1, 0, 0); // model original forward positon is to -X
                 const quat = new THREE.Quaternion().setFromUnitVectors(forward, dir);
-                fish.quaternion.slerp(quat, 0.01); // smooth turning (or at leats close to smooth)
+                fish.quaternion.slerp(quat, delta); // smooth turning (or at leats close to smooth)
             }
 
         }
@@ -129,7 +129,7 @@ class MySchoolfOfFish extends THREE.Group {
                 const dist = fish.position.distanceTo(fishj.position);
 
                 //avoid colisions
-                if (dist < (this.minSpace + this.maxScale)) {
+                if (dist < (this.minSpace / 2 + this.maxScale / 2)) {
                     const diff = new THREE.Vector3().subVectors(fish.position, fishj.position);
                     positionDisplacement.sub(diff);
                 }
@@ -181,7 +181,7 @@ class MySchoolfOfFish extends THREE.Group {
         const steer = new THREE.Vector3().subVectors(positionWeight, fishj.position);
 
         // scale down influence (1% weight)
-        steer.divideScalar(100);
+        //steer.divideScalar(100);
 
         return steer;
     }
@@ -192,33 +192,33 @@ class MySchoolfOfFish extends THREE.Group {
      * @returns A velocity vector 
      */
     bound_position(fish){
-        let maxX = 18;
-        let minX = -18;
+        let maxX = 20;
+        let minX = -20;
         let maxY = 10;
         let minY = 2;
-        let maxZ = 18;
-        let minZ = -18;
+        let maxZ = 20;
+        let minZ = -20;
 
         let v = new THREE.Vector3(fish.velocity.x,fish.velocity.y,fish.velocity.z);
 
-        if (fish.position.x < minX){
+        if ((this.position.x  + fish.position.x) < minX){
             v.x = 1;
         }
-        else if(fish.position.x > maxX){
+        else if((this.position.x + fish.position.x) > maxX){
             v.x = -1;
         }
 
-        if (fish.position.y < minY){
+        if ((this.position.y + fish.position.y) < minY){
             v.y = 1;
         }
-        else if(fish.position.y > maxY){
+        else if((this.position.y  + fish.position.y) > maxY){
             v.y = -1;
         }
 
-        if (fish.position.z < minZ){
+        if ((this.position.z + fish.position.z) < minZ){
             v.z = 1;
         }
-        else if(fish.position.z > maxZ){
+        else if((this.position.z + fish.position.z) > maxZ){
             v.z = -1;
         }
 
