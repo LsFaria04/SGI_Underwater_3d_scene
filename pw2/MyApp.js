@@ -32,7 +32,7 @@ class MyApp  {
 
         this.clock = new THREE.Clock();
 
-        // free-fly/submarine camera
+        // submarine camera
         this.move = { 
             forward: false,   // W - increase forward speed
             backward: false,  // S - decrease forward speed  
@@ -104,10 +104,10 @@ class MyApp  {
         underwaterCam.position.set(3,5,10);
         this.cameras['UnderWater'] = underwaterCam;
 
-        // Free-Fly view
+        // Submarine view
         const freeFlyCam = new THREE.PerspectiveCamera(75, aspect, 1, 500);
         freeFlyCam.position.set(5,4,5);
-        this.cameras['Free-Fly'] = freeFlyCam;
+        this.cameras['Submarine'] = freeFlyCam;
     }
 
     /**
@@ -126,7 +126,7 @@ class MyApp  {
      * it updates the active camera and the controls
      */
     updateCameraIfRequired() {
-        if (this.activeCameraName === 'Free-Fly' || this.activeCameraName === 'Aquarium View') {
+        if (this.activeCameraName === 'Submarine' || this.activeCameraName === 'Aquarium View') {
             if (this.controls) this.controls.enabled = false;
         } 
         else {
@@ -156,7 +156,7 @@ class MyApp  {
                 this.controls.enableZoom = false;
                 this.controls.enablePan = false;
                 this.controls.enableRotate = false;
-            } else if (this.activeCameraName === 'Free-Fly') {
+            } else if (this.activeCameraName === 'Submarine') {
                 this.controls.enabled = false;
                 this.controls.enableZoom = false;
                 this.controls.enablePan = false;
@@ -175,7 +175,7 @@ class MyApp  {
     }
 
     updateSubmarineMovement(delta) {
-        if (this.activeCameraName !== 'Free-Fly') return;
+        if (this.activeCameraName !== 'Submarine') return;
         
         const camera = this.activeCamera;
 
@@ -203,7 +203,7 @@ class MyApp  {
             camera.position.y -= this.verticalSpeed * delta;
         }
         
-        camera.position.y = Math.max(0.5, Math.min(20, camera.position.y));
+        camera.position.y = Math.max(2, Math.min(20, camera.position.y));
     }
 
     /**
@@ -247,13 +247,13 @@ class MyApp  {
             this.contents.update(delta);    
         }
 
-        // free-fly camera movement
-        if (this.activeCameraName === 'Free-Fly') {
+        // submarine camera movement
+        if (this.activeCameraName === 'Submarine') {
             this.updateSubmarineMovement(delta);
         }
 
         // required if controls.enableDamping or controls.autoRotate are set to true
-        if (this.controls && this.activeCameraName !== 'Free-Fly') {
+        if (this.controls && this.activeCameraName !== 'Submarine') {
             this.controls.update();
         }
 

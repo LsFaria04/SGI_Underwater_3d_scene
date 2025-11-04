@@ -102,15 +102,11 @@ class MyContents  {
         this.app.scene.add(seaStarLOD);
         seaStarLOD.position.set(2,0.25,2);
 
-        const jelyFishLOD = new THREE.LOD();
-        const jelyFish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
-        const jelyFishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
-        const jelyFishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
-        jelyFishLOD.addLevel(jelyFish, 0);
-        jelyFishLOD.addLevel(jelyFishMedium, 15);
-        jelyFishLOD.addLevel(jelyFishLow, 30);
-        this.app.scene.add(jelyFishLOD);
-        jelyFishLOD.position.set(0,5,0);
+        const jellyFish = new MyJellyFish(0.5, 1, "#0000FF");
+        this.app.scene.add(jellyFish);
+        jellyFish.position.set(0,5,0);
+
+        this.jellyFish = jellyFish;
 
         const crabLOD = new THREE.LOD();
         const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
@@ -219,8 +215,8 @@ class MyContents  {
     update(delta) {
         if (!delta) return;
 
-        // update submarine model to follow free-fly camera 
-        if (this.submarine && this.app.activeCameraName === 'Free-Fly') {
+        // update submarine model to follow submarine camera 
+        if (this.submarine && this.app.activeCameraName === 'Submarine') {
             this.submarine.position.copy(this.app.activeCamera.position);
             this.submarine.rotation.copy(this.app.activeCamera.rotation);
 
@@ -247,6 +243,10 @@ class MyContents  {
         for (const fishAnimations of this.fishGroupsAnimations) {
             for (const animation of fishAnimations) animation.update(delta);
         }
+
+        this.submarine.update(delta);
+
+        this.jellyFish.update(delta);
 
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
