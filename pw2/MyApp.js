@@ -203,7 +203,7 @@ class MyApp  {
             camera.position.y -= this.verticalSpeed * delta;
         }
         
-        camera.position.y = Math.max(0.5, Math.min(20, camera.position.y));
+        camera.position.y = Math.max(2, Math.min(20, camera.position.y));
     }
 
     /**
