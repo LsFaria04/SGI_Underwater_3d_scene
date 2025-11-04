@@ -36,6 +36,9 @@ class MySign extends THREE.Object3D {
     stick.position.y = stickHeight / 2;
     this.add(stick);
 
+    stick.castShadow = true;
+    stick.receiveShadow = true;
+
     // --- Board ---
     if (!boardTexture && text) {
       const canvas = document.createElement('canvas');
@@ -70,6 +73,9 @@ class MySign extends THREE.Object3D {
     board.position.y = stickHeight + boardHeight / 2;
     this.add(board);
 
+    board.castShadow = true;
+    board.receiveShadow = true;
+    
     this.stick = stick;
     this.board = board;
   }

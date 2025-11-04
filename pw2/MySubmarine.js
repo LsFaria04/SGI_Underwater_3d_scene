@@ -44,12 +44,16 @@ class MySubmarine extends THREE.Object3D {
         const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
         body.rotation.z = Math.PI / 2;
         this.add(body);
+        body.castShadow = true;
+        body.receiveShadow = true;
 
         // hatch
         const hatchGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.3, 12);
         const hatch = new THREE.Mesh(hatchGeometry, darkMetalMaterial);
         hatch.position.set(0, 0.4, 0);
         this.add(hatch);
+        hatch.castShadow = true;
+        hatch.receiveShadow = true;
 
         // periscope
         const points = [
@@ -65,6 +69,8 @@ class MySubmarine extends THREE.Object3D {
         const periscope = new THREE.Mesh(tubeGeometry, metalMaterial);
         periscope.position.y = 0.5;
         this.add(periscope);
+        periscope.castShadow = true;
+        periscope.receiveShadow = true;
 
         const lensGeometry = new THREE.CircleGeometry(0.035, 16);
 
@@ -72,12 +78,16 @@ class MySubmarine extends THREE.Object3D {
         lens.position.set(0.3, 1.1, 0); 
         lens.rotation.y = Math.PI / 2;    
         this.add(lens);
+        lens.castShadow = true;
+        lens.receiveShadow = true;
 
         const lensHousingGeometry = new THREE.RingGeometry(0.035, 0.045, 16);
         const lensHousing = new THREE.Mesh(lensHousingGeometry, darkMetalMaterial);
         lensHousing.position.copy(lens.position);
         lensHousing.rotation.copy(lens.rotation);
         this.add(lensHousing);
+        lensHousing.castShadow = true;
+        lensHousing.receiveShadow = true;
 
         // Submarine windows
         const windowGeometry = new THREE.CircleGeometry(0.12, 12);
@@ -100,6 +110,8 @@ class MySubmarine extends THREE.Object3D {
             windowGroup.add(frame);
 
             const window = new THREE.Mesh(windowGeometry, glassMaterial);
+            window.castShadow = true;
+            window.receiveShadow = true;
             window.position.z = -0.001;
             windowGroup.add(window);
             
@@ -146,6 +158,8 @@ class MySubmarine extends THREE.Object3D {
         const rudder = new THREE.Mesh(rudderGeometry, bodyMaterial);
         rudder.position.set(-1.8, 0, 0);
         rudder.rotation.set(0,Math.PI/2,0);
+        rudder.castShadow = true;
+        rudder.receiveShadow = true;
         this.add(rudder);
 
         // stern planes
@@ -153,11 +167,15 @@ class MySubmarine extends THREE.Object3D {
         const leftSternPlane = new THREE.Mesh(sternPlaneGeometry, bodyMaterial);
         leftSternPlane.position.set(-1.8, 0, -0.4);
         leftSternPlane.rotation.set(0,Math.PI/2,0);
+        leftSternPlane.castShadow = true;
+        leftSternPlane.receiveShadow = true;
         this.add(leftSternPlane);
 
         const rightSternPlane = new THREE.Mesh(sternPlaneGeometry, bodyMaterial);
         rightSternPlane.position.set(-1.7, 0, 0.4);
         rightSternPlane.rotation.set(0,Math.PI/2,0);
+        rightSternPlane.castShadow = true;
+        rightSternPlane.receiveShadow = true;
         this.add(rightSternPlane);
     }
 }

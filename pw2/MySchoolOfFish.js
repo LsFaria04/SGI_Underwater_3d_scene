@@ -91,14 +91,15 @@ class MySchoolfOfFish extends THREE.Group {
             //extra rules
             v4 = this.bound_position(fish);
 
+            //add acceleration using the rules
             fish.acceleration
             .addScaledVector(v1, 1)
             .addScaledVector(v2, 0.05)
-            .addScaledVector(v3, 0.5)
+            .addScaledVector(v3, 0.4)
             .addScaledVector(v4, 1)
 
             
-            //use the three rules to change the velocity and position
+            //use the acceleration to change the velocity and position
             fish.velocity.addScaledVector(fish.acceleration, delta);
 
             const maxSpeed = 2; 
@@ -193,8 +194,8 @@ class MySchoolfOfFish extends THREE.Group {
     bound_position(fish){
         let maxX = 20;
         let minX = -20;
-        let maxY = 10;
-        let minY = 2;
+        let maxY = 15;
+        let minY = 5;
         let maxZ = 20;
         let minZ = -20;
 
