@@ -219,8 +219,8 @@ class MyContents  {
     update(delta) {
         if (!delta) return;
 
-        // update submarine model to follow free-fly camera 
-        if (this.submarine && this.app.activeCameraName === 'Free-Fly') {
+        // update submarine model to follow submarine camera 
+        if (this.submarine && this.app.activeCameraName === 'Submarine') {
             this.submarine.position.copy(this.app.activeCamera.position);
             this.submarine.rotation.copy(this.app.activeCamera.rotation);
 
@@ -247,6 +247,8 @@ class MyContents  {
         for (const fishAnimations of this.fishGroupsAnimations) {
             for (const animation of fishAnimations) animation.update(delta);
         }
+
+        this.submarine.update(delta);
 
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
