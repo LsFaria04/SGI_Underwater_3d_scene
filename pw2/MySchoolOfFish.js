@@ -58,6 +58,7 @@ class MySchoolfOfFish extends THREE.Group {
                     );
 
                     cloneSpecie.velocity = new THREE.Vector3(0,0,0); //initialize the speed to zero (used for the flocking animation)
+                    cloneSpecie.acceleration = new THREE.Vector3(0,0,0);;
                     this.fishGroupsAnimations.push(new MyKeyFrameAnimation(cloneSpecie, "random", 2,50, 30));
                     this.add(cloneSpecie);
                     this.fishes.push(cloneSpecie); // Add to fish array
@@ -90,30 +91,33 @@ class MySchoolfOfFish extends THREE.Group {
             //extra rules
             v4 = this.bound_position(fish);
 
+            fish.acceleration
+            .addScaledVector(v1, 1)
+            .addScaledVector(v2, 0.05)
+            .addScaledVector(v3, 0.5)
+            .addScaledVector(v4, 1)
+
             
             //use the three rules to change the velocity and position
-            fish.velocity
-            .addScaledVector(v1, delta)
-            .addScaledVector(v2, delta)
-            .addScaledVector(v3, delta)
-            .addScaledVector(v4, delta);
+            fish.velocity.addScaledVector(fish.acceleration, delta);
 
-            const maxSpeed = 2; // tune this
-            if (fish.velocity.length() > maxSpeed) {
-                fish.velocity.setLength(maxSpeed);
-            }
+            const maxSpeed = 2; 
+            fish.velocity.clampLength(-maxSpeed, maxSpeed);
 
             // update position
             fish.position.addScaledVector(fish.velocity, delta);
 
             
             //update rotation
+            
             if (fish.velocity.lengthSq() > 0) {
                 const dir = fish.velocity.clone().normalize();
                 const forward = new THREE.Vector3(-1, 0, 0); // model original forward positon is to -X
                 const quat = new THREE.Quaternion().setFromUnitVectors(forward, dir);
                 fish.quaternion.slerp(quat, delta); // smooth turning (or at leats close to smooth)
             }
+
+            fish.acceleration.set(0,0,0);
 
         }
         
@@ -157,8 +161,6 @@ class MySchoolfOfFish extends THREE.Group {
         // difference between average and current velocity
         const steer = new THREE.Vector3().subVectors(velocityWeight, fishj.velocity);
 
-        // scale down influence (1/8th)
-        steer.divideScalar(8);
 
         return steer;
     }
@@ -179,9 +181,6 @@ class MySchoolfOfFish extends THREE.Group {
 
         // vector pointing from current fish to average position
         const steer = new THREE.Vector3().subVectors(positionWeight, fishj.position);
-
-        // scale down influence (1% weight)
-        //steer.divideScalar(100);
 
         return steer;
     }

@@ -130,7 +130,7 @@ class MyContents  {
         }
         
         //carps position and size [x, y, z, number of carps]
-        const carpsGroupsPosSize = [[-10, 1, -10, 10], [10, 1, 5, 5]];
+        const carpsGroupsPosSize = [[-10, 1, -10, 100], [10, 1, 5, 5]];
         this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
