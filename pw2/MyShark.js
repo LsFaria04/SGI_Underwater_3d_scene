@@ -71,8 +71,8 @@ class MyShark extends THREE.Object3D {
             new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
         );
 
-        rightEyeWhite.position.set(6.8, 3.1, 0.3);
-        rightEyeBlack.position.set(6.8, 3.1, 0.31); 
+        rightEyeWhite.position.set(6.8, 3.1, 0.21);
+        rightEyeBlack.position.set(6.8, 3.1, 0.22); 
         rightEyeWhite.rotation.x = Math.PI;
         rightEyeBlack.rotation.x = Math.PI;
 
@@ -85,8 +85,8 @@ class MyShark extends THREE.Object3D {
             new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
         );
 
-        leftEyeWhite.position.set(6.8, 3.1, -0.3);
-        leftEyeBlack.position.set(6.8, 3.1, -0.31);
+        leftEyeWhite.position.set(6.8, 3.1, -0.21);
+        leftEyeBlack.position.set(6.8, 3.1, -0.22);
         leftEyeWhite.rotation.x = Math.PI;
         leftEyeBlack.rotation.x = Math.PI;
 
