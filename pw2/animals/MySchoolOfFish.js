@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyCarp } from './MyCarp.js';
-import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
+import { MyKeyFrameAnimation } from '../animations/MyKeyframeAnimation.js';
 
 /**
  * This class represents a school of fish (fish group)

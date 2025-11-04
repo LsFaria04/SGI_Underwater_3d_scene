@@ -1,24 +1,24 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
-import { MyBubble } from './MyBubble.js';
-import { MySeaStar } from './MySeaStar.js';
-import { MyJellyFish } from './MyJellyFish.js';
-import { MyCrab } from './MyCrab.js';
-import { MySchoolfOfFish } from './MySchoolOfFish.js';
-import { MyRockGroup } from './MyRockGroup.js';
-import { MyCoralReef } from './MyCoralReef.js';
-import { MyFloor } from './MyFloor.js';
-import { MyWater } from './MyWater.js';
-import { MySeaUrchin } from './MySeaUrchin.js';
-import { MyTurtle } from './MyTurtle.js';
-import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
-import { My2DShark } from './My2DShark.js';
-import { MySign } from './MySign.js';
-import { MyShark } from './MyShark.js';
-import { MySwordFish } from './MySwordFish.js';
-import { MySeaPlant } from './MySeaPlant.js';
-import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
-import { MySubmarine } from './MySubmarine.js';
+import { MyBubble } from './objects/MyBubble.js';
+import { MySeaStar } from './animals/MySeaStar.js';
+import { MyJellyFish } from './animals/MyJellyFish.js';
+import { MyCrab } from './animals/MyCrab.js';
+import { MySchoolfOfFish } from './animals/MySchoolOfFish.js';
+import { MyRockGroup } from './objects/MyRockGroup.js';
+import { MyCoralReef } from './objects/MyCoralReef.js';
+import { MyFloor } from './objects/MyFloor.js';
+import { MyWater } from './objects/MyWater.js';
+import { MySeaUrchin } from './animals/MySeaUrchin.js';
+import { MyTurtle } from './animals/MyTurtle.js';
+import { MySeaPlantGroup } from './objects/MySeaPlantsGroup.js';
+import { My2DShark } from './animals/My2DShark.js';
+import { MySign } from './objects/MySign.js';
+import { MyShark } from './animals/MyShark.js';
+import { MySwordFish } from './animals/MySwordFish.js';
+import { MySeaPlant } from './objects/MySeaPlant.js';
+import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
+import { MySubmarine } from './objects/MySubmarine.js';
 
 
 /**
