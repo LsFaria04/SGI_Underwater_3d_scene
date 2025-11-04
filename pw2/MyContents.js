@@ -134,7 +134,7 @@ class MyContents  {
         this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
-            const fishGroup = new MySchoolfOfFish(pos[3], 0.5, 1,0.2, "Carp", 1,1,1,1, this.fishTexture1);
+            const fishGroup = new MySchoolfOfFish(pos[3], 1, 1,0.2, "Carp", 1,1,1,1, this.fishTexture1);
             this.app.scene.add(fishGroup);
             this.fishGroups.push(fishGroup);
             fishGroup.position.set(pos[0],pos[1],pos[2]);
