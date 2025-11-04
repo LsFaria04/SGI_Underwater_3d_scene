@@ -59,6 +59,44 @@ class MyShark extends THREE.Object3D {
         sharkBody.add(rootBone);
         sharkBody.bind(skeleton);
 
+        // eyes
+        const eyeGroup = new THREE.Group();
+        
+        const rightEyeWhite = new THREE.Mesh(
+            new THREE.CircleGeometry(0.12, 8, 7 / 8 * Math.PI, Math.PI),
+            new THREE.MeshStandardMaterial({ color: "#ffffff", side: THREE.DoubleSide })
+        );
+        const rightEyeBlack = new THREE.Mesh(
+            new THREE.CircleGeometry(0.06, 8, 7/8 * Math.PI, Math.PI),
+            new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
+        );
+
+        rightEyeWhite.position.set(6.8, 3.1, 0.3);
+        rightEyeBlack.position.set(6.8, 3.1, 0.31); 
+        rightEyeWhite.rotation.x = Math.PI;
+        rightEyeBlack.rotation.x = Math.PI;
+
+        const leftEyeWhite = new THREE.Mesh(
+            new THREE.CircleGeometry(0.12, 8, 7 / 8 * Math.PI, Math.PI),
+            new THREE.MeshStandardMaterial({ color: "#ffffff", side: THREE.DoubleSide })
+        );
+        const leftEyeBlack = new THREE.Mesh(
+            new THREE.CircleGeometry(0.06, 8, 7/8 * Math.PI, Math.PI),
+            new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
+        );
+
+        leftEyeWhite.position.set(6.8, 3.1, -0.3);
+        leftEyeBlack.position.set(6.8, 3.1, -0.31);
+        leftEyeWhite.rotation.x = Math.PI;
+        leftEyeBlack.rotation.x = Math.PI;
+
+        eyeGroup.add(rightEyeWhite);
+        eyeGroup.add(rightEyeBlack);
+        eyeGroup.add(leftEyeWhite);
+        eyeGroup.add(leftEyeBlack);
+
+        headBone.add(eyeGroup);
+
         const teethVertices = new Float32Array([
             6.85, 3.44, 0,  // 0 - tooth 1
             6.92, 3.42, 0,  // 1 - tooth 1
