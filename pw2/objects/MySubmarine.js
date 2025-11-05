@@ -117,41 +117,30 @@ class MySubmarine extends THREE.Object3D {
             
             this.add(windowGroup);
         });
-/*
+
         // propeller 
         const propellerGroup = new THREE.Group();
         propellerGroup.position.set(-2, 0, 0);
 
         // base 
-        const propellerMaterial = new THREE.MeshPhongMaterial({ 
-            color: 0x333333,
-            shininess: 60
-        });
         const propellerBaseGeometry = new THREE.CylinderGeometry(0.12, 0.12, 0.1, 12);
-        const propellerBase = new THREE.Mesh(propellerBaseGeometry, propellerMaterial);
+        const propellerBase = new THREE.Mesh(propellerBaseGeometry, metalMaterial);
         propellerBase.rotation.z = Math.PI / 2;
         propellerGroup.add(propellerBase);
 
         // blades
         const bladeGeometry = new THREE.BoxGeometry(0.4, 0.08, 0.02);
-        const bladeMaterial = new THREE.MeshPhongMaterial({ color: 0x222222 });
-        for (let i = 0; i < 4; i++) {
-            const blade = new THREE.Mesh(bladeGeometry, bladeMaterial);
-            
-            const angle = (i * Math.PI / 2);
-            const distance = 0.2; 
-            
-            blade.position.x = Math.cos(angle) * distance;
-            blade.position.y = Math.sin(angle) * distance;
-            
-            blade.rotation.z = angle;
-            blade.rotation.y = Math.PI / 3; 
-            
-            propellerGroup.add(blade);
-        }
+
+        const horizontalBlade = new THREE.Mesh(bladeGeometry, metalMaterial);
+        horizontalBlade.rotation.set(0, 0, Math.PI/2);
+        propellerGroup.add(horizontalBlade);
+
+        const verticalBlade = new THREE.Mesh(bladeGeometry, metalMaterial);
+        verticalBlade.rotation.set(Math.PI/2, 0, Math.PI/2);
+        propellerGroup.add(verticalBlade);
 
         this.add(propellerGroup);
-*/
+
         // rudder
         // rudder
         const rudderGeometry = new THREE.BoxGeometry(0.1, 1.2, 0.3);
@@ -177,6 +166,13 @@ class MySubmarine extends THREE.Object3D {
         rightSternPlane.castShadow = true;
         rightSternPlane.receiveShadow = true;
         this.add(rightSternPlane);
+    }
+
+    update(delta) {
+        const propeller = this.children.find(child => child.position.x === -2);
+        if (propeller) {
+            propeller.rotation.x += delta * 5;
+        }
     }
 }
 

@@ -35,7 +35,7 @@ class MyInterface  {
 
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')
-        cameraFolder.add(this.app, 'activeCameraName', [ 'Aquarium View', 'UnderWater', 'Free-Fly'] ).name("active camera");
+        cameraFolder.add(this.app, 'activeCameraName', [ 'Aquarium View', 'UnderWater', 'Submarine'] ).name("active camera");
         cameraFolder.open()
 
         const displayFolder = this.datgui.addFolder('Display')

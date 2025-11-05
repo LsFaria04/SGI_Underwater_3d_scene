@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { generateRandom } from './utils.js';
+import { generateRandom } from '../utils.js';
 
 /**
  * This class represents a rock with different levels of detail

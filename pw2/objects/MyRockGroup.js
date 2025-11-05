@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {getRandomInt} from './utils.js';
+import {getRandomInt} from '../utils.js';
 import { MyRock } from './MyRock.js';
 
 

@@ -1,24 +1,24 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
-import { MyBubble } from './MyBubble.js';
-import { MySeaStar } from './MySeaStar.js';
-import { MyJellyFish } from './MyJellyFish.js';
-import { MyCrab } from './MyCrab.js';
-import { MySchoolfOfFish } from './MySchoolOfFish.js';
-import { MyRockGroup } from './MyRockGroup.js';
-import { MyCoralReef } from './MyCoralReef.js';
-import { MyFloor } from './MyFloor.js';
-import { MyWater } from './MyWater.js';
-import { MySeaUrchin } from './MySeaUrchin.js';
-import { MyTurtle } from './MyTurtle.js';
-import { MySeaPlantGroup } from './MySeaPlantsGroup.js';
-import { My2DShark } from './My2DShark.js';
-import { MySign } from './MySign.js';
-import { MyShark } from './MyShark.js';
-import { MySwordFish } from './MySwordFish.js';
-import { MySeaPlant } from './MySeaPlant.js';
-import { MyKeyFrameAnimation } from './MyKeyframeAnimation.js';
-import { MySubmarine } from './MySubmarine.js';
+import { MyBubble } from './objects/MyBubble.js';
+import { MySeaStar } from './animals/MySeaStar.js';
+import { MyJellyFish } from './animals/MyJellyFish.js';
+import { MyCrab } from './animals/MyCrab.js';
+import { MySchoolfOfFish } from './animals/MySchoolOfFish.js';
+import { MyRockGroup } from './objects/MyRockGroup.js';
+import { MyCoralReef } from './objects/MyCoralReef.js';
+import { MyFloor } from './objects/MyFloor.js';
+import { MyWater } from './objects/MyWater.js';
+import { MySeaUrchin } from './animals/MySeaUrchin.js';
+import { MyTurtle } from './animals/MyTurtle.js';
+import { MySeaPlantGroup } from './objects/MySeaPlantsGroup.js';
+import { My2DShark } from './animals/My2DShark.js';
+import { MySign } from './objects/MySign.js';
+import { MyShark } from './animals/MyShark.js';
+import { MySwordFish } from './animals/MySwordFish.js';
+import { MySeaPlant } from './objects/MySeaPlant.js';
+import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
+import { MySubmarine } from './objects/MySubmarine.js';
 
 
 /**
@@ -101,6 +101,12 @@ class MyContents  {
         seaStarLOD.addLevel(seaStarLow, 20);
         this.app.scene.add(seaStarLOD);
         seaStarLOD.position.set(2,0.25,2);
+
+        const jellyFish = new MyJellyFish(0.5, 1, "#0000FF");
+        this.app.scene.add(jellyFish);
+        jellyFish.position.set(0,5,0);
+
+        this.jellyFish = jellyFish;
 
         const crabLOD = new THREE.LOD();
         const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
@@ -227,8 +233,8 @@ class MyContents  {
     update(delta) {
         if (!delta) return;
 
-        // update submarine model to follow free-fly camera 
-        if (this.submarine && this.app.activeCameraName === 'Free-Fly') {
+        // update submarine model to follow submarine camera 
+        if (this.submarine && this.app.activeCameraName === 'Submarine') {
             this.submarine.position.copy(this.app.activeCamera.position);
             this.submarine.rotation.copy(this.app.activeCamera.rotation);
 
@@ -264,7 +270,11 @@ class MyContents  {
         /*
         for (const fishAnimations of this.fishGroupsAnimations) {
             for (const animation of fishAnimations) animation.update(delta);
-        }*/
+        }
+
+        this.submarine.update(delta);
+
+        this.jellyFish.update(delta);
 
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {
