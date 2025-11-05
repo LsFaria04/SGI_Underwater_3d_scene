@@ -17,10 +17,16 @@ class MySchoolfOfFish extends THREE.Group {
      * @param {*} baseWidth Base width before scaling of the fishes
      * @param {*} fishTexture Texture of the fishes
      */
-    constructor(numbFish, minSpace,maxScale, minScale, specie, baseLen, baseWidth, fishTexture){
+    constructor(numbFish, minSpace,maxScale, minScale, specie, baseLen, baseWidth, fishTexture, flockingParams){
         super();
         this.minSpace = minSpace;
         this.maxScale = maxScale;
+
+        //default values for the flocking atributes
+        this.cohesionW = flockingParams.cohesion;
+        this.aligmentW = flockingParams.alignment;
+        this.separationW = flockingParams.separation;
+        this.maxSpeed = flockingParams.maxSpeed;
         
         const gridSide = Math.ceil(Math.cbrt(numbFish));
         let fishCount = 0;
@@ -97,11 +103,12 @@ class MySchoolfOfFish extends THREE.Group {
 
             //add acceleration using the rules
             fish.acceleration
-            .addScaledVector(v1, 1)
-            .addScaledVector(v2, 0.1)
-            .addScaledVector(v3, 0.4)
-            .addScaledVector(v4, 1)
-            .addScaledVector(v5,10);
+            .addScaledVector(v1, 1 * this.separationW)
+            .addScaledVector(v2, 0.1 * this.aligmentW)
+            .addScaledVector(v3, 0.4 * this.cohesionW)
+            .addScaledVector(v4, 1 * this.separationW)
+            .addScaledVector(v5,10 * this.separationW);
+
 
             
             //use the acceleration to change the velocity and position
@@ -119,7 +126,7 @@ class MySchoolfOfFish extends THREE.Group {
             }
             
             //limit the speed but add a higher to fishes in danger
-            let maxSpeed = fish.isInDanger ? 4 : 2;
+            let maxSpeed = fish.isInDanger ? this.maxSpeed * 2 : this.maxSpeed;
             fish.velocity.clampLength(-maxSpeed, maxSpeed);
 
             // update position
@@ -275,6 +282,13 @@ class MySchoolfOfFish extends THREE.Group {
 
     getAnimations(){
         return this.fishGroupsAnimations;
+    }
+
+    updateFlockingParams(flockingParams){
+        this.aligmentW = flockingParams.alignment;
+        this.separationW = flockingParams.separation;
+        this.cohesionW = flockingParams.cohesion;
+        this.maxSpeed = flockingParams.maxSpeed;
     }
 }
 

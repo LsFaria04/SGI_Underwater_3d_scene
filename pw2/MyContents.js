@@ -120,11 +120,17 @@ class MyContents  {
         }
         
         //carps position and size [x, y, z, number of carps]
+        this.fishesFlockingParams = {
+            separation: 1.0,
+            alignment: 1.0,
+            cohesion: 1.0,
+            maxSpeed: 2.0
+        }
         const carpsGroupsPosSize = [[-10, 1, -10, 100], [10, 1, 5, 5]];
         this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
-            const fishGroup = new MySchoolfOfFish(pos[3], 1, 1,0.2, "Carp", 1,1,1,1, this.fishTexture1);
+            const fishGroup = new MySchoolfOfFish(pos[3], 1, 1,0.2, "Carp", 1,1, this.fishTexture1, this.fishesFlockingParams);
             this.app.scene.add(fishGroup);
             this.fishGroups.push(fishGroup);
             fishGroup.position.set(pos[0],pos[1],pos[2]);
@@ -278,6 +284,15 @@ class MyContents  {
                 }
             }
         });
+    }
+
+    /**
+     * Updates the flooking params after an update is made in the UI
+     */
+    updateSchoolsOfFish(){
+        for(const schoolOfFish of this.fishGroups){
+            schoolOfFish.updateFlockingParams(this.fishesFlockingParams);
+        }
     }
 
     toggleAxis(enabled) {

@@ -45,6 +45,32 @@ class MyInterface  {
         });
         displayFolder.open();
 
+        const flockingParams = {
+            separation: 1.0,
+            alignment: 1.0,
+            cohesion: 1.0,
+            maxSpeed: 2.0
+        };
+        const flockingFolder = this.datgui.addFolder('Flocking')
+        flockingFolder.add(flockingParams, 'separation', 0, 5).step(0.1).onChange((value) =>{
+            this.contents.fishesFlockingParams.separation = value;
+            this.contents.updateSchoolsOfFish();
+            
+        });
+        flockingFolder.add(flockingParams, 'alignment', 0, 5).step(0.1).onChange((value) =>{
+            this.contents.fishesFlockingParams.alignment = value;
+            this.contents.updateSchoolsOfFish();
+        });
+        flockingFolder.add(flockingParams, 'cohesion', 0, 5).step(0.1).onChange((value) =>{
+            this.contents.fishesFlockingParams.cohesion = value;
+            this.contents.updateSchoolsOfFish();
+        });
+        flockingFolder.add(flockingParams, 'maxSpeed', 0, 5).step(0.1).onChange((value) =>{
+            this.contents.fishesFlockingParams.maxSpeed = value;
+            this.contents.updateSchoolsOfFish();
+        });
+        flockingFolder.open();
+
     }
 }
 
