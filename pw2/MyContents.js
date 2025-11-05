@@ -258,7 +258,7 @@ class MyContents  {
 
         this.enemyPositions = [] //reset the enemie positions
         this.enemyPositions.push(this.swordFish.position);
-        this.enemyPositions.push(this.jelyFishLOD.position);
+        this.enemyPositions.push(this.jellyFish.position);
         this.enemyPositions.push(this.shark.position);
         this.enemyPositions.push(this.submarine.position);
 
@@ -267,10 +267,6 @@ class MyContents  {
             fishGroup.update(delta, this.enemyPositions);
         }
         
-        /*
-        for (const fishAnimations of this.fishGroupsAnimations) {
-            for (const animation of fishAnimations) animation.update(delta);
-        }
 
         this.submarine.update(delta);
 
