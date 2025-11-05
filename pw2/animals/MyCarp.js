@@ -275,8 +275,8 @@ class MyCarp extends THREE.Object3D {
         // Animate detailed fish
         if (this.detailedFish && this.detailedFish.skeleton) {
             const bones = this.detailedFish.skeleton.bones;
-            const waveSpeed = 3;        // Speed of the swimming motion
-            const waveAmplitude = 0.4;  // How much the fish bends
+            const waveSpeed = 5;        // Speed of the swimming motion
+            const waveAmplitude = 0.7;  // How much the fish bends
             
             bones.forEach((bone, i) => {
                 // Head stays more stable, tail moves more
@@ -289,8 +289,8 @@ class MyCarp extends THREE.Object3D {
         // Animate medium detail fish
         if (this.mediumDetailFish && this.mediumDetailFish.skeleton) {
             const bones = this.mediumDetailFish.skeleton.bones;
-            const waveSpeed = 3;
-            const waveAmplitude = 0.4;
+            const waveSpeed = 5;
+            const waveAmplitude = 0.7;
             
             bones.forEach((bone, i) => {
                 const influence = i / (bones.length - 1);
