@@ -102,16 +102,6 @@ class MyContents  {
         this.app.scene.add(seaStarLOD);
         seaStarLOD.position.set(2,0.25,2);
 
-        const jelyFishLOD = new THREE.LOD();
-        const jelyFish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
-        const jelyFishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
-        const jelyFishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
-        jelyFishLOD.addLevel(jelyFish, 0);
-        jelyFishLOD.addLevel(jelyFishMedium, 15);
-        jelyFishLOD.addLevel(jelyFishLow, 30);
-        this.app.scene.add(jelyFishLOD);
-        jelyFishLOD.position.set(0,5,0);
-
         const crabLOD = new THREE.LOD();
         const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
         const crabDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "H");
@@ -130,7 +120,7 @@ class MyContents  {
         }
         
         //carps position and size [x, y, z, number of carps]
-        const carpsGroupsPosSize = [[-10, 1, -10, 10], [10, 1, 5, 5]];
+        const carpsGroupsPosSize = [[-10, 1, -10, 100], [10, 1, 5, 5]];
         this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
@@ -173,6 +163,16 @@ class MyContents  {
         const turtle = new MyTurtle(0.5, 0.15);
         turtle.position.set(-4, 0.3, 4);
         this.app.scene.add(turtle);
+
+        this.jelyFishLOD = new THREE.LOD();
+        const jelyFish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
+        const jelyFishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
+        const jelyFishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
+        this.jelyFishLOD.addLevel(jelyFish, 0);
+        this.jelyFishLOD.addLevel(jelyFishMedium, 15);
+        this.jelyFishLOD.addLevel(jelyFishLow, 30);
+        this.app.scene.add(this.jelyFishLOD);
+        this.jelyFishLOD.position.set(0,5,0);
         
         this.shark = new MyShark();
         this.shark.position.set(-8, 10, 0);
@@ -182,6 +182,7 @@ class MyContents  {
         sign.position.set(0,0,15);
         sign.scale.set(2,2,2);
         this.app.scene.add(sign);
+        
 
         const twoDShark = new My2DShark();
         twoDShark.scale.set(0.2, 0.2, 0.2);
@@ -229,14 +230,12 @@ class MyContents  {
             this.submarine.rotation.y += Math.PI / 2; 
         }
 
+        
+
         for (const b of this.bubbles) b.update(delta);
         this.swordFish.update(delta);
         this.shark.update(delta);
         
-        // Update all fish groups (carps) - skeletal animation
-        for(const fishGroup of this.fishGroups) {
-            fishGroup.update(delta);
-        }
         
         //update the animation in the sea plants
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
@@ -244,6 +243,17 @@ class MyContents  {
         // Update keyframe animations
         this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
+
+        this.enemyPositions = [] //reset the enemie positions
+        this.enemyPositions.push(this.swordFish.position);
+        this.enemyPositions.push(this.jelyFishLOD.position);
+        this.enemyPositions.push(this.shark.position);
+        this.enemyPositions.push(this.submarine.position);
+
+        // Update all fish groups (carps) - skeletal animation
+        for(const fishGroup of this.fishGroups) {
+            fishGroup.update(delta, this.enemyPositions);
+        }
         
         /*
         for (const fishAnimations of this.fishGroupsAnimations) {

@@ -81,6 +81,7 @@ class MySchoolfOfFish extends THREE.Group {
         let v2 = new THREE.Vector3(0,0,0);
         let v3 = new THREE.Vector3(0,0,0);
         let v4 = new THREE.Vector3(0,0,0);
+        let v5 = new THREE.Vector3(0,0,0);
 
         for(const fish of this.fishes){
             //the three rules
@@ -90,19 +91,35 @@ class MySchoolfOfFish extends THREE.Group {
             
             //extra rules
             v4 = this.bound_position(fish);
+            v5 = this.avoid_predators(fish);
+
+            
 
             //add acceleration using the rules
             fish.acceleration
             .addScaledVector(v1, 1)
-            .addScaledVector(v2, 0.05)
+            .addScaledVector(v2, 0.1)
             .addScaledVector(v3, 0.4)
             .addScaledVector(v4, 1)
+            .addScaledVector(v5,10);
 
             
             //use the acceleration to change the velocity and position
             fish.velocity.addScaledVector(fish.acceleration, delta);
 
-            const maxSpeed = 2; 
+
+            //use a precise flag to see if the fish is in a danger zone (close to enemies)
+            fish.isInDanger = false;
+
+            for (const enemy of this.enemyPositions) {
+                const dist = enemy.distanceTo(fish.position.clone().add(this.position));
+                if (dist < 8) {
+                    fish.isInDanger = true;
+                }
+            }
+            
+            //limit the speed but add a higher to fishes in danger
+            let maxSpeed = fish.isInDanger ? 4 : 2;
             fish.velocity.clampLength(-maxSpeed, maxSpeed);
 
             // update position
@@ -110,7 +127,6 @@ class MySchoolfOfFish extends THREE.Group {
 
             
             //update rotation
-            
             if (fish.velocity.lengthSq() > 0) {
                 const dir = fish.velocity.clone().normalize();
                 const forward = new THREE.Vector3(-1, 0, 0); // model original forward positon is to -X
@@ -188,8 +204,6 @@ class MySchoolfOfFish extends THREE.Group {
 
     /**
      * Bounds the fish positions so that they do not go out of the aquarium bounds
-     * @param {MyCarp} fish Fish to bound the position 
-     * @returns A velocity vector 
      */
     bound_position(fish){
         let maxX = 20;
@@ -225,16 +239,37 @@ class MySchoolfOfFish extends THREE.Group {
         return v;
         
     }
+    /**
+     * Extra Rule to avoid predators. Similar to the rule 2 but more intense
+     */
+    avoid_predators(fish){
+        let positionDisplacement = new THREE.Vector3();
+
+        for (const enemy of this.enemyPositions) {
+            const fishWorldPos = fish.position.clone().add(this.position);
+            const dist = enemy.distanceTo(fishWorldPos);
+
+            //avoid colisions with enemies
+            if (dist < 6) {
+                const diff = new THREE.Vector3().subVectors(enemy, fishWorldPos);
+                positionDisplacement.sub(diff);
+            }
+        
+        }
+
+        
+        return positionDisplacement;
+    }
 
     
-    update(delta){
+    update(delta, enemyPositions){
         // Update each fish in the school
         for (const fish of this.fishes) {
             if (fish.update) {
                 fish.update(delta);
             }
         }
-
+        this.enemyPositions = enemyPositions;
         this.flocking(delta);
     }
 
