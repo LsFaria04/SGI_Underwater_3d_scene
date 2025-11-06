@@ -102,11 +102,7 @@ class MyContents  {
         this.app.scene.add(seaStarLOD);
         seaStarLOD.position.set(2,0.25,2);
 
-        const jellyFish = new MyJellyFish(0.5, 1, "#0000FF");
-        this.app.scene.add(jellyFish);
-        jellyFish.position.set(0,5,0);
 
-        this.jellyFish = jellyFish;
 
         const crabLOD = new THREE.LOD();
         const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
@@ -176,15 +172,15 @@ class MyContents  {
         turtle.position.set(-4, 0.3, 4);
         this.app.scene.add(turtle);
 
-        this.jelyFishLOD = new THREE.LOD();
-        const jelyFish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
-        const jelyFishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
-        const jelyFishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
-        this.jelyFishLOD.addLevel(jelyFish, 0);
-        this.jelyFishLOD.addLevel(jelyFishMedium, 15);
-        this.jelyFishLOD.addLevel(jelyFishLow, 30);
-        this.app.scene.add(this.jelyFishLOD);
-        this.jelyFishLOD.position.set(0,5,0);
+        this.jellyfishLOD = new THREE.LOD();
+        this.jellyfish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
+        this.jellyfishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
+        this.jellyfishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
+        this.jellyfishLOD.addLevel(this.jellyfish, 0);
+        this.jellyfishLOD.addLevel(this.jellyfishMedium, 15);
+        this.jellyfishLOD.addLevel(this.jellyfishLow, 30);
+        this.app.scene.add(this.jellyfishLOD);
+        this.jellyfishLOD.position.set(0,5,0);
         
         this.shark = new MyShark();
         this.shark.position.set(-8, 10, 0);
@@ -258,7 +254,7 @@ class MyContents  {
 
         this.enemyPositions = [] //reset the enemie positions
         this.enemyPositions.push(this.swordFish.position);
-        this.enemyPositions.push(this.jellyFish.position);
+        this.enemyPositions.push(this.jellyfish.position);
         this.enemyPositions.push(this.shark.position);
         this.enemyPositions.push(this.submarine.position);
 
@@ -270,7 +266,7 @@ class MyContents  {
 
         this.submarine.update(delta);
 
-        this.jellyFish.update(delta);
+        this.jellyfish.update(delta);
 
         // Update all LOD objects with the active camera
         this.app.scene.traverse((child) => {

@@ -56,14 +56,14 @@ class MyJellyFish extends THREE.Object3D {
         const glowMaterial = new THREE.MeshBasicMaterial({
             color: this.color,
             transparent: true,
-            opacity: 0.2,
+            opacity: 0.1,
             side: THREE.BackSide
         });
-        
-        const glowGeometry = new THREE.SphereGeometry(this.radius * 0.9, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+
+        const glowGeometry = new THREE.SphereGeometry(this.radius * 1.05, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2);
         const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-        glow.rotation.x = Math.PI / 2;
-        glow.position.y = -this.radius * 0.05;
+
+        glow.position.copy(headTop.position);
         head.add(glow);
 
         // tentacles
@@ -105,25 +105,21 @@ class MyJellyFish extends THREE.Object3D {
         head.position.y = this.height - this.radius;
 
         // tentacles
-        const tentacleGeometry = new THREE.CylinderGeometry(this.radius * 0.1, this.radius * 0.1, this.height - this.radius, 8);
-        const tentacle = new THREE.Mesh(tentacleGeometry, jellyFishMaterial);
-        tentacle.position.y = (this.height - this.radius) / 2;
-        tentacle.position.z = 0;
-        tentacle.position.x = this.radius * 0.6;
-        
+        const tentacleGeometry = new THREE.CylinderGeometry(this.radius * 0.08, this.radius * 0.08, this.height - this.radius, 8);
         const tentacles = new THREE.Group();
-        tentacles.add(tentacle);
 
-        let anglestep = 360 / 8;
-        let angle = anglestep;
-        for(let i = 0; i < 8; i++){
-            const copyTentacle = tentacle.clone();
-            copyTentacle.position.set(
-                Math.cos(THREE.MathUtils.degToRad(angle + (anglestep * i))) * this.radius * 0.6,
+        const tentacleCount = 8;
+        for(let i = 0; i < tentacleCount; i++){
+            const angle = (i / tentacleCount) * Math.PI * 2;
+            const tentacle = new THREE.Mesh(tentacleGeometry, jellyFishMaterial);
+            
+            tentacle.position.set(
+                Math.cos(angle) * this.radius * 0.7,
                 (this.height - this.radius) / 2,
-                Math.sin(THREE.MathUtils.degToRad(angle + (anglestep * i))) * this.radius * 0.6
+                Math.sin(angle) * this.radius * 0.7  
             );
-            tentacles.add(copyTentacle);
+            
+            tentacles.add(tentacle);
         }
 
         jellyFishGroup.add(tentacles);
