@@ -18,9 +18,14 @@ class MyShark extends THREE.Object3D {
         const bodyBone3 = new THREE.Bone();
         const headBone = new THREE.Bone();
         const tailBone = new THREE.Bone();
-        const finsBone1 = new THREE.Bone();
-        const finsBone2 = new THREE.Bone();
-        const finsBone3 = new THREE.Bone();
+
+
+        rootBone.position.set(1, 3.2, 0);
+        tailBone.position.set(1.3, 0, 0); 
+        bodyBone1.position.set(1.3, 0, 0);   
+        bodyBone2.position.set(1.3, 0, 0);     
+        bodyBone3.position.set(1.3, 0, 0);     
+        headBone.position.set(1.3, 0, 0);        
 
         this.rootBone = rootBone;
         this.bodyBone1 = bodyBone1;
@@ -28,21 +33,20 @@ class MyShark extends THREE.Object3D {
         this.bodyBone3 = bodyBone3;
         this.headBone = headBone;
         this.tailBone = tailBone;
-        this.finsBone1 = finsBone1; 
-        this.finsBone2 = finsBone2; 
-        this.finsBone3 = finsBone3;
 
-        rootBone.add(bodyBone1);
+        
+        /*rootBone.add(tailBone);
+        tailBone.add(bodyBone1);
         bodyBone1.add(bodyBone2);
         bodyBone2.add(bodyBone3);
-        bodyBone3.add(headBone);
+        bodyBone3.add(headBone);*/
+        rootBone.add(headBone);
+        headBone.add(bodyBone3);
+        bodyBone3.add(bodyBone2);
+        bodyBone2.add(bodyBone1);
         bodyBone1.add(tailBone);
-        bodyBone1.add(finsBone1);
-        bodyBone2.add(finsBone2);
-        bodyBone3.add(finsBone3);
 
-        const skeleton = new THREE.Skeleton([rootBone, bodyBone1, bodyBone2, bodyBone3,
-            headBone, tailBone, finsBone1, finsBone2, finsBone3]);
+        const skeleton = new THREE.Skeleton([rootBone, bodyBone1, bodyBone2, bodyBone3, headBone, tailBone]);
 
         const mergedGeometry = this.createMergedBodyGeometry(tailWidth, bodyWidth, headWidth);
         
@@ -71,8 +75,8 @@ class MyShark extends THREE.Object3D {
             new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
         );
 
-        rightEyeWhite.position.set(6.8, 3.1, 0.21);
-        rightEyeBlack.position.set(6.8, 3.1, 0.22); 
+        rightEyeWhite.position.set(4.5, -0.2, 0.21);
+        rightEyeBlack.position.set(4.5, -0.2, 0.22);
         rightEyeWhite.rotation.x = Math.PI;
         rightEyeBlack.rotation.x = Math.PI;
 
@@ -85,8 +89,8 @@ class MyShark extends THREE.Object3D {
             new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
         );
 
-        leftEyeWhite.position.set(6.8, 3.1, -0.21);
-        leftEyeBlack.position.set(6.8, 3.1, -0.22);
+        leftEyeWhite.position.set(4.5, -0.2, -0.21);
+        leftEyeBlack.position.set(4.5, -0.2, -0.22);
         leftEyeWhite.rotation.x = Math.PI;
         leftEyeBlack.rotation.x = Math.PI;
 
@@ -97,35 +101,10 @@ class MyShark extends THREE.Object3D {
 
         headBone.add(eyeGroup);
 
-        const teethVertices = new Float32Array([
-            6.85, 3.44, 0,  // 0 - tooth 1
-            6.92, 3.42, 0,  // 1 - tooth 1
-            6.92, 3.47, 0,  // 2 - tooth 1
-            6.96, 3.49, 0,  // 3 - tooth 2
-            7.02, 3.45, 0,  // 4 - tooth 2
-            7.02, 3.52, 0,  // 5 - tooth 2
-            6.92, 3.415, 0,  // 6 - tooth 3
-            6.96, 3.47, 0,  // 7 - tooth 3
-            7.01, 3.415, 0,  // 8 - tooth 3
-            7.05, 3.42, 0,  // 9 - tooth 4
-            7.08, 3.49, 0,  // 10 - tooth 4
-            7.13, 3.42, 0,  // 11 - tooth 4
-        ]);
-
-        const teethIndices = [
-            0, 1, 2,
-            3, 4, 5,
-            6, 7, 8,
-            9, 10, 11,
-        ];
-        const teeth = this.createFinMesh(teethVertices, teethIndices, "#ffffff");
-
         this.rootPivot = new THREE.Object3D();
         this.rootPivot.add(sharkBody);
         this.add(this.rootPivot);
         this.rootPivot.rotation.x = Math.PI; //shark was on the wrong pose initially
-
-        headBone.add(teeth);
 
         sharkBody.scale.set(scale, scale, scale);
 
@@ -643,21 +622,6 @@ class MyShark extends THREE.Object3D {
         );
     }
 
-    createFinMesh(vertices, indices, color) {
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        geometry.setIndex(indices);
-        geometry.computeVertexNormals();
-
-        const material = new THREE.MeshStandardMaterial({
-            color,
-            side: THREE.DoubleSide,
-            flatShading: false,
-        });
-
-        return new THREE.Mesh(geometry, material);
-    }
-
     update(delta) {
         if (!this.elapsed) this.elapsed = 0;
         this.elapsed += delta;
@@ -677,7 +641,7 @@ class MyShark extends THREE.Object3D {
             const phaseOffset = i * 0.5;
             
             // influence values for less body movement
-            const influences = [1.0, 0.6, 0.3, 0.15, 0.05]; // tail, body1, body2, body3, head
+            const influences = [1, 0.6, 0.3, 0.15, 0.05]; // tail, body1, body2, body3, head
             
             const rotation = Math.sin(this.elapsed * waveSpeed + phaseOffset) * waveAmplitude * influences[i];
             bone.rotation.y = rotation;
