@@ -201,10 +201,10 @@ class MyContents  {
         this.app.scene.add(this.swordFish); 
         
         const helper = new THREE.SkeletonHelper( this.shark );
-        this.app.scene.add( helper );
+        //this.app.scene.add( helper );
 
-                const helper2 = new THREE.SkeletonHelper( this.swordFish);
-        this.app.scene.add( helper2 );
+        const helper2 = new THREE.SkeletonHelper( this.swordFish);
+        //this.app.scene.add( helper2 );
 
         this.submarine = new MySubmarine();
         this.submarine.position.set(5,4,5);

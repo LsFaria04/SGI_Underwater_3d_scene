@@ -16,6 +16,7 @@ class MySchoolfOfFish extends THREE.Group {
      * @param {*} baseLen Base lenght before scaling of the fishes
      * @param {*} baseWidth Base width before scaling of the fishes
      * @param {*} fishTexture Texture of the fishes
+     * @param {*} flockingParams Parameters used for the flocking behaviour
      */
     constructor(numbFish, minSpace,maxScale, minScale, specie, baseLen, baseWidth, fishTexture, flockingParams){
         super();
