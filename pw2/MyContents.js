@@ -40,6 +40,7 @@ class MyContents  {
         this.mouse = new THREE.Vector2();
         console.log(this.mouse)
         this.raycaster = new THREE.Raycaster();
+        this.raycaster.firstHitOnly = true;
         this.object = null;
 
         this.onMouseClick = this.onMouseClick.bind(this);
@@ -227,7 +228,12 @@ class MyContents  {
 
         this.raycaster.setFromCamera(this.mouse, this.app.activeCamera);
 
-        const intersects = this.raycaster.intersectObjects(this.app.scene.children, true);
+        const bvhMeshes = [];
+        for (const school of this.fishGroups)
+            for (const fish of school.fishes)
+                if (fish.bvh) bvhMeshes.push(fish);
+
+        const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
 
         if (intersects.length > 0){
             let hit = intersects[0].object;
