@@ -80,10 +80,49 @@ class MySchoolfOfFish extends THREE.Group {
     }
 
     /**
+     * Finds the neighbors of a boid using BVH
+     */
+    findNeighbors(fish, fishes, radius) {
+        const neighbors = [];
+        const sphereWorld = new THREE.Sphere(fish.getWorldPosition(new THREE.Vector3()), radius);
+
+        for (const other of fishes) {
+            if (other === fish) continue;
+
+            other.traverse(child => {
+            if (child.isMesh && child.geometry.boundsTree) {
+                const geom = child.geometry;
+                let found = false;
+
+                // convert sphere to local space of this child
+                const sphereLocal = sphereWorld.clone();
+                sphereLocal.center.applyMatrix4(child.matrixWorld.clone().invert());
+
+                const tmpVec = new THREE.Vector3();
+                geom.boundsTree.shapecast({
+                intersectsBounds: box => box.intersectsSphere(sphereLocal),
+                intersectsTriangle: tri => {
+                    tri.closestPointToPoint(sphereLocal.center, tmpVec);
+                    if (tmpVec.distanceTo(sphereLocal.center) <= sphereLocal.radius) {
+                        found = true;
+                        return true;
+                    }
+                    return false; // continue traversal
+                }
+                });
+
+                if (found) neighbors.push(other);
+            }
+            });
+        }
+        return neighbors;
+    }
+
+    /**
      * Controls the flocking behaviour in the school of fish
      */
     flocking(delta){
-
+        
         let v1 = new THREE.Vector3(0,0,0);
         let v2 = new THREE.Vector3(0,0,0);
         let v3 = new THREE.Vector3(0,0,0);
@@ -91,6 +130,9 @@ class MySchoolfOfFish extends THREE.Group {
         let v5 = new THREE.Vector3(0,0,0);
 
         for(const fish of this.fishes){
+            this.neighbors = this.findNeighbors(fish,this.fishes, this.minSpace / 2 + this.maxScale / 2)
+
+            
             //the three rules
             v1 = this.separation(fish);
             v2 = this.alignment(fish);
@@ -153,15 +195,15 @@ class MySchoolfOfFish extends THREE.Group {
     separation(fishj){
         let positionDisplacement = new THREE.Vector3();
 
-        for (const fish of this.fishes) {
+        for (const fish of this.neighbors) {
             if (fish !== fishj) {
                 const dist = fish.position.distanceTo(fishj.position);
 
                 //avoid colisions
-                if (dist < (this.minSpace / 2 + this.maxScale / 2)) {
+                //if (dist < (this.minSpace / 2 + this.maxScale / 2)) {
                     const diff = new THREE.Vector3().subVectors(fish.position, fishj.position);
                     positionDisplacement.sub(diff);
-                }
+                //}
             }
         }
 
@@ -174,7 +216,7 @@ class MySchoolfOfFish extends THREE.Group {
     alignment(fishj){
         let velocityWeight = new THREE.Vector3();
 
-        for (const fish of this.fishes) {
+        for (const fish of this.neighbors) {
             if (fish !== fishj) {
                 velocityWeight.add(fish.velocity);
             }
@@ -195,7 +237,7 @@ class MySchoolfOfFish extends THREE.Group {
     cohesion(fishj){
         let positionWeight = new THREE.Vector3();
 
-        for (const fish of this.fishes) {
+        for (const fish of this.neighbors) {
             if (fish !== fishj) {
                 positionWeight.add(fish.position);
             }
