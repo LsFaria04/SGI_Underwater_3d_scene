@@ -211,8 +211,8 @@ class MyContents  {
         this.app.scene.add(this.submarine);
 
 
-        this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2,50, 30);
-        this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10,50, 60);
+        this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2, 50, 30);
+        this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
 
         /*
         this.fishGroupsAnimations = []

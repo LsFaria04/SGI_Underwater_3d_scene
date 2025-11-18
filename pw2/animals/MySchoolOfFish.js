@@ -200,7 +200,7 @@ class MySchoolfOfFish extends THREE.Group {
         
     }
     /**
-     * Flooking Rule 1: Separation
+     * Flocking Rule 1: Separation
      */
     separation(fishj){
         let positionDisplacement = new THREE.Vector3();
@@ -209,7 +209,7 @@ class MySchoolfOfFish extends THREE.Group {
             if (fish !== fishj) {
                 const dist = fish.position.distanceTo(fishj.position);
 
-                //avoid colisions
+                //avoid collisions
                 if (dist < (this.minSpace / 2 + this.maxScale / 2)) {
                     const diff = new THREE.Vector3().subVectors(fish.position, fishj.position);
                     positionDisplacement.sub(diff);
@@ -221,7 +221,7 @@ class MySchoolfOfFish extends THREE.Group {
         
     }
     /**
-     * Flooking Rule 2: Aligment
+     * Flocking Rule 2: Alignment
      */
     alignment(fishj){
         let velocityWeight = new THREE.Vector3();
@@ -242,7 +242,7 @@ class MySchoolfOfFish extends THREE.Group {
         return steer;
     }
     /**
-     * Flooking Rule 3: Cohesion
+     * Flocking Rule 3: Cohesion
      */
     cohesion(fishj){
         let positionWeight = new THREE.Vector3();
@@ -309,7 +309,7 @@ class MySchoolfOfFish extends THREE.Group {
             const fishWorldPos = fish.position.clone().add(this.position);
             const dist = enemy.distanceTo(fishWorldPos);
 
-            //avoid colisions with enemies
+            //avoid collisions with enemies
             if (dist < 6) {
                 const diff = new THREE.Vector3().subVectors(enemy, fishWorldPos);
                 positionDisplacement.sub(diff);
