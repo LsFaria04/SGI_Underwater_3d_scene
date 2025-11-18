@@ -293,6 +293,12 @@ class MyContents  {
         });
     }
 
+    setBVHMode(enable){
+        for(const fishGroup of this.fishGroups){
+            fishGroup.bvh = enable;
+        }
+    }
+
     /**
      * Updates the flooking params after an update is made in the UI
      */

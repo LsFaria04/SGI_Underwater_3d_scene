@@ -262,8 +262,6 @@ class MyCarp extends THREE.Object3D {
         const detailedWrapper = new THREE.Object3D();
         detailedWrapper.add(this.detailedFish);
         lod.addLevel(detailedWrapper, 0);
-        this.helper = new MeshBVHHelper(this.mesh);
-        lod.add(this.helper);
 
         // 2. Medium-Detail Mesh (Level 1)
         this.mediumDetailFish = this.createMediumDetailMesh();

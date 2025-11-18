@@ -23,6 +23,8 @@ class MySchoolfOfFish extends THREE.Group {
         this.minSpace = minSpace;
         this.maxScale = maxScale;
 
+        this.bvh = false;
+
         //default values for the flocking atributes
         this.cohesionW = flockingParams.cohesion;
         this.aligmentW = flockingParams.alignment;
@@ -130,7 +132,15 @@ class MySchoolfOfFish extends THREE.Group {
         let v5 = new THREE.Vector3(0,0,0);
 
         for(const fish of this.fishes){
-            this.neighbors = this.findNeighbors(fish,this.fishes, this.minSpace / 2 + this.maxScale / 2)
+
+            //find the neighbours using bvh 
+            if(this.bvh){
+                 this.neighbors = this.findNeighbors(fish,this.fishes, this.minSpace / 2 + this.maxScale / 2)
+            }
+            else{
+                this.neighbors = this.fishes
+            }
+           
 
             
             //the three rules
@@ -200,10 +210,10 @@ class MySchoolfOfFish extends THREE.Group {
                 const dist = fish.position.distanceTo(fishj.position);
 
                 //avoid colisions
-                //if (dist < (this.minSpace / 2 + this.maxScale / 2)) {
+                if (dist < (this.minSpace / 2 + this.maxScale / 2)) {
                     const diff = new THREE.Vector3().subVectors(fish.position, fishj.position);
                     positionDisplacement.sub(diff);
-                //}
+                }
             }
         }
 

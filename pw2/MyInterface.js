@@ -71,6 +71,12 @@ class MyInterface  {
         });
         flockingFolder.open();
 
+        const bvhFolder = this.datgui.addFolder('BVH');
+        const bvhParams = {bvh : false}
+        bvhFolder.add(bvhParams, 'bvh').name('BVH acceleration').onChange((value) =>{
+             if (this.contents) this.contents.setBVHMode(value);
+        })
+
     }
 }
 
