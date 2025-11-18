@@ -4,6 +4,10 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MyContents } from './MyContents.js';
 import Stats from 'three/addons/libs/stats.module.js'
 import { MyInterface } from './MyInterface.js';
+import {
+	computeBoundsTree, disposeBoundsTree,
+	computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast,
+} from './index.module.js';
 
 /**
  * This class contains the application object
@@ -85,6 +89,17 @@ class MyApp  {
 
         // manage window resizes
         window.addEventListener('resize', this.onResize.bind(this), false );
+
+        //added function to the prototypes to use the bvh
+
+        // Attach BVH helpers to Three.js prototypes
+        THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
+        THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
+        THREE.Mesh.prototype.raycast = acceleratedRaycast;
+
+        THREE.BatchedMesh.prototype.computeBoundsTree = computeBatchedBoundsTree;
+        THREE.BatchedMesh.prototype.disposeBoundsTree = disposeBatchedBoundsTree;
+        THREE.BatchedMesh.prototype.raycast = acceleratedRaycast;
     }
 
     /**

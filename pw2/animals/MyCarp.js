@@ -1,5 +1,10 @@
 import * as THREE from 'three';
 import {MyTriangle} from '../objects/MyTriangle.js';
+import {
+	computeBoundsTree, disposeBoundsTree,
+	computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast,
+    StaticGeometryGenerator, MeshBVHHelper
+} from '../index.module.js';
 
 /**
  * This class contains a 3D representation of a common carp fish
@@ -172,16 +177,27 @@ class MyCarp extends THREE.Object3D {
             geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
             geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
 
+            
+
             // Create SkinnedMesh
-            const skinnedMesh = new THREE.SkinnedMesh(geometry, material);
+            this.skinnedMesh = new THREE.SkinnedMesh(geometry, material);
             const skeleton = new THREE.Skeleton(bones);
-            skinnedMesh.add(bones[0]);
-            skinnedMesh.bind(skeleton);
-            skinnedMesh.castShadow = true
-            skinnedMesh.receiveShadow = true;
+            this.skinnedMesh.add(bones[0]);
+            this.skinnedMesh.bind(skeleton);
+            this.skinnedMesh.castShadow = true
+            this.skinnedMesh.receiveShadow = true;
             material.shadowSide = THREE.BackSide;
 
-            return skinnedMesh;
+            this.generator = new StaticGeometryGenerator( [ this.skinnedMesh ] );
+            this.newgeometry = this.generator.generate();
+            this.newgeometry.computeBoundsTree();
+
+            //proxy mesh only used to calculate bvh bounds
+            this.mesh = new THREE.Mesh(this.newgeometry, this.generator.getMaterials());
+            this.add(this.mesh)
+            this.mesh.visible = false;
+
+            return this.skinnedMesh;
         }
 
         const detailedMesh = new THREE.Mesh(geometry, material);
@@ -246,6 +262,8 @@ class MyCarp extends THREE.Object3D {
         const detailedWrapper = new THREE.Object3D();
         detailedWrapper.add(this.detailedFish);
         lod.addLevel(detailedWrapper, 0);
+        this.helper = new MeshBVHHelper(this.mesh);
+        lod.add(this.helper);
 
         // 2. Medium-Detail Mesh (Level 1)
         this.mediumDetailFish = this.createMediumDetailMesh();
@@ -284,6 +302,14 @@ class MyCarp extends THREE.Object3D {
                 const rotation = Math.sin(this.elapsed * waveSpeed + i * 0.5) * waveAmplitude * influence;
                 bone.rotation.y = rotation;
             });
+
+            //update the bvh. Avoid updates every frame to improve performance
+            if(this.generator && (this.elapsed % 4 == 0)){
+                this.generator.generate(this.newgeometry);
+                this.newgeometry.boundsTree.refit();
+                this.helper.update()
+            }
+            
         }
 
         // Animate medium detail fish
@@ -297,7 +323,19 @@ class MyCarp extends THREE.Object3D {
                 const rotation = Math.sin(this.elapsed * waveSpeed + i * 0.5) * waveAmplitude * influence;
                 bone.rotation.y = rotation;
             });
+
+            //update the bvh. Avoid updates every frame to improve performance
+            if(this.generator && (this.elapsed % 4 == 0)){
+                this.generator.generate(this.newgeometry);
+                this.newgeometry.boundsTree.refit();
+                this.helper.update()
+            }
+
+            
+            
         }
+
+        
     }
 }
 

@@ -46,7 +46,7 @@ class MyShark extends THREE.Object3D {
         bodyBone2.add(bodyBone1);
         bodyBone1.add(tailBone);
 
-        const skeleton = new THREE.Skeleton([rootBone, bodyBone1, bodyBone2, bodyBone3, headBone, tailBone]);
+        const skeleton = new THREE.Skeleton([rootBone, tailBone, bodyBone1, bodyBone2, bodyBone3, headBone]);
 
         const mergedGeometry = this.createMergedBodyGeometry(tailWidth, bodyWidth, headWidth);
         
@@ -590,24 +590,24 @@ class MyShark extends THREE.Object3D {
             
             // bone weights based on position along the body
             if (t < 0.2) {
-                // tail - mostly tailBone (5) with some bodyBone1 (1)
-                skinIndices.push(5, 1, 0, 0);
+                // tail - mostly tailBone (1) with some bodyBone1 (2)
+                skinIndices.push(1, 2, 0, 0);
                 skinWeights.push(0.8, 0.2, 0, 0);
             } else if (t < 0.4) {
-                // rear body - bodyBone1 (1) with some bodyBone2 (2)
-                skinIndices.push(1, 2, 5, 0);
+                // rear body - bodyBone1 (2) with some bodyBone2 (3)
+                skinIndices.push(2, 3, 1, 0);
                 skinWeights.push(0.7, 0.2, 0.1, 0);
             } else if (t < 0.6) {
-                // middle body - bodyBone2 (2) with some bodyBone1 (1) and bodyBone3 (3)
-                skinIndices.push(2, 1, 3, 0);
-                skinWeights.push(0.6, 0.2, 0.2, 0);
-            } else if (t < 0.8) {
-                // front body - bodyBone3 (3) with some bodyBone2 (2) and headBone (4)
+                // middle body - bodyBone2 (3) with some bodyBone1 (2) and bodyBone3 (4)
                 skinIndices.push(3, 2, 4, 0);
                 skinWeights.push(0.6, 0.2, 0.2, 0);
+            } else if (t < 0.8) {
+                // front body - bodyBone3 (4) with some bodyBone2 (3) and headBone (5)
+                skinIndices.push(4, 3, 5, 0);
+                skinWeights.push(0.6, 0.2, 0.2, 0);
             } else {
-                // head - mostly headBone (4) with some bodyBone3 (3)
-                skinIndices.push(4, 3, 0, 0);
+                // head - mostly headBone (5) with some bodyBone3 (4)
+                skinIndices.push(5, 4, 0, 0);
                 skinWeights.push(0.8, 0.2, 0, 0);
             }
         }
@@ -635,7 +635,7 @@ class MyShark extends THREE.Object3D {
         ];
 
         const waveSpeed = 1.5;
-        const waveAmplitude = 0.2;
+        const waveAmplitude = 0.1;
 
         bones.forEach((bone, i) => {
             const phaseOffset = i * 0.5;

@@ -199,6 +199,12 @@ class MyContents  {
         this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
         this.swordFish.position.set(0,3,0);
         this.app.scene.add(this.swordFish); 
+        
+        const helper = new THREE.SkeletonHelper( this.shark );
+        //this.app.scene.add( helper );
+
+        const helper2 = new THREE.SkeletonHelper( this.swordFish);
+        //this.app.scene.add( helper2 );
 
         this.submarine = new MySubmarine();
         this.submarine.position.set(5,4,5);
