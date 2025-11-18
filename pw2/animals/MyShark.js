@@ -7,7 +7,8 @@ class MyShark extends THREE.Object3D {
      */
     constructor(scale = 1, color = "#2244aa") {
         super();
-
+        this.bvh = false;
+        
         const tailWidth = 0.1;
         const bodyWidth = 0.6;
         const headWidth = 0.4;

@@ -29,7 +29,8 @@ class MyCarp extends THREE.Object3D {
         this.color = color;
         this.lodMediumThreshold = 15;
         this.lodBasicThreshold = 30;
-        this.fishTexture = texture
+        this.fishTexture = texture;
+        this.bvh = false;
         
         // Animation properties
         this.elapsed = 0;
@@ -302,7 +303,7 @@ class MyCarp extends THREE.Object3D {
             });
 
             //update the bvh. Avoid updates every frame to improve performance
-            if(this.generator && (this.elapsed % 4 == 0)){
+            if(this.generator && (this.elapsed % 4 == 0) && this.bvh){
                 this.generator.generate(this.newgeometry);
                 this.newgeometry.boundsTree.refit();
                 this.helper.update()
@@ -323,7 +324,7 @@ class MyCarp extends THREE.Object3D {
             });
 
             //update the bvh. Avoid updates every frame to improve performance
-            if(this.generator && (this.elapsed % 4 == 0)){
+            if(this.generator && (this.elapsed % 4 == 0) && this.bvh){
                 this.generator.generate(this.newgeometry);
                 this.newgeometry.boundsTree.refit();
                 this.helper.update()
