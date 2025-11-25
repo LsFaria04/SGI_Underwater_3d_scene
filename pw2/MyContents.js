@@ -231,7 +231,13 @@ class MyContents  {
         const bvhMeshes = [];
         for (const school of this.fishGroups)
             for (const fish of school.fishes)
-                if (fish.bvh) bvhMeshes.push(fish);
+                bvhMeshes.push(fish);
+        bvhMeshes.push(this.shark);
+        bvhMeshes.push(this.sign);
+        bvhMeshes.push(this.swordFish);
+        bvhMeshes.push(this.submarine);
+        bvhMeshes.push(this.jellyfish);
+
 
         const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
 
@@ -239,15 +245,34 @@ class MyContents  {
             let hit = intersects[0].object;
 
             if (this.object) {
-                this.object.material.color.copy(this.object.originalColor);
+               
+                if (Array.isArray(this.object.material)) {
+                    this.object.material.forEach((mat, i) => {
+                        if (mat.color && this.object.originalColor[i]) {
+                            mat.color.copy(this.object.originalColor[i]);
+                        }
+                    });
+                } else if (this.object.material.color) {
+                    this.object.material.color.copy(this.object.originalColor);
+                }
             }
 
             this.object = hit;
             if (!this.object.originalColor) {
-                this.object.originalColor = this.object.material.color.clone();
+                if (Array.isArray(this.object.material)) {
+                    this.object.originalColor = this.object.material.map(m => m.color.clone());
+                } else {
+                    this.object.originalColor = this.object.material.color.clone();
+                }
             }
             
-            this.object.material.color.set(0xff0000);
+            if (Array.isArray(this.object.material)) {
+                this.object.material.forEach(mat => {
+                    if (mat.color) mat.color.set(0xff0000);
+                });
+            } else {
+                this.object.material.color.set(0xff0000);
+            }
 
         }
 
