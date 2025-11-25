@@ -197,15 +197,15 @@ class MyContents  {
         this.shark.position.set(-8, 10, 0);
         this.app.scene.add(this.shark);
 
-        const sign = new MySign();
-        sign.position.set(0,0,15);
-        sign.scale.set(2,2,2);
-        this.app.scene.add(sign); 
+        this.sign = new MySign();
+        this.sign.position.set(0,0,15);
+        this.sign.scale.set(2,2,2);
+        this.app.scene.add(this.sign); 
 
         const twoDShark = new My2DShark();
         twoDShark.scale.set(0.2, 0.2, 0.2);
-        twoDShark.position.set(-0.8, 0.5, sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
-        sign.board.add(twoDShark);
+        twoDShark.position.set(-0.8, 0.5, this.sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
+        this.sign.board.add(twoDShark);
 
         this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
         this.swordFish.position.set(0,3,0);
@@ -294,9 +294,12 @@ class MyContents  {
         this.enemies.push(this.shark);
         this.enemies.push(this.submarine);
 
+        this.colisionObjects = [];
+        this.colisionObjects.push(this.sign)
+
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
-            fishGroup.update(delta, this.enemies);
+            fishGroup.update(delta, this.enemies, this.colisionObjects);
         }
         
 
@@ -333,6 +336,7 @@ class MyContents  {
             this.shark.bvh = enable;
             this.swordFish.bvh = enable;
             this.jellyfish.bvh = enable;
+            this.sign.bvh = enable;
         }
     }
 

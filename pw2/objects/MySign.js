@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MeshBVHHelper } from '../index.module.js';
 
 /**
  * This class represents a wooden sign with a post and a rectangular board.
@@ -28,6 +29,7 @@ class MySign extends THREE.Object3D {
     boardTexture = null,
   ) {
     super();
+    this.bvh = false;
 
     // --- Post ---
     const stickGeometry = new THREE.CylinderGeometry(stickRadius, stickRadius, stickHeight, 8);
@@ -35,7 +37,8 @@ class MySign extends THREE.Object3D {
     const stick = new THREE.Mesh(stickGeometry, stickMaterial);
     stick.position.y = stickHeight / 2;
     this.add(stick);
-
+    stickGeometry.computeBoundsTree();
+    
     stick.castShadow = true;
     stick.receiveShadow = true;
 
@@ -59,6 +62,8 @@ class MySign extends THREE.Object3D {
     }
 
     const boardGeometry = new THREE.BoxGeometry(boardWidth, boardHeight, boardDepth);
+    boardGeometry.computeBoundsTree();
+    
     // Materials: [right, left, top, bottom, front, back]
     const materials = [
     new THREE.MeshStandardMaterial({ color: boardColor }),
@@ -72,6 +77,7 @@ class MySign extends THREE.Object3D {
     const board = new THREE.Mesh(boardGeometry, materials);
     board.position.y = stickHeight + boardHeight / 2;
     this.add(board);
+
 
     board.castShadow = true;
     board.receiveShadow = true;
