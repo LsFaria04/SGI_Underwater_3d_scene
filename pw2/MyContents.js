@@ -290,7 +290,7 @@ class MyContents  {
 
         this.enemies = [] //reset the enemie
         this.enemies.push(this.swordFish);
-        //this.enemies.push(this.jellyfish);
+        this.enemies.push(this.jellyfish);
         this.enemies.push(this.shark);
         this.enemies.push(this.submarine);
 
@@ -332,6 +332,7 @@ class MyContents  {
             }
             this.shark.bvh = enable;
             this.swordFish.bvh = enable;
+            this.jellyfish.bvh = enable;
         }
     }
 

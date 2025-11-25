@@ -3,6 +3,7 @@ import * as THREE from 'three';
 class MyJellyFish extends THREE.Object3D {
     constructor(radius = 1, height = 2, color = "#0000FF", jellyFishTexture) {
         super();
+        this.bvh = false;
 
         this.radius = radius;
         this.height = height;
@@ -38,8 +39,10 @@ class MyJellyFish extends THREE.Object3D {
         });
 
         // bell shape
-        const headGeometry = new THREE.SphereGeometry(this.radius, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2); // Only top half (dome)
-        const headTop = new THREE.Mesh(headGeometry, jellyFishMaterial);
+        this.headGeometry = new THREE.SphereGeometry(this.radius, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2); // Only top half (dome)
+        const headTop = new THREE.Mesh(this.headGeometry, jellyFishMaterial);
+        this.headGeometry.computeBoundsTree();
+        
 
         // circular opening at the bottom
         const headBottomGeometry = new THREE.RingGeometry(this.radius * 0.7, this.radius, 24);
@@ -188,6 +191,7 @@ class MyJellyFish extends THREE.Object3D {
     createHighTentacles(jellyFishGroup, material) {
         const tentacles = new THREE.Group();
         const tentacleCount = 12;
+        this.tentaclesGeo = [];
         
         for(let i = 0; i < tentacleCount; i++) {
             const angle = (i / tentacleCount) * Math.PI * 2;
@@ -209,7 +213,9 @@ class MyJellyFish extends THREE.Object3D {
             
             const curve = new THREE.CatmullRomCurve3(points);
             const tubeGeometry = new THREE.TubeGeometry(curve, segments, 0.03, 6, false);
-            const tentacle = new THREE.Mesh(tubeGeometry, material);
+            const tentacle = new THREE.Mesh(tubeGeometry, material);~
+            tubeGeometry.computeBoundsTree();
+            this.tentaclesGeo.push(tubeGeometry);
             
             tentacle.position.y = this.height - this.radius;
             tentacles.add(tentacle);
@@ -252,6 +258,14 @@ class MyJellyFish extends THREE.Object3D {
                 const wave = Math.sin(this.elapsedTime * this.tentacleWaveSpeed + index * 0.5) * 0.2;
                 tentacle.rotation.x = wave;
             });
+        }
+
+        if((this.elapsed % 4 == 0) && this.bvh){
+            this.headGeometry.boundsTree.refit();
+            for(const tentacle of this.tentaclesGeo){
+                tentacle.boundsTree.refit();
+            }
+            
         }
     }
 

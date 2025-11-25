@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { MeshBVHHelper } from '../index.module.js';
+
 
 class MySubmarine extends THREE.Object3D {
     constructor() {
@@ -79,7 +79,7 @@ class MySubmarine extends THREE.Object3D {
         periscope.castShadow = true;
         periscope.receiveShadow = true;
         this.tubeGeometry.computeBoundsTree();
-        
+
         const lensGeometry = new THREE.CircleGeometry(0.035, 16);
 
         const lens = new THREE.Mesh(lensGeometry, glassMaterial);

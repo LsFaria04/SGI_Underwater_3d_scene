@@ -85,12 +85,13 @@ class MySchoolfOfFish extends THREE.Group {
     /**
      * Finds the neighbors of a boid using BVH
      */
-    findNeighbors(fish, fishes, radius) {
+    findNeighbors(fish, others, radius) {
         const neighbors = [];
         const sphereWorld = new THREE.Sphere(fish.getWorldPosition(new THREE.Vector3()), radius);
 
-        for (const other of fishes) {
+        for (const other of others) {
             if (other === fish) continue;
+
 
             other.traverse(child => {
             if (child.isMesh && child.geometry.boundsTree) {
