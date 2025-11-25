@@ -19,6 +19,7 @@ import { MySwordFish } from './animals/MySwordFish.js';
 import { MySeaPlant } from './objects/MySeaPlant.js';
 import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
 import { MySubmarine } from './objects/MySubmarine.js';
+import { acceleratedRaycast } from './index.module.js';
 
 
 /**
@@ -34,6 +35,16 @@ class MyContents  {
         this.axis = null;
         this.axisEnabled = false;
         this.app = app
+
+        // Picking
+        this.mouse = new THREE.Vector2();
+        console.log(this.mouse)
+        this.raycaster = new THREE.Raycaster();
+        this.raycaster.firstHitOnly = true;
+        this.object = null;
+
+        this.onMouseClick = this.onMouseClick.bind(this);
+        window.addEventListener('click', this.onMouseClick);
     }
 
     // initializes the scene contents
@@ -207,6 +218,39 @@ class MyContents  {
 
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2, 50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
+    }
+
+    onMouseClick(mousePos){
+        // Get mouse pos
+
+        this.mouse.x = (mousePos.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(mousePos.clientY / window.innerHeight) * 2 + 1;
+
+        this.raycaster.setFromCamera(this.mouse, this.app.activeCamera);
+
+        const bvhMeshes = [];
+        for (const school of this.fishGroups)
+            for (const fish of school.fishes)
+                if (fish.bvh) bvhMeshes.push(fish);
+
+        const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
+
+        if (intersects.length > 0){
+            let hit = intersects[0].object;
+
+            if (this.object) {
+                this.object.material.color.copy(this.object.originalColor);
+            }
+
+            this.object = hit;
+            if (!this.object.originalColor) {
+                this.object.originalColor = this.object.material.color.clone();
+            }
+            
+            this.object.material.color.set(0xff0000);
+
+        }
+
     }
 
     initTextures() {
