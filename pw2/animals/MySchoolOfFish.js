@@ -136,10 +136,12 @@ class MySchoolfOfFish extends THREE.Group {
 
             //find the neighbours using bvh 
             if(this.bvh){
-                 this.neighbors = this.findNeighbors(fish,this.fishes, this.minSpace / 2 + this.maxScale / 2)
+                 this.neighbors = this.findNeighbors(fish,this.fishes, this.minSpace / 2 + this.maxScale / 2);
+                 this.neighborEnemies = this.findNeighbors(fish, this.enemies, 10);
             }
             else{
                 this.neighbors = this.fishes
+                this.neighborEnemies = this.enemies
             }
            
 
@@ -172,9 +174,9 @@ class MySchoolfOfFish extends THREE.Group {
             //use a precise flag to see if the fish is in a danger zone (close to enemies)
             fish.isInDanger = false;
 
-            for (const enemy of this.enemyPositions) {
-                const dist = enemy.distanceTo(fish.position.clone().add(this.position));
-                if (dist < 8) {
+            for (const enemy of this.neighborEnemies) {
+                const dist = enemy.position.distanceTo(fish.position.clone().add(this.position));
+                if (dist < 10) {
                     fish.isInDanger = true;
                 }
             }
@@ -306,13 +308,13 @@ class MySchoolfOfFish extends THREE.Group {
     avoid_predators(fish){
         let positionDisplacement = new THREE.Vector3();
 
-        for (const enemy of this.enemyPositions) {
+        for (const enemy of this.neighborEnemies) {
             const fishWorldPos = fish.position.clone().add(this.position);
-            const dist = enemy.distanceTo(fishWorldPos);
+            const dist = enemy.position.distanceTo(fishWorldPos);
 
             //avoid collisions with enemies
             if (dist < 6) {
-                const diff = new THREE.Vector3().subVectors(enemy, fishWorldPos);
+                const diff = new THREE.Vector3().subVectors(enemy.position, fishWorldPos);
                 positionDisplacement.sub(diff);
             }
         
@@ -323,14 +325,14 @@ class MySchoolfOfFish extends THREE.Group {
     }
 
     
-    update(delta, enemyPositions){
+    update(delta, enemies){
         // Update each fish in the school
         for (const fish of this.fishes) {
             if (fish.update) {
                 fish.update(delta);
             }
         }
-        this.enemyPositions = enemyPositions;
+        this.enemies = enemies;
         this.flocking(delta);
     }
 

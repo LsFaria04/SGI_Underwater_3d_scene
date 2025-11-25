@@ -288,15 +288,15 @@ class MyContents  {
         this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
 
-        this.enemyPositions = [] //reset the enemie positions
-        this.enemyPositions.push(this.swordFish.position);
-        this.enemyPositions.push(this.jellyfish.position);
-        this.enemyPositions.push(this.shark.position);
-        this.enemyPositions.push(this.submarine.position);
+        this.enemies = [] //reset the enemie
+        this.enemies.push(this.swordFish);
+        //this.enemies.push(this.jellyfish);
+        this.enemies.push(this.shark);
+        this.enemies.push(this.submarine);
 
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
-            fishGroup.update(delta, this.enemyPositions);
+            fishGroup.update(delta, this.enemies);
         }
         
 
