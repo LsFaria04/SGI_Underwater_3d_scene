@@ -1,5 +1,10 @@
 import * as THREE from 'three';
 import {MyTriangle} from '../objects/MyTriangle.js';
+import {
+	computeBoundsTree, disposeBoundsTree,
+	computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast,
+    StaticGeometryGenerator, MeshBVHHelper
+} from '../index.module.js';
 
 /**
  * This class contains a 3D representation of a common carp fish
@@ -23,6 +28,7 @@ class MySwordFish extends THREE.Object3D {
         this.color = color;
         this.lodMediumThreshold = 25;
         this.lodBasicThreshold = 35;
+        this.bvh = false;
         
 
         this.init();
@@ -247,6 +253,15 @@ class MySwordFish extends THREE.Object3D {
         skinnedMesh.add(bones[0]);
         skinnedMesh.bind(skeleton);
 
+        this.generator = new StaticGeometryGenerator( [ skinnedMesh ] );
+        this.newgeometry = this.generator.generate();
+        this.newgeometry.computeBoundsTree();
+
+        //proxy mesh only used to calculate bvh bounds
+        this.mesh = new THREE.Mesh(this.newgeometry, this.generator.getMaterials());
+        this.add(this.mesh)
+        this.mesh.visible = false;
+
         skinnedMesh.castShadow = true;
         skinnedMesh.receiveShadow = true;
         material.shadowSide = THREE.BackSide;
@@ -325,15 +340,17 @@ class MySwordFish extends THREE.Object3D {
         indices.push(3, 3 * 5,6);
 
         vertices = new Float32Array(vertices);
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        geometry.setIndex(indices);
-        geometry.computeVertexNormals();
+        this.geometryFinBack = new THREE.BufferGeometry();
+        this.geometryFinBack.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        this.geometryFinBack.setIndex(indices);
+        this.geometryFinBack.computeVertexNormals();
 
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
-        const detailedMesh = new THREE.Mesh(geometry, material);
+        const detailedMesh = new THREE.Mesh(this.geometryFinBack, material);
         detailedMesh.castShadow = true;
+        
+        this.geometryFinBack.computeBoundsTree();
 
         return detailedMesh;
     }
@@ -416,15 +433,17 @@ class MySwordFish extends THREE.Object3D {
         
 
         vertices = new Float32Array(vertices);
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        geometry.setIndex(indices);
-        geometry.computeVertexNormals();
+        this.geometryFinTop = new THREE.BufferGeometry();
+        this.geometryFinTop.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        this.geometryFinTop.setIndex(indices);
+        this.geometryFinTop.computeVertexNormals();
 
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
-        const detailedMesh = new THREE.Mesh(geometry, material);
+        const detailedMesh = new THREE.Mesh(this.geometryFinTop, material);
         detailedMesh.castShadow = true;
+
+        this.geometryFinTop.computeBoundsTree();
 
         return detailedMesh;
 
@@ -508,14 +527,17 @@ class MySwordFish extends THREE.Object3D {
         
 
         vertices = new Float32Array(vertices);
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        geometry.setIndex(indices);
-        geometry.computeVertexNormals();
+        this.geometryBottomFin = new THREE.BufferGeometry();
+        this.geometryBottomFin .setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        this.geometryBottomFin .setIndex(indices);
+        this.geometryBottomFin .computeVertexNormals();
 
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
-        const detailedMesh = new THREE.Mesh(geometry, material);
+        const detailedMesh = new THREE.Mesh(this.geometryBottomFin , material);
+
+        this.geometryBottomFin.computeBoundsTree();
+
         return detailedMesh;
 
     }
@@ -616,6 +638,16 @@ class MySwordFish extends THREE.Object3D {
             const rotation = Math.sin(this.elapsed * waveSpeed + (bones.length - i)) * waveAmplitude * influence;
             bone.rotation.y = rotation;
         });
+
+        //update the bvh. Avoid updates every frame to improve performance
+        if(this.generator && (this.elapsed % 4 == 0) && this.bvh){
+            this.generator.generate(this.newgeometry);
+            this.newgeometry.boundsTree.refit();
+            this.helper.update()
+            this.geometryBottomFin.boundsTree.refit();
+            this.geometryFinBack.boundsTree.refit();
+            this.geometryFinTop.boundsTree.refit();
+        }
     }
 }
 

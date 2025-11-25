@@ -286,6 +286,8 @@ class MyContents  {
             for(const fish of fishGroup.fishes){
                 fish.bvh = enable;
             }
+            this.shark.bvh = enable;
+            this.swordFish.bvh = enable;
         }
     }
 

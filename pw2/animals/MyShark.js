@@ -1,4 +1,9 @@
 import * as THREE from 'three';
+import {
+	computeBoundsTree, disposeBoundsTree,
+	computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast,
+    StaticGeometryGenerator, MeshBVHHelper
+} from '../index.module.js';
 
 class MyShark extends THREE.Object3D {
     /**
@@ -64,6 +69,16 @@ class MyShark extends THREE.Object3D {
         sharkBody.add(rootBone);
         sharkBody.bind(skeleton);
 
+        //BVH structure
+        this.generator = new StaticGeometryGenerator( [ sharkBody ] );
+        this.newgeometry = this.generator.generate();
+        this.newgeometry.computeBoundsTree();
+
+        //proxy mesh only used to calculate bvh bounds
+        this.mesh = new THREE.Mesh(this.newgeometry, this.generator.getMaterials());
+        this.add(this.mesh)
+        this.mesh.visible = false;
+
         // eyes
         const eyeGroup = new THREE.Group();
         
@@ -106,8 +121,10 @@ class MyShark extends THREE.Object3D {
         this.rootPivot.add(sharkBody);
         this.add(this.rootPivot);
         this.rootPivot.rotation.x = Math.PI; //shark was on the wrong pose initially
+        this.mesh.rotation.x = Math.PI;
 
         sharkBody.scale.set(scale, scale, scale);
+        this.mesh.scale.set(scale,scale,scale)
 
         this.sharkBody = sharkBody;
     }
@@ -649,6 +666,13 @@ class MyShark extends THREE.Object3D {
         });
 
         this.headBone.rotation.y *= 0.2; 
+        
+         //update the bvh. Avoid updates every frame to improve performance
+        if(this.generator && (this.elapsed % 4 == 0) && this.bvh){
+            this.generator.generate(this.newgeometry);
+            this.newgeometry.boundsTree.refit();
+            this.helper.update()
+        }
     }
 }
 

@@ -1,8 +1,11 @@
 import * as THREE from 'three';
+import { MeshBVHHelper } from '../index.module.js';
 
 class MySubmarine extends THREE.Object3D {
     constructor() {
         super();
+
+        this.bvh = false;
 
         const bodyMaterial = new THREE.MeshPhongMaterial({ 
             color: 0x2a4b5e,
@@ -40,20 +43,24 @@ class MySubmarine extends THREE.Object3D {
 
 
         // main body
-        const bodyGeometry = new THREE.CapsuleGeometry(0.5, 3, 8, 16);
-        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+        this.bodyGeometry = new THREE.CapsuleGeometry(0.5, 3, 8, 16);
+        const body = new THREE.Mesh(this.bodyGeometry, bodyMaterial);
         body.rotation.z = Math.PI / 2;
         this.add(body);
         body.castShadow = true;
         body.receiveShadow = true;
+        this.bodyGeometry.computeBoundsTree();
+        
 
         // hatch
-        const hatchGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.3, 12);
-        const hatch = new THREE.Mesh(hatchGeometry, darkMetalMaterial);
+        this.hatchGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.3, 12);
+        const hatch = new THREE.Mesh(this.hatchGeometry, darkMetalMaterial);
         hatch.position.set(0, 0.4, 0);
         this.add(hatch);
         hatch.castShadow = true;
         hatch.receiveShadow = true;
+        this.hatchGeometry.computeBoundsTree();
+        
 
         // periscope
         const points = [
@@ -65,13 +72,14 @@ class MySubmarine extends THREE.Object3D {
         ];
 
         const curve = new THREE.CatmullRomCurve3(points);
-        const tubeGeometry = new THREE.TubeGeometry(curve, 32, 0.04, 8, false);
-        const periscope = new THREE.Mesh(tubeGeometry, metalMaterial);
+        this.tubeGeometry = new THREE.TubeGeometry(curve, 32, 0.04, 8, false);
+        const periscope = new THREE.Mesh(this.tubeGeometry, metalMaterial);
         periscope.position.y = 0.5;
         this.add(periscope);
         periscope.castShadow = true;
         periscope.receiveShadow = true;
-
+        this.tubeGeometry.computeBoundsTree();
+        
         const lensGeometry = new THREE.CircleGeometry(0.035, 16);
 
         const lens = new THREE.Mesh(lensGeometry, glassMaterial);
@@ -169,9 +177,18 @@ class MySubmarine extends THREE.Object3D {
     }
 
     update(delta) {
+        if (!this.elapsed) this.elapsed = 0;
+        this.elapsed += delta;
+
         const propeller = this.children.find(child => child.position.x === -2);
         if (propeller) {
             propeller.rotation.x += delta * 5;
+        }
+
+        if((this.elapsed % 4 == 0) && this.bvh){
+            this.bodyGeometry.boundsTree.refit();
+            this.hatchGeometry.boundsTree.refit();
+            this.tubeGeometry.boundsTree.refit();
         }
     }
 }
