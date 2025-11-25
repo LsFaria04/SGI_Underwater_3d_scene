@@ -10,6 +10,7 @@ class MyRockGroup extends THREE.Group {
 
         const gridSide = Math.ceil(Math.sqrt(numbRocks));
         let rockCount = 0;
+        this.rocks = []
 
         const baseWidth = 1 ;
         const baseDepth = 1 ;
@@ -78,6 +79,7 @@ class MyRockGroup extends THREE.Group {
             lod.addLevel(highLODRock,0);
             lod.addLevel(midLODRock,15);
             this.add(lod);
+            this.rocks.push(lod);
             rockCount++;
             }
             

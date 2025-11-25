@@ -152,10 +152,12 @@ class MyContents  {
         
 
         //rock position and size [x, z, number of rocks]
+        this.rockGroups = [];
         const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [1, 4, 3], [-10, 4, 8], [3, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
         for(let i = 0; i < rockPosSize.length; i++){
             const pos = rockPosSize[i];
             const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], true, [this.rockTexture, this.rockTexture2]);
+            this.rockGroups.push(rockGroup);
             rockGroup.position.set(pos[0],0,pos[1]);
             this.app.scene.add(rockGroup);
         }
@@ -232,9 +234,15 @@ class MyContents  {
         for (const school of this.fishGroups)
             for (const fish of school.fishes)
                 bvhMeshes.push(fish);
+
+        //handle different lods for the rocks
+        for (const rocks of this.rockGroups)
+            for (const rock of rocks.rocks)
+                bvhMeshes.push(rock.getObjectForDistance(this.app.activeCamera.position.distanceTo(rock.position)));
+
         bvhMeshes.push(this.shark);
         bvhMeshes.push(this.sign);
-        bvhMeshes.push(this.swordFish);
+        bvhMeshes.push(this.swordFish.lod.getObjectForDistance(this.app.activeCamera.position.distanceTo(this.swordFish.position)));
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(this.jellyfish);
 

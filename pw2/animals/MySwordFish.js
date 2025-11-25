@@ -566,7 +566,7 @@ class MySwordFish extends THREE.Object3D {
 
 
     init() {
-        const lod = new THREE.LOD();
+        this.lod = new THREE.LOD();
         
         // 1. Detailed Mesh (Level 0) - Distance 0
         this.fish = this.createFishBody();
@@ -585,7 +585,7 @@ class MySwordFish extends THREE.Object3D {
         fishTopFin.position.set(-this.lengthBody / 4 * 1.2,this.lengthFin / 4 + this.widthBody / 2,0);
         fishBottomFin.position.set(-this.lengthBody / 4 * 1.2,-this.lengthFin / 8 - this.widthBody / 2,0);
 
-        lod.addLevel(this.detailedWrapper, 0);
+        this.lod.addLevel(this.detailedWrapper, 0);
 
         // 2. Medium-Detail Mesh (Level 1)
         this.fishMedium = this.createFishBody();
@@ -599,17 +599,17 @@ class MySwordFish extends THREE.Object3D {
         backFinBoneMedium.add(fishBackFinMedium);
 
    
-        lod.addLevel(mediumWrapper, this.lodMediumThreshold);
+        this.lod.addLevel(mediumWrapper, this.lodMediumThreshold);
 
         //3. Low-Detail Mesh (Level 2)
         const fishLow = this.createLowDetailFish();
         const lowWrapper = new THREE.Object3D();
         lowWrapper.add(fishLow);
-        lod.addLevel(lowWrapper, this.lodBasicThreshold);
+        this.lod.addLevel(lowWrapper, this.lodBasicThreshold);
     
         this.position.y = this.widthBody / 2;
 
-        this.add(lod);
+        this.add(this.lod);
 
     }
 
