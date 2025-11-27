@@ -232,8 +232,10 @@ class MyContents  {
 
         const bvhMeshes = [];
         for (const school of this.fishGroups)
-            for (const fish of school.fishes)
+            for (const fish of school.fishes){
                 bvhMeshes.push(fish);
+                
+            }
 
         //handle different lods for the rocks
         for (const rocks of this.rockGroups)
@@ -262,6 +264,13 @@ class MyContents  {
                     });
                 } else if (this.object.material.color) {
                     this.object.material.color.copy(this.object.originalColor);
+                    if (this.object.children){
+                        this.object.traverse((child) => {
+                            if (child.material && child.material.color)
+                                child.material.color.copy(this.object.originalColor);
+                        })
+                    }
+                    this.object.material.color.copy(this.object.originalColor);
                 }
             }
 
@@ -270,7 +279,14 @@ class MyContents  {
                 if (Array.isArray(this.object.material)) {
                     this.object.originalColor = this.object.material.map(m => m.color.clone());
                 } else {
+                    
                     this.object.originalColor = this.object.material.color.clone();
+                    if (this.object.children){
+                        this.object.traverse((child) => {
+                            if (child.material && child.material.color)
+                                child.material.originalColor = this.object.material.color.clone();
+                        })
+                    }
                 }
             }
             
@@ -280,6 +296,12 @@ class MyContents  {
                 });
             } else {
                 this.object.material.color.set(0xff0000);
+                if (this.object.children){
+                    this.object.traverse((child) => {
+                        if (child.material && child.material.color)
+                            child.material.color.set(0xff0000);
+                    })
+                }
             }
 
         }
