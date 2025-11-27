@@ -222,90 +222,103 @@ class MyContents  {
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
     }
 
-    onMouseClick(mousePos){
-        // Get mouse pos
-
+onMouseClick(mousePos) {
+        // 1. Setup Raycaster
         this.mouse.x = (mousePos.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(mousePos.clientY / window.innerHeight) * 2 + 1;
-
         this.raycaster.setFromCamera(this.mouse, this.app.activeCamera);
 
+        // 2. Build List
         const bvhMeshes = [];
-        for (const school of this.fishGroups)
-            for (const fish of school.fishes){
-                bvhMeshes.push(fish);
-                
-            }
-
-        //handle different lods for the rocks
-        for (const rocks of this.rockGroups)
-            for (const rock of rocks.rocks)
-                bvhMeshes.push(rock.getObjectForDistance(this.app.activeCamera.position.distanceTo(rock.position)));
-
+        for (const school of this.fishGroups) {
+            school.fishes.forEach(fish => bvhMeshes.push(fish));
+        }
+        for (const rocks of this.rockGroups) {
+            rocks.rocks.forEach(rock => bvhMeshes.push(rock));
+        }
         bvhMeshes.push(this.shark);
         bvhMeshes.push(this.sign);
-        bvhMeshes.push(this.swordFish.lod.getObjectForDistance(this.app.activeCamera.position.distanceTo(this.swordFish.position)));
+        bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(this.jellyfish);
 
-
+        // 3. Intersect
         const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
 
-        if (intersects.length > 0){
-            let hit = intersects[0].object;
+        if (intersects.length > 0) {
+            const hit = intersects[0].object;
 
-            if (this.object) {
-               
-                if (Array.isArray(this.object.material)) {
-                    this.object.material.forEach((mat, i) => {
-                        if (mat.color && this.object.originalColor[i]) {
-                            mat.color.copy(this.object.originalColor[i]);
-                        }
-                    });
-                } else if (this.object.material.color) {
-                    this.object.material.color.copy(this.object.originalColor);
-                    if (this.object.children){
-                        this.object.traverse((child) => {
-                            if (child.material && child.material.color)
-                                child.material.color.copy(this.object.originalColor);
-                        })
-                    }
-                    this.object.material.color.copy(this.object.originalColor);
-                }
-            }
-
-            this.object = hit;
-            if (!this.object.originalColor) {
-                if (Array.isArray(this.object.material)) {
-                    this.object.originalColor = this.object.material.map(m => m.color.clone());
-                } else {
-                    
-                    this.object.originalColor = this.object.material.color.clone();
-                    if (this.object.children){
-                        this.object.traverse((child) => {
-                            if (child.material && child.material.color)
-                                child.material.originalColor = this.object.material.color.clone();
-                        })
-                    }
-                }
+            // Walk up from the clicked mesh until we find the object registered in bvhMeshes
+            let selectedObject = hit;
+            while (selectedObject.parent && !bvhMeshes.includes(selectedObject)) {
+                selectedObject = selectedObject.parent;
             }
             
-            if (Array.isArray(this.object.material)) {
-                this.object.material.forEach(mat => {
-                    if (mat.color) mat.color.set(0xff0000);
-                });
-            } else {
-                this.object.material.color.set(0xff0000);
-                if (this.object.children){
-                    this.object.traverse((child) => {
-                        if (child.material && child.material.color)
-                            child.material.color.set(0xff0000);
-                    })
-                }
+            // Case A: Same object
+            if (this.currentSelection === selectedObject) {
+                return; 
             }
 
-        }
+            // Case B: New object
+            if (this.currentSelection) {
+                this.restoreObject(this.currentSelection);
+            }
 
+            this.currentSelection = selectedObject;
+
+            this.highlightObject(this.currentSelection);
+
+        } else {
+            if (this.currentSelection) {
+                this.restoreObject(this.currentSelection);
+                this.currentSelection = null;
+            }
+        }
+    }
+
+    highlightObject(rootObject) {
+        rootObject.traverse((child) => {
+            if (child.isMesh && child.material) {
+                
+                if (!child.userData.isCloned) {
+                    if (Array.isArray(child.material)) {
+
+                        child.material = child.material.map(m => m.clone());
+                    } else {
+    
+                        child.material = child.material.clone();
+                    }
+                    child.userData.isCloned = true;
+                }
+
+                if (Array.isArray(child.material)) {
+                    if (!child.userData.originalColors) child.userData.originalColors = [];
+                    child.material.forEach((mat, i) => {
+                        if (!child.userData.originalColors[i]) child.userData.originalColors[i] = mat.color.clone();
+                        mat.color.set(0xff0000);
+                    });
+                } else {
+                    if (!child.userData.originalColor) child.userData.originalColor = child.material.color.clone();
+                    child.material.color.set(0xff0000);
+                }
+            }
+        });
+    }
+
+    restoreObject(rootObject) {
+        rootObject.traverse((child) => {
+            if (child.isMesh && child.material) {
+                if (Array.isArray(child.material) && child.userData.originalColors) {
+                    child.material.forEach((mat, i) => {
+                        if (child.userData.originalColors[i]) mat.color.copy(child.userData.originalColors[i]);
+                    });
+                    delete child.userData.originalColors;
+                } else if (child.material.color && child.userData.originalColor) {
+                    child.material.color.copy(child.userData.originalColor);
+                    delete child.userData.originalColor;
+                }
+            }
+        });
     }
 
     initTextures() {
