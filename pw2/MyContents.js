@@ -222,7 +222,7 @@ class MyContents  {
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
     }
 
-onMouseClick(mousePos) {
+    onMouseClick(mousePos) {
         // 1. Setup Raycaster
         this.mouse.x = (mousePos.clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(mousePos.clientY / window.innerHeight) * 2 + 1;
