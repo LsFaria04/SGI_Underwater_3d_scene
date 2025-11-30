@@ -9,12 +9,12 @@ class MyCoralReef extends THREE.Group {
      * @param {number} radius Radius of the reef
      * @param {number} iterations Iterations of L Stochastic 
      */
-    constructor(numbCorals = 5, type = 'branchingCoral', radius = 3, iterations = 4){
+    constructor(numbCorals = 5, type = 'branchingCoral', radius = 3, iterations = 4, texture){
         super();
     
         this.name = "CoralReefGroup";
 
-        this.coralGen = new MyCoral();
+        this.coralGen = new MyCoral(texture);
         this.type = this.coralGen.coralPresets[type];
         //console.log(this.type);
         //console.log(type in this.types);

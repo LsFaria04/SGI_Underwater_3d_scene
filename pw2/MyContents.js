@@ -162,11 +162,11 @@ class MyContents  {
         }
         
 
-        const coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4);
+        const coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4, this.coralTexture);
         coralReef1.position.y = 0;
         this.app.scene.add(coralReef1);
 
-        const coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4);
+        const coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4, this.coralTexture);
         coralReef2.position.y = 0;
         this.app.scene.add(coralReef2);
 
@@ -322,8 +322,6 @@ class MyContents  {
 
     initTextures() {
         //Rocks textures
-        //this.rockTexture = new THREE.TextureLoader().load("./textures/Rock1.jpeg");
-        //this.rockTexture2 = new THREE.TextureLoader().load("./textures/Rock2.jpg");
 
         //Rock PBR
         const loader = new THREE.TextureLoader();
@@ -352,12 +350,20 @@ class MyContents  {
         this.metalnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_metallic.png');
         this.displacementSand = loader.load("./textures/wavy-sand-bl/wavy-sand_height.png");
         this.ambientOcclusionSand = loader.load("./textures/wavy-sand-bl/wavy-sand_ao.png");
+        //use anisotropy filter for the sand
         this.albedoSand.anisotropy = maxAnisotropy;
         this.normalSand.anisotropy = maxAnisotropy;
         this.roughnessSand.anisotropy = maxAnisotropy;
         this.metalnessSand.anisotropy = maxAnisotropy;
         this.displacementSand.anisotropy = maxAnisotropy;
         this.ambientOcclusionSand.anisotropy = maxAnisotropy;
+        //ensure mip maps are generated
+        this.albedoSand.generateMipmaps = true;
+        this.normalSand.generateMipmaps = true;
+        this.roughnessSand.generateMipmaps = true;
+        this.metalnessSand.generateMipmaps = true;
+        this.displacementSand.generateMipmaps = true;
+        this.ambientOcclusionSand.generateMipmaps = true;
         this.sandTexture = {
                 ao: this.ambientOcclusionSand,
                 albedo: this.albedoSand,
@@ -366,8 +372,22 @@ class MyContents  {
                 roughness: this.roughnessSand,
                 metallic: this.metalnessSand
         }
-        
-        //this.sandTexture = new THREE.TextureLoader().load("./textures/sand.jpg");
+
+        //coral texture pbr
+        this.albedoCoral = loader.load('./textures/coral1-bl/coral1_albedo.png');
+        this.normalCoral = loader.load('./textures/coral1-bl/coral1_normal-ogl.png');
+        this.roughnessCoral = loader.load('./textures/coral1-bl/coral1_roughness.png');
+        this.metalnessCoral = loader.load('./textures/coral1-bl/coral1_metallic.png');
+        this.displacementCoral = loader.load("./textures/coral1-bl/coral1_height.png");
+        this.ambientOcclusionCoral = loader.load("./textures/coral1-bl/coral1_ao.png");
+         this.coralTexture = {
+                ao: this.ambientOcclusionCoral,
+                albedo: this.albedoCoral,
+                displacement: this.displacementCoral,
+                normal: this.normalCoral,
+                roughness: this.roughnessCoral,
+                metallic: this.metalnessCoral
+        }
 
         this.fishTexture1 = new THREE.TextureLoader().load("./textures/Fish1.jpg");
     }

@@ -3,7 +3,8 @@ import * as THREE from 'three';
      * This class creates a coral
      */
 export class MyCoral {
-    constructor() {
+    constructor(texture) {
+        this.texture = texture;
         this.coralPresets = {
         fanCoral: {
             rules: {
@@ -182,7 +183,14 @@ export class MyCoral {
 
         const branchGeo = new THREE.CylinderGeometry(0.05, 0.05, 1, 8);
         branchGeo.translate(0, 0.5, 0);
-        const branchMat = new THREE.MeshStandardMaterial({ color: this.colorZ, metalness: 0.1, roughness: 0.8 });
+        const branchMat = new THREE.MeshStandardMaterial(
+            { color: this.colorZ, 
+              map: this.texture.albedo,
+             normalMap: this.texture.normal,
+             roughnessMap: this.texture.roughness,
+             metalnessMap: this.texture.metallic,
+            aoMap: this.texture.ao
+            });
         const branchMesh = new THREE.InstancedMesh(branchGeo, branchMat, branchMatrices.length);
         branchMesh.name = "branches";
         for (let i = 0; i < branchMatrices.length; i++) {
@@ -196,7 +204,14 @@ export class MyCoral {
             leafShape.bezierCurveTo(0.05, 0.2, 0.1, 0.3, 0, 0.5);
             leafShape.bezierCurveTo(-0.1, 0.3, -0.05, 0.2, 0, 0);
             const leafGeo = new THREE.ExtrudeGeometry(leafShape, { depth: 0.02, bevelEnabled: false });
-            const leafMat = new THREE.MeshStandardMaterial({ color: 0xff9100, metalness: 0, roughness: 0.8 });
+            const leafMat = new THREE.MeshStandardMaterial(
+                { color: 0xff9100,
+                    map: this.texture.albedo,
+                    normalMap: this.texture.normal,
+                    roughnessMap: this.texture.roughness,
+                    metalnessMap: this.texture.metallic,
+                    aoMap: this.texture.ao
+                });
             const leafMesh = new THREE.InstancedMesh(leafGeo, leafMat, leafMatrices.length);
             leafMesh.name = "leaves";
             for (let i = 0; i < leafMatrices.length; i++) {
