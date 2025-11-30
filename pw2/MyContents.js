@@ -84,7 +84,7 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        const floor = new MyFloor(50, 128, this.sandTexture);
+        const floor = new MyFloor(50, 256, this.sandTexture);
         this.app.scene.add(floor);
 
         const water = new MyWater();
@@ -155,7 +155,7 @@ class MyContents  {
         const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [1, 4, 3], [-10, 4, 8], [3, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
         for(let i = 0; i < rockPosSize.length; i++){
             const pos = rockPosSize[i];
-            const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#615949ff", "#292727", "#8c8989"], true, [this.rockTexture]);
+            const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], true, [this.rockTexture]);
             this.rockGroups.push(rockGroup);
             rockGroup.position.set(pos[0],0,pos[1]);
             this.app.scene.add(rockGroup);
@@ -341,8 +341,33 @@ class MyContents  {
                 roughness: this.roughnessRock,
                 metallic: this.metalnessRock
         }
+
+        // Get max anisotropy supported by GPU
+        const maxAnisotropy = this.app.renderer.capabilities.getMaxAnisotropy();
+
+        //Sand PBR
+        this.albedoSand = loader.load('./textures/wavy-sand-bl/wavy-sand_albedo.png');
+        this.normalSand = loader.load('./textures/wavy-sand-bl/wavy-sand_normal-ogl.png');
+        this.roughnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_roughness.png');
+        this.metalnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_metallic.png');
+        this.displacementSand = loader.load("./textures/wavy-sand-bl/wavy-sand_height.png");
+        this.ambientOcclusionSand = loader.load("./textures/wavy-sand-bl/wavy-sand_ao.png");
+        this.albedoSand.anisotropy = maxAnisotropy;
+        this.normalSand.anisotropy = maxAnisotropy;
+        this.roughnessSand.anisotropy = maxAnisotropy;
+        this.metalnessSand.anisotropy = maxAnisotropy;
+        this.displacementSand.anisotropy = maxAnisotropy;
+        this.ambientOcclusionSand.anisotropy = maxAnisotropy;
+        this.sandTexture = {
+                ao: this.ambientOcclusionSand,
+                albedo: this.albedoSand,
+                displacement: this.displacementSand,
+                normal: this.normalSand,
+                roughness: this.roughnessSand,
+                metallic: this.metalnessSand
+        }
         
-        this.sandTexture = new THREE.TextureLoader().load("./textures/sand.jpg");
+        //this.sandTexture = new THREE.TextureLoader().load("./textures/sand.jpg");
 
         this.fishTexture1 = new THREE.TextureLoader().load("./textures/Fish1.jpg");
     }

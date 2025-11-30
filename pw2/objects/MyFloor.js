@@ -12,27 +12,53 @@ class MyFloor extends THREE.Mesh {
         const geometry = new THREE.PlaneGeometry(size, size, segments, segments);
 
         const positions = geometry.attributes.position;
+        
+        
         for (let i = 0; i < positions.count; i++) {
             const x = positions.getX(i);
             const y = positions.getY(i);
-            const height = 0.4 * Math.sin(x * 0.3) * Math.cos(y * 0.3) + (Math.random() - 0.5) * 0.1;
+            const height = 0.4 * Math.sin(x * 0.3) * Math.cos(y * 0.3) 
             positions.setZ(i, height);
         }
         positions.needsUpdate = true;
         geometry.computeVertexNormals();
 
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(10, 10);
-        const material = new THREE.MeshPhongMaterial({
-            color: 0xC2B280,   // sand color
-            shininess: 8,
-            specular: 0x222222,
-            map: texture
+
+        texture.albedo.wrapS = THREE.MirroredRepeatWrapping;
+        texture.albedo.wrapT = THREE.MirroredRepeatWrapping;
+        texture.albedo.repeat.set(4, 4);
+        texture.roughness.wrapS = THREE.MirroredRepeatWrapping;
+        texture.roughness.wrapT = THREE.MirroredRepeatWrapping;
+        texture.roughness.repeat.set(4, 4);
+        texture.metallic.wrapS = THREE.MirroredRepeatWrapping;
+        texture.metallic.wrapT = THREE.MirroredRepeatWrapping;
+        texture.metallic.repeat.set(4, 4);
+        texture.normal.wrapS = THREE.MirroredRepeatWrapping;
+        texture.normal.wrapT = THREE.MirroredRepeatWrapping;
+        texture.normal.repeat.set(4, 4);
+        texture.ao.wrapS = THREE.MirroredRepeatWrapping;
+        texture.ao.wrapT = THREE.MirroredRepeatWrapping;
+        texture.ao.repeat.set(4, 4);
+        texture.displacement.wrapS = THREE.MirroredRepeatWrapping;
+        texture.displacement.wrapT = THREE.MirroredRepeatWrapping;
+        texture.displacement.repeat.set(4, 4);
+
+        geometry.setAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
+                        
+        const material = new THREE.MeshStandardMaterial({
+            color: "#C2B280",   // sand color
+            map: texture.albedo,
+            normalMap: texture.normal,
+            roughnessMap: texture.roughness,
+            metalnessMap: texture.metallic,
+            aoMap: texture.ao,
+            displacementMap: texture.displacement,
+            displacementScale: 1
         });
 
         super(geometry, material);
         this.rotation.x = -Math.PI / 2;
+        this.position.y = -0.5
         this.receiveShadow = true;
     }
 }
