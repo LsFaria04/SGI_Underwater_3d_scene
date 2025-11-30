@@ -18,7 +18,7 @@ class MySwordFish extends THREE.Object3D {
      * @param {number} lengthFin Length of the fins (largest fin)
      * @param {string|number} color Color of the fish
      */
-    constructor(widthBody = 1, lengthBody = 3, widthFin = 0.5, lengthFin = 0.5, color = 0xffaa00) {
+    constructor(widthBody = 1, lengthBody = 3, widthFin = 0.5, lengthFin = 0.5, color = 0xffaa00, texture) {
         super();
 
         this.widthBody = widthBody;
@@ -28,6 +28,7 @@ class MySwordFish extends THREE.Object3D {
         this.color = color;
         this.lodMediumThreshold = 25;
         this.lodBasicThreshold = 35;
+        this.texture = texture;
         this.bvh = false;
         
 
@@ -148,23 +149,31 @@ class MySwordFish extends THREE.Object3D {
             -bl / 2 - bl * 0.12, bw * 0.15 + bw * 0.1,0,
             -bl/ 2 - bl * 0.3, bw * 0.08 + bw * 0.05,0,
             -bl / 2 -bl *0.6, 0,0,
+
+            //duplicated
+            //front side (top row)
+            bl / 2, 0,  0,
+            bl / 2 * 0.8, bw * 0.1, bw /2 - bw /2 * 0.7,
+            bl / 2 * 0.5, bw * 0.3, bw / 2 - bw /2 * 0.5,
+            0, bw * 0.5, bw / 2,
+            -bl / 2 * 0.7, bw * 0.5, bw / 2 - bw /2 * 0.2,
+            -bl / 2, bw * 0.3, bw / 2 - bw /2 * 0.4,
+
+            //front side head(top row)
+            -bl / 2 - bl * 0.12, bw * 0.15,bw /2 - bw /2 * 0.5,
+            -bl/ 2 - bl * 0.3, bw * 0.08,bw /2 - bw / 2 * 0.75,
+            -bl / 2 -bl *0.6, 0,0,
         ];
 
         let indices = [];
         //i is the number of rows and j is the number of vertices per row
-        for(let i = 0; i < 7; i++){
+        for(let i = 0; i < 8; i++){
             const currentRow = i * 9;
             const nextRow = (i + 1) * 9;
             for(let j = 0; j < 8; j++){
                 indices.push(currentRow + j, currentRow + j + 1, nextRow + j);
                 indices.push(nextRow + j, currentRow + j + 1, nextRow + j + 1);
             }
-        }
-        //indices between last and first rows
-        const lastRow = 7 * 9;
-        for(let j = 0; j < 8; j++){
-            indices.push(lastRow + j, lastRow + 1 + j, j);
-            indices.push(j, lastRow + j + 1, j + 1);
         }
         
         
@@ -202,10 +211,10 @@ class MySwordFish extends THREE.Object3D {
 
         // Assign weights based on vertex x position
         const vertexCount = vertices.length / 3; // number of vertices
-        const vertsPerRow = 9;                   // you said 9 per line
+        const vertsPerRow = 9;                   // 9 per line
 
         for (let v = 0; v < vertexCount; v++) {
-            // Column index along the fish (0 = Head, 6 = tail)
+            // Column index along the fish (0 = Head, 9 = tail)
             const col = v % vertsPerRow;
             const t = 1- (col / (vertsPerRow - 1)); // normalized [0..1] along body
 
@@ -240,10 +249,28 @@ class MySwordFish extends THREE.Object3D {
         geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
         geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
 
+        const rows = Math.floor(vertexCount / vertsPerRow);
+        const uvs = [];
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < vertsPerRow ; c++) {
+                const u = c / (vertsPerRow - 1);
+                let v = r / (rows - 1);
+                uvs.push(u, v);
+            }
+        }
+
+        geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+
+        this.texture.wrapS = THREE.MirroredRepeatWrapping;
+        this.texture.wrapT = THREE.MirroredRepeatWrapping;
+        this.texture.repeat.set(1, 2);
+
         // --- Material ---
         const material = new THREE.MeshStandardMaterial({
             color: this.color,
             side: THREE.DoubleSide,
+            map:this.texture
         });
 
         // --- Skinned Mesh ---

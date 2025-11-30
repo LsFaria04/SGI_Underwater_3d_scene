@@ -208,7 +208,7 @@ class MyContents  {
         twoDShark.position.set(-0.8, 0.5, this.sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
         this.sign.board.add(twoDShark);
 
-        this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f");
+        this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f", this.fishTexture1);
         this.swordFish.position.set(0,3,0);
         this.app.scene.add(this.swordFish); 
 
@@ -389,7 +389,7 @@ class MyContents  {
                 metallic: this.metalnessCoral
         }
 
-        this.fishTexture1 = new THREE.TextureLoader().load("./textures/Fish1.jpg");
+        this.fishTexture1 = new THREE.TextureLoader().load("./textures/fish.jpg");
     }
 
     update(delta) {
