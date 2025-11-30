@@ -36,19 +36,47 @@ class MyRockGroup extends THREE.Group {
             const color = colors[randomColor];
             const randomTexture = getRandomInt(0,textures.length - 1);
             const texture = textures[randomTexture];
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(4, 4);
+            texture.albedo.wrapS = THREE.RepeatWrapping;
+            texture.albedo.wrapT = THREE.RepeatWrapping;
+            texture.albedo.repeat.set(4, 4);
+            texture.roughness.wrapS = THREE.RepeatWrapping;
+            texture.roughness.wrapT = THREE.RepeatWrapping;
+            texture.roughness.repeat.set(4, 4);
+            texture.metallic.wrapS = THREE.RepeatWrapping;
+            texture.metallic.wrapT = THREE.RepeatWrapping;
+            texture.metallic.repeat.set(4, 4);
+            texture.normal.wrapS = THREE.RepeatWrapping;
+            texture.normal.wrapT = THREE.RepeatWrapping;
+            texture.normal.repeat.set(4, 4);
+            texture.ao.wrapS = THREE.RepeatWrapping;
+            texture.ao.wrapT = THREE.RepeatWrapping;
+            texture.ao.repeat.set(4, 4);
+
+
             rock.traverse(child => {
                 if (child.isMesh) {
-                    child.material = new THREE.MeshPhongMaterial({ color: color, map: texture});
+                    child.material = new THREE.MeshStandardMaterial(
+                        { color: color, 
+                        map: texture.albedo,
+                        roughnessMap: texture.roughness,
+                        metalnessMap: texture.metallic,
+                        
+
+                        });
                     child.material.needsUpdate = true;
                 }
             });
             highLODRock.traverse(
                 child => {
                 if (child.isMesh) {
-                    child.material = new THREE.MeshStandardMaterial({ color: color, map: texture, roughness: 0.7});
+                    child.material = new THREE.MeshStandardMaterial(
+                        { color: color, 
+                        map: texture.albedo,
+                        normalMap: texture.normal,
+                        roughnessMap: texture.roughness,
+                        metalnessMap: texture.metallic,
+                        aoMap: texture.ao
+                        });
                     child.material.needsUpdate = true;
                 }
             }
@@ -56,7 +84,16 @@ class MyRockGroup extends THREE.Group {
             midLODRock.traverse(
                 child => {
                 if (child.isMesh) {
-                    child.material = new THREE.MeshPhongMaterial({ color: color, map: texture});
+                    child.material = new THREE.MeshStandardMaterial(
+                        { color: color, 
+                        map: texture.albedo,
+                        normalMap: texture.normal,
+                        roughnessMap: texture.roughness,
+                        metalnessMap: texture.metallic,
+                        aoMap: texture.ao,
+                        
+
+                        });
                     child.material.needsUpdate = true;
                 }
             }

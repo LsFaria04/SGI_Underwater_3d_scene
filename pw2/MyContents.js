@@ -38,7 +38,6 @@ class MyContents  {
 
         // Picking
         this.mouse = new THREE.Vector2();
-        console.log(this.mouse)
         this.raycaster = new THREE.Raycaster();
         this.raycaster.firstHitOnly = true;
         this.object = null;
@@ -156,7 +155,7 @@ class MyContents  {
         const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [1, 4, 3], [-10, 4, 8], [3, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
         for(let i = 0; i < rockPosSize.length; i++){
             const pos = rockPosSize[i];
-            const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#4c4747", "#292727", "#8c8989"], true, [this.rockTexture, this.rockTexture2]);
+            const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#615949ff", "#292727", "#8c8989"], true, [this.rockTexture]);
             this.rockGroups.push(rockGroup);
             rockGroup.position.set(pos[0],0,pos[1]);
             this.app.scene.add(rockGroup);
@@ -322,9 +321,27 @@ class MyContents  {
     }
 
     initTextures() {
-        this.rockTexture = new THREE.TextureLoader().load("./textures/Rock1.jpeg");
-        this.rockTexture2 = new THREE.TextureLoader().load("./textures/Rock2.jpg");
+        //Rocks textures
+        //this.rockTexture = new THREE.TextureLoader().load("./textures/Rock1.jpeg");
+        //this.rockTexture2 = new THREE.TextureLoader().load("./textures/Rock2.jpg");
 
+        //Rock PBR
+        const loader = new THREE.TextureLoader();
+        this.albedoRock = loader.load('./textures/ocean-rock-bl/ocean-rock_albedo.png');
+        this.normalRock = loader.load('./textures/ocean-rock-bl/ocean-rock_normal-ogl.png');
+        this.roughnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_roughness.png');
+        this.metalnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_metallic.png');
+        this.displacementRock = loader.load("./textures/ocean-rock-bl/ocean-rock_height.png");
+        this.ambientOcclusionRock = loader.load("./textures/ocean-rock-bl/ocean-rock_ao.png");
+        this.rockTexture = {
+                ao: this.ambientOcclusionRock,
+                albedo: this.albedoRock,
+                displacement: this.displacementRock,
+                normal: this.normalRock,
+                roughness: this.roughnessRock,
+                metallic: this.metalnessRock
+        }
+        
         this.sandTexture = new THREE.TextureLoader().load("./textures/sand.jpg");
 
         this.fishTexture1 = new THREE.TextureLoader().load("./textures/Fish1.jpg");
