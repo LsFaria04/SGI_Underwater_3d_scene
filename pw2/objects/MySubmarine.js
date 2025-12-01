@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 
 class MySubmarine extends THREE.Object3D {
-    constructor() {
+    constructor(videoTexture = null) {
         super();
 
         this.bvh = false;
@@ -39,6 +39,19 @@ class MySubmarine extends THREE.Object3D {
             shininess: 80,
             side: THREE.DoubleSide
         });
+
+        let windowMaterial = glassMaterial;
+
+        if (videoTexture) {
+            windowMaterial = new THREE.MeshPhongMaterial({
+                map : videoTexture,
+                color : 0xffffff,
+                transparent: true,
+                opacity: 1.0,
+                shininess: 100,
+                side: THREE.DoubleSide
+            });
+        }
 
 
 
@@ -117,7 +130,7 @@ class MySubmarine extends THREE.Object3D {
             const frame = new THREE.Mesh(windowFrameGeometry, woodMaterial);
             windowGroup.add(frame);
 
-            const window = new THREE.Mesh(windowGeometry, glassMaterial);
+            const window = new THREE.Mesh(windowGeometry, windowMaterial);
             window.castShadow = true;
             window.receiveShadow = true;
             window.position.z = -0.001;

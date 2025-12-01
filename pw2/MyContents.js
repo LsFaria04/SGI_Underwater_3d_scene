@@ -198,7 +198,8 @@ class MyContents  {
         this.shark.position.set(-8, 10, 0);
         this.app.scene.add(this.shark);
 
-        this.sign = new MySign();
+        // Sign with 2D Shark
+        this.sign = new MySign(1.5, 0.05, 1.5, 1, 0.05, 0x8b5a2b, 0xdeb887, "BEWARE OF THE SHARK", this.videoTexture);
         this.sign.position.set(0,0,15);
         this.sign.scale.set(2,2,2);
         this.app.scene.add(this.sign); 
@@ -212,10 +213,14 @@ class MyContents  {
         this.swordFish.position.set(0,3,0);
         this.app.scene.add(this.swordFish); 
 
-        this.submarine = new MySubmarine();
+        this.submarine = new MySubmarine(this.videoTexture);
         this.submarine.position.set(5,4,5);
         this.app.scene.add(this.submarine);
 
+        const videoMaterial = new THREE.MeshBasicMaterial({
+        map: this.videoTexture,
+        side: THREE.DoubleSide // Useful for flat screens
+        });
 
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2, 50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
@@ -390,6 +395,22 @@ class MyContents  {
         }
 
         this.fishTexture1 = new THREE.TextureLoader().load("./textures/fish.jpg");
+
+        // Video texture
+
+        this.video = document.createElement('video');
+        this.video.src = "./textures/videos/jellyfishes.mp4";
+        this.video.muted = true;
+        this.video.loop = true;
+        this.video.play();
+
+        this.videoTexture = new THREE.VideoTexture(this.video);
+        this.videoTexture.minFilter = THREE.LinearFilter;
+        this.videoTexture.magFilter = THREE.LinearFilter;
+        this.videoTexture.colorSpace = THREE.SRGBColorSpace;
+
+        // 3. Store the video element to control playback later if needed
+        this.videoElement = this.video;
     }
 
     update(delta) {
