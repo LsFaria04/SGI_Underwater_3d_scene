@@ -112,16 +112,19 @@ class MyApp  {
         // Aquarium view
         const aquariumCam = new THREE.PerspectiveCamera(110, aspect, 1, 500);
         aquariumCam.position.set(0,10,20);
+        aquariumCam.layers.enableAll();
         this.cameras['Aquarium View'] = aquariumCam;
 
         // Underwater view
         const underwaterCam = new THREE.PerspectiveCamera(90, aspect, 1, 500);
         underwaterCam.position.set(3,5,10);
+        underwaterCam.layers.enableAll();
         this.cameras['UnderWater'] = underwaterCam;
 
         // Submarine view
         const freeFlyCam = new THREE.PerspectiveCamera(75, aspect, 1, 500);
         freeFlyCam.position.set(5,4,5);
+        freeFlyCam.layers.set(0);
         this.cameras['Submarine'] = freeFlyCam;
     }
 

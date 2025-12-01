@@ -45,6 +45,7 @@ class MyInterface  {
         });
         displayFolder.open();
 
+        // flocking controls
         const flockingParams = {
             separation: 1.0,
             alignment: 1.0,
@@ -55,7 +56,6 @@ class MyInterface  {
         flockingFolder.add(flockingParams, 'separation', 0, 5).step(0.1).onChange((value) =>{
             this.contents.fishesFlockingParams.separation = value;
             this.contents.updateSchoolsOfFish();
-            
         });
         flockingFolder.add(flockingParams, 'alignment', 0, 5).step(0.1).onChange((value) =>{
             this.contents.fishesFlockingParams.alignment = value;
@@ -71,12 +71,58 @@ class MyInterface  {
         });
         flockingFolder.open();
 
+        // BVH controls
         const bvhFolder = this.datgui.addFolder('BVH');
         const bvhParams = {bvh : false}
         bvhFolder.add(bvhParams, 'bvh').name('BVH acceleration').onChange((value) =>{
              if (this.contents) this.contents.setBVHMode(value);
         })
 
+        // submarine light controls
+        const submarineFolder = this.datgui.addFolder('Submarine')
+
+        const lightState = {
+            frontLight: true,
+            warningLight: true,
+            frontIntensity: 2.0,
+            warningIntensity: 1.5
+        };
+
+        submarineFolder.add(lightState, 'frontLight')
+            .name('Front Light')
+            .onChange((value) => {
+                if (this.contents.submarine && this.contents.submarine.frontLight) {
+                    this.contents.submarine.frontLight.visible = value;
+                }
+            });
+
+        submarineFolder.add(lightState, 'warningLight')
+            .name('Warning Light')
+            .onChange((value) => {
+                if (this.contents.submarine && this.contents.submarine.warningLight) {
+                    this.contents.submarine.warningLight.visible = value;
+                }
+            });
+
+        submarineFolder.add(lightState, 'frontIntensity', 0, 5)
+            .name('Front Light Intensity')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine && this.contents.submarine.frontLight) {
+                    this.contents.submarine.frontLight.intensity = value;
+                }
+            });
+
+        submarineFolder.add(lightState, 'warningIntensity', 0, 3)
+            .name('Warn Light Intensity')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine && this.contents.submarine.warningLight) {
+                    this.contents.submarine.warningLight.intensity = value;
+                }
+            });
+
+        submarineFolder.open();
     }
 }
 

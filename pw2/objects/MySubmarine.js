@@ -7,6 +7,12 @@ class MySubmarine extends THREE.Object3D {
 
         this.bvh = false;
 
+        this.frontLightEnabled = true;
+        this.frontLightIntensity = 2.0;
+
+        this.warningLightEnabled = true;
+        this.warningLightIntensity = 1.5;
+
         const bodyMaterial = new THREE.MeshPhongMaterial({ 
             color: 0x2a4b5e,
             shininess: 80,
@@ -174,6 +180,62 @@ class MySubmarine extends THREE.Object3D {
         rightSternPlane.castShadow = true;
         rightSternPlane.receiveShadow = true;
         this.add(rightSternPlane);
+
+        // front light
+        const frontLightBulb = new THREE.Mesh(
+            new THREE.SphereGeometry(0.1, 8, 8),
+            new THREE.MeshBasicMaterial({ 
+                color: 0xffffaa,
+                transparent: true,
+                opacity: 0.8
+            })
+        );
+        frontLightBulb.position.set(1.85, -0.3, 0);
+        this.add(frontLightBulb);
+
+        this.frontLight = new THREE.SpotLight(0xffffcc, this.frontLightIntensity);
+        this.frontLight.position.set(1.8, -0.3, 0); 
+        this.frontLight.target.position.set(3, -2, 0);
+        this.add(this.frontLight);
+        this.add(this.frontLight.target);
+
+        this.frontLight.angle = Math.PI / 6;
+        this.frontLight.penumbra = 0.3;
+        this.frontLight.decay = 3;
+        this.frontLight.distance = 15;
+        this.frontLight.castShadow = true;
+        
+        this.frontLight.shadow.mapSize.width = 1024;
+        this.frontLight.shadow.mapSize.height = 1024;
+        this.frontLight.shadow.camera.near = 0.5;
+        this.frontLight.shadow.camera.far = 20;
+        this.frontLight.shadow.bias = -0.0001;
+
+        // warning light
+        const warningLightBulb = new THREE.Mesh(
+            new THREE.SphereGeometry(0.03, 8, 8),
+            new THREE.MeshBasicMaterial({ 
+                color: 0xff0000,
+                transparent: true,
+                opacity: 0.9
+            })
+        );
+        warningLightBulb.position.set(0.3, 1.1, 0);
+        this.add(warningLightBulb);
+
+        this.warningLight = new THREE.PointLight(0xff0000, this.warningLightIntensity);
+        this.warningLight.position.set(0.3, 1.1, 0);
+        this.add(this.warningLight);
+        
+        this.warningLight.decay = 4;
+        this.warningLight.distance = 8;
+        
+        this.warningLightTimer = 0;
+        this.warningLightFlashRate = 0.5;
+        this.isWarningLightOn = true;
+
+        // frontlight on layer 1 so that it is not visible in submarine camera
+        frontLightBulb.layers.set(1);
     }
 
     update(delta) {
@@ -185,11 +247,43 @@ class MySubmarine extends THREE.Object3D {
             propeller.rotation.x += delta * 5;
         }
 
+        this.warningLightTimer += delta;
+        if (this.warningLightTimer >= this.warningLightFlashRate) {
+            this.warningLightTimer = 0;
+            this.isWarningLightOn = !this.isWarningLightOn;
+            
+            if (this.warningLightEnabled) {
+                this.warningLight.visible = this.isWarningLightOn;
+            }
+        }
+
         if((this.elapsed % 4 == 0) && this.bvh){
             this.bodyGeometry.boundsTree.refit();
             this.hatchGeometry.boundsTree.refit();
             this.tubeGeometry.boundsTree.refit();
         }
+    }
+
+    toggleFrontLight() {
+        this.frontLightEnabled = !this.frontLightEnabled;
+        this.frontLight.visible = this.frontLightEnabled;
+        return this.frontLightEnabled;
+    }
+    
+    toggleWarningLight() {
+        this.warningLightEnabled = !this.warningLightEnabled;
+        this.warningLight.visible = this.warningLightEnabled && this.isWarningLightOn;
+        return this.warningLightEnabled;
+    }
+    
+    setFrontLightIntensity(value) {
+        this.frontLightIntensity = value;
+        this.frontLight.intensity = value;
+    }
+    
+    setWarningLightIntensity(value) {
+        this.warningLightIntensity = value;
+        this.warningLight.intensity = value;
     }
 }
 
