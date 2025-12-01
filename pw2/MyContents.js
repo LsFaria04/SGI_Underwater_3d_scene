@@ -60,7 +60,7 @@ class MyContents  {
         this.app.scene.add( ambientLight );
 
         // directional light to simulate sun from above
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+        const directionalLight = new THREE.DirectionalLight(0x88aaff, 2);
         directionalLight.position.set(10, 20, 10);
         directionalLight.castShadow = true;
         directionalLight.shadow.camera.left = -40;
