@@ -69,6 +69,8 @@ class MyContents  {
         directionalLight.shadow.camera.bottom = -40;
         directionalLight.shadow.camera.near = 1;
         directionalLight.shadow.camera.far = 100;
+
+        directionalLight.shadow.bias = -0.0005;
        
         this.app.scene.add(directionalLight);
 
@@ -80,7 +82,6 @@ class MyContents  {
             // create and attach the axis to the scene
             this.axis = new MyAxis(this)
             //this.app.scene.add(this.axis)
-            
         }
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
