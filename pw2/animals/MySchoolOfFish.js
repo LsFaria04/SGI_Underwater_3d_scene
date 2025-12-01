@@ -51,7 +51,10 @@ class MySchoolfOfFish extends THREE.Group {
                     cloneSpecie.traverse(child => {
                         if (child.isMesh) {
                             // Don't use texture map since geometry doesn't have UV coordinates
-                            child.material = new THREE.MeshPhongMaterial({ color: "#00b3ff", side:THREE.DoubleSide});
+                            child.material = new THREE.MeshPhongMaterial({ 
+                                map: this.fishTexture, // <--- Apply the texture here
+                                side: THREE.DoubleSide 
+                            });
                             child.material.needsUpdate = true;
                         }
                     });

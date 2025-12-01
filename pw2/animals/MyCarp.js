@@ -122,8 +122,44 @@ class MyCarp extends THREE.Object3D {
             ]);
         }
 
+        const uvs = new Float32Array([
+
+            // Head (X=0)
+            0.0, 0.5, // 0 
+            // Body Front
+            0.5 * bl / (3.0 * bl), 0.5, // 1 
+            0.6 * bl / (3.0 * bl), 0.6, // 2 
+            0.5 * bl / (3.0 * bl), 0.4, // 3 
+            0.6 * bl / (3.0 * bl), 0.6, // 4 
+
+            // Body center (X=2.5*bl)
+            2.5 * bl / (3.0 * bl), 0.5, // 5 
+
+            // Back Fin (X=3.0*bl)
+            1.0, 0.7, // 6 
+            1.0, 0.3, // 7 
+            (2.5 + 0.25) * bl / (3.0 * bl), 0.5, // 8
+
+            // Top Fin
+            1.5 * bl / (3.0 * bl), 0.8, // 9
+            1.25 * bl / (3.0 * bl), 0.9, // 10
+            1.40 * bl / (3.0 * bl), 1.0, // 11
+            1.70 * bl / (3.0 * bl), 0.9, // 12
+
+            // Belly Fins (right)
+            0.75 * bl / (3.0 * bl), 0.4, // 13
+            1 * bl / (3.0 * bl), 0.2, // 14
+            1 * bl / (3.0 * bl), 0.4, // 15
+
+            // Belly Fins (left)
+            0.75 * bl / (3.0 * bl), 0.4, // 16
+            1 * bl / (3.0 * bl), 0.2, // 17
+            1 * bl / (3.0 * bl), 0.4, // 18
+        ]);
+
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
         geometry.setIndex(indices);
         geometry.computeVertexNormals();
         const material = new THREE.MeshPhongMaterial({ color: this.color, side: THREE.DoubleSide , map: this.fishTexture});
