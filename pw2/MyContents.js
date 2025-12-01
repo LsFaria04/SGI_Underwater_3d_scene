@@ -50,7 +50,23 @@ class MyContents  {
     init() {
         this.initLights();
         this.initTextures();
+        this.initCustomShaders();
         this.initObjects(); 
+    }
+
+    initCustomShaders() {
+        this.seaweedUniforms = {
+            uTime: { value: 0 },
+            uColorLow: { value: new THREE.Color("#3a6c3a") }, // Darker Green
+            uColorHigh: { value: new THREE.Color("#6e783e") } // Lighter Green
+        };
+
+        this.seaweedMaterial = new THREE.ShaderMaterial({
+            vertexShader: document.getElementById('vertexShader').textContent,
+            fragmentShader: document.getElementById('fragmentShader').textContent,
+            uniforms: this.seaweedUniforms,
+            side: THREE.DoubleSide
+        });
     }
 
     initLights() {
@@ -96,6 +112,13 @@ class MyContents  {
         for(let i = 0; i < plantGroupsPosSize.length; i++){
             const pos = plantGroupsPosSize[i];
             const seaPlantGroup = new MySeaPlantGroup(pos[2], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
+
+            seaPlantGroup.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = this.seaweedMaterial;
+                }
+            });
+
             this.app.scene.add(seaPlantGroup);
             this.seaPlantGroups.push(seaPlantGroup);
             seaPlantGroup.position.set(pos[0],0,pos[1]);
@@ -415,6 +438,11 @@ class MyContents  {
 
     update(delta) {
         if (!delta) return;
+
+
+        if (this.seaweedUniforms) {
+            this.seaweedUniforms.uTime.value += delta;
+        }
 
         // update submarine model to follow submarine camera 
         if (this.submarine && this.app.activeCameraName === 'Submarine') {
