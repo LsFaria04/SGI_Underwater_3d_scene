@@ -84,7 +84,7 @@ class MyInterface  {
         const lightState = {
             frontLight: true,
             warningLight: true,
-            frontIntensity: 2.0,
+            frontIntensity: 10.0,
             warningIntensity: 1.5,
             frontLightColor: 0xffffcc,
             frontLightAttenuation: 3,
@@ -110,7 +110,7 @@ class MyInterface  {
                 }
             });
 
-        submarineFolder.add(lightState, 'frontIntensity', 0, 5)
+        submarineFolder.add(lightState, 'frontIntensity', 0, 20)
             .name('Front Light Intensity')
             .step(0.1)
             .onChange((value) => {

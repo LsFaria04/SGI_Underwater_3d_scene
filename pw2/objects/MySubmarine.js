@@ -8,7 +8,7 @@ class MySubmarine extends THREE.Object3D {
         this.bvh = false;
 
         this.frontLightEnabled = true;
-        this.frontLightIntensity = 2.0;
+        this.frontLightIntensity = 10.0;
         this.frontLightColor = 0xffffcc;
         this.frontLightDecay = 3;
 
@@ -190,7 +190,8 @@ class MySubmarine extends THREE.Object3D {
             new THREE.MeshBasicMaterial({ 
                 color: 0xffffaa,
                 transparent: true,
-                opacity: 0.8
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
             })
         );
         frontLightBulb.position.set(1.85, -0.3, 0);
@@ -222,7 +223,8 @@ class MySubmarine extends THREE.Object3D {
             new THREE.MeshBasicMaterial({ 
                 color: 0xff0000,
                 transparent: true,
-                opacity: 0.9
+                opacity: 0.9,
+                blending: THREE.AdditiveBlending
             })
         );
         warningLightBulb.position.set(0.3, 1.1, 0);
@@ -231,6 +233,8 @@ class MySubmarine extends THREE.Object3D {
         this.warningLight = new THREE.PointLight(0xff0000, this.warningLightIntensity);
         this.warningLight.position.set(0.3, 1.1, 0);
         this.add(this.warningLight);
+        this.warningLightBulb = warningLightBulb;
+
         
         this.warningLight.decay = 4;
         this.warningLight.distance = 8;
@@ -259,6 +263,7 @@ class MySubmarine extends THREE.Object3D {
             
             if (this.warningLightEnabled) {
                 this.warningLight.visible = this.isWarningLightOn;
+                this.warningLightBulb.visible = this.isWarningLightOn;
             }
         }
 
@@ -272,12 +277,27 @@ class MySubmarine extends THREE.Object3D {
     toggleFrontLight() {
         this.frontLightEnabled = !this.frontLightEnabled;
         this.frontLight.visible = this.frontLightEnabled;
+        
+        if (this.frontLightEnabled) {
+            this.frontLightBulb.material.color.setHex(this.frontLightColor);
+            this.frontLightBulb.material.opacity = 0.9;
+            this.frontLightBulb.material.blending = THREE.AdditiveBlending;
+        } else {
+            this.frontLightBulb.material.color.set(0x666666);
+            this.frontLightBulb.material.opacity = 0.4;
+            this.frontLightBulb.material.blending = THREE.NormalBlending;
+        }
+        
         return this.frontLightEnabled;
     }
     
     setFrontLightIntensity(value) {
         this.frontLightIntensity = value;
         this.frontLight.intensity = value;
+
+        if (this.frontLightEnabled) {
+            this.frontLightBulb.material.color.setHex(hexColor);
+        }
     }
 
     setFrontLightColor(hexColor) {
@@ -294,6 +314,17 @@ class MySubmarine extends THREE.Object3D {
     toggleWarningLight() {
         this.warningLightEnabled = !this.warningLightEnabled;
         this.warningLight.visible = this.warningLightEnabled && this.isWarningLightOn;
+        
+        if (this.warningLightEnabled) {
+            this.warningLightBulb.material.color.set(0xff0000);
+            this.warningLightBulb.material.opacity = 0.9;
+            this.warningLightBulb.material.blending = THREE.AdditiveBlending;
+        } else {
+            this.warningLightBulb.material.color.set(0x333333);
+            this.warningLightBulb.material.opacity = 0.3;
+            this.warningLightBulb.material.blending = THREE.NormalBlending;
+        }
+        
         return this.warningLightEnabled;
     }
     
