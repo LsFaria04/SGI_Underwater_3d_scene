@@ -63,6 +63,9 @@ class MyShark extends THREE.Object3D {
         });
 
         const sharkBody = new THREE.SkinnedMesh(mergedGeometry, material);
+
+        sharkBody.castShadow = true;
+        sharkBody.receiveShadow = true;
         
         this.applyMergedSkinning(sharkBody, skeleton);
         

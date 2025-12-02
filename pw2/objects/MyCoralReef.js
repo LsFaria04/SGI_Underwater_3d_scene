@@ -35,7 +35,7 @@ class MyCoralReef extends THREE.Group {
 
             this.add(coralMeshGroup);
         }
-
+        
         this.position.y = -4;
     }
 

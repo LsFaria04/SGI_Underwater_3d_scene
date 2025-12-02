@@ -45,6 +45,7 @@ class MyInterface  {
         });
         displayFolder.open();
 
+        // flocking controls
         const flockingParams = {
             separation: 1.0,
             alignment: 1.0,
@@ -55,7 +56,6 @@ class MyInterface  {
         flockingFolder.add(flockingParams, 'separation', 0, 5).step(0.1).onChange((value) =>{
             this.contents.fishesFlockingParams.separation = value;
             this.contents.updateSchoolsOfFish();
-            
         });
         flockingFolder.add(flockingParams, 'alignment', 0, 5).step(0.1).onChange((value) =>{
             this.contents.fishesFlockingParams.alignment = value;
@@ -71,6 +71,7 @@ class MyInterface  {
         });
         flockingFolder.open();
 
+        // BVH controls
         const bvhFolder = this.datgui.addFolder('BVH');
         const bvhParams = {bvh : false, bvhHelper: false}
         bvhFolder.add(bvhParams, 'bvh').name('BVH acceleration').onChange((value) =>{
@@ -81,6 +82,83 @@ class MyInterface  {
         })
 
 
+        // submarine light controls
+        const submarineFolder = this.datgui.addFolder('Submarine')
+
+        const lightState = {
+            frontLight: true,
+            warningLight: true,
+            frontIntensity: 20.0,
+            warningIntensity: 1.5,
+            frontLightColor: 0xffffcc,
+            frontLightAttenuation: 3,
+            warningFlashRate: 0.5
+        };
+
+        submarineFolder.add(lightState, 'frontLight')
+        .name('Front Light')
+        .onChange((value) => {
+            if (this.contents.submarine) {
+                this.contents.submarine.toggleFrontLight();
+                // Update state to match new value
+                lightState.frontLight = this.contents.submarine.frontLightEnabled;
+            }
+        });
+
+        submarineFolder.add(lightState, 'warningLight')
+            .name('Warning Light')
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.toggleWarningLight();
+                    lightState.warningLight = this.contents.submarine.warningLightEnabled;
+                }
+            });
+
+        submarineFolder.add(lightState, 'frontIntensity', 0, 50)
+            .name('Front Light Intensity')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setFrontLightIntensity(value);
+                }
+            });
+
+        submarineFolder.add(lightState, 'warningIntensity', 0, 3)
+            .name('Warn Light Intensity')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setWarningLightIntensity(value);
+                }
+            });
+
+        submarineFolder.addColor(lightState, 'frontLightColor')
+            .name('Front Light Color')
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setFrontLightColor(value);
+                }
+            });
+
+        submarineFolder.add(lightState, 'frontLightAttenuation', 1, 10)
+            .name('Front Light Attenuation')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setFrontLightDecay(value);
+                }
+            });
+
+        submarineFolder.add(lightState, 'warningFlashRate', 0.1, 2.0)
+            .name('Warning Flash Rate')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setWarningFlashRate(value);
+                }
+            });
+
+        submarineFolder.open();
     }
 }
 

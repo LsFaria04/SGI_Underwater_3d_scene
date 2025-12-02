@@ -75,15 +75,21 @@ class MyContents  {
         this.app.scene.add( ambientLight );
 
         // directional light to simulate sun from above
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+        const directionalLight = new THREE.DirectionalLight(0x88aaff, 2);
         directionalLight.position.set(10, 20, 10);
         directionalLight.castShadow = true;
+
+        directionalLight.shadow.mapSize.width = 1024;
+        directionalLight.shadow.mapSize.height = 1024; 
+
         directionalLight.shadow.camera.left = -40;
         directionalLight.shadow.camera.right = 40;
         directionalLight.shadow.camera.top = 40;
         directionalLight.shadow.camera.bottom = -40;
         directionalLight.shadow.camera.near = 1;
         directionalLight.shadow.camera.far = 100;
+
+        directionalLight.shadow.bias = -0.0005;
        
         this.app.scene.add(directionalLight);
 
@@ -95,7 +101,6 @@ class MyContents  {
             // create and attach the axis to the scene
             this.axis = new MyAxis(this)
             //this.app.scene.add(this.axis)
-            
         }
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
