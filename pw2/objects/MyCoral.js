@@ -5,6 +5,7 @@ import * as THREE from 'three';
 export class MyCoral {
     constructor(texture) {
         this.texture = texture;
+        this.helpers = [];
         this.coralPresets = {
         fanCoral: {
             rules: {
@@ -182,6 +183,7 @@ export class MyCoral {
         }
 
         const branchGeo = new THREE.CylinderGeometry(0.05, 0.05, 1, 8);
+        branchGeo.computeBoundsTree();
         branchGeo.translate(0, 0.5, 0);
         const branchMat = new THREE.MeshStandardMaterial(
             { color: this.colorZ, 
@@ -198,12 +200,14 @@ export class MyCoral {
         }
         group.add(branchMesh);
 
+
         if (leafMatrices.length > 0) {
             const leafShape = new THREE.Shape();
             leafShape.moveTo(0, 0);
             leafShape.bezierCurveTo(0.05, 0.2, 0.1, 0.3, 0, 0.5);
             leafShape.bezierCurveTo(-0.1, 0.3, -0.05, 0.2, 0, 0);
             const leafGeo = new THREE.ExtrudeGeometry(leafShape, { depth: 0.02, bevelEnabled: false });
+            leafGeo.computeBoundsTree();
             const leafMat = new THREE.MeshStandardMaterial(
                 { color: 0xff9100,
                     map: this.texture.albedo,
@@ -218,6 +222,8 @@ export class MyCoral {
                 leafMesh.setMatrixAt(i, leafMatrices[i]);
             }
             group.add(leafMesh);
+
+            
         }
 
         group.scale.setScalar(0.4);
@@ -235,6 +241,7 @@ export class MyCoral {
 
         // Set position on the LOD itself
         LOD.position.y = -4;
+
 
         return LOD;
     }   

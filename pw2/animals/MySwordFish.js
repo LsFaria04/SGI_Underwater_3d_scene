@@ -30,6 +30,7 @@ class MySwordFish extends THREE.Object3D {
         this.lodBasicThreshold = 35;
         this.texture = texture;
         this.bvh = false;
+        this.helpers = [];
         
 
         this.init();
@@ -292,6 +293,11 @@ class MySwordFish extends THREE.Object3D {
         skinnedMesh.castShadow = true;
         skinnedMesh.receiveShadow = true;
         material.shadowSide = THREE.BackSide;
+
+        const helper = new MeshBVHHelper(this.mesh)
+        helper.visible = false;
+        this.helpers.push(helper);
+        this.add(helper);
        
         return skinnedMesh;
     }
@@ -367,17 +373,22 @@ class MySwordFish extends THREE.Object3D {
         indices.push(3, 3 * 5,6);
 
         vertices = new Float32Array(vertices);
-        this.geometryFinBack = new THREE.BufferGeometry();
-        this.geometryFinBack.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        this.geometryFinBack.setIndex(indices);
-        this.geometryFinBack.computeVertexNormals();
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geometry.setIndex(indices);
+        geometry.computeVertexNormals();
 
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
-        const detailedMesh = new THREE.Mesh(this.geometryFinBack, material);
+        const detailedMesh = new THREE.Mesh(geometry, material);
         detailedMesh.castShadow = true;
         
-        this.geometryFinBack.computeBoundsTree();
+        geometry.computeBoundsTree();
+
+        const helper = new MeshBVHHelper(detailedMesh)
+        helper.visible = false;
+        this.helpers.push(helper); 
+        this.add(helper);
 
         return detailedMesh;
     }
@@ -460,17 +471,22 @@ class MySwordFish extends THREE.Object3D {
         
 
         vertices = new Float32Array(vertices);
-        this.geometryFinTop = new THREE.BufferGeometry();
-        this.geometryFinTop.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        this.geometryFinTop.setIndex(indices);
-        this.geometryFinTop.computeVertexNormals();
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geometry.setIndex(indices);
+        geometry.computeVertexNormals();
 
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
-        const detailedMesh = new THREE.Mesh(this.geometryFinTop, material);
+        const detailedMesh = new THREE.Mesh(geometry, material);
         detailedMesh.castShadow = true;
 
-        this.geometryFinTop.computeBoundsTree();
+        geometry.computeBoundsTree();
+
+        const helper = new MeshBVHHelper(detailedMesh)
+        helper.visible = false;
+        this.helpers.push(helper);
+        this.add(helper);
 
         return detailedMesh;
 
@@ -554,16 +570,20 @@ class MySwordFish extends THREE.Object3D {
         
 
         vertices = new Float32Array(vertices);
-        this.geometryBottomFin = new THREE.BufferGeometry();
-        this.geometryBottomFin .setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        this.geometryBottomFin .setIndex(indices);
-        this.geometryBottomFin .computeVertexNormals();
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        geometry.setIndex(indices);
+        geometry.computeVertexNormals();
 
         const material = new THREE.MeshStandardMaterial({ color: this.color, side: THREE.DoubleSide });
 
-        const detailedMesh = new THREE.Mesh(this.geometryBottomFin , material);
+        const detailedMesh = new THREE.Mesh(geometry , material);
 
-        this.geometryBottomFin.computeBoundsTree();
+        geometry.computeBoundsTree();
+        const helper = new MeshBVHHelper(detailedMesh)
+        helper.visible = false;
+        this.helpers.push(helper)
+        this.add(helper);
 
         return detailedMesh;
 
@@ -619,7 +639,6 @@ class MySwordFish extends THREE.Object3D {
         const fishBackFinMedium = this.createFishFinBack();
         const mediumWrapper = new THREE.Object3D();
         mediumWrapper.add(this.fishMedium);
-        //mediumWrapper.add(fishBackFinMedium);
 
         //attach the back fin to a bone in the body
         const backFinBoneMedium = this.fishMedium.skeleton.bones[3];
@@ -636,9 +655,6 @@ class MySwordFish extends THREE.Object3D {
     
         this.position.y = this.widthBody / 2;
 
-        this.helper = new MeshBVHHelper(this.mesh)
-        this.helper.visible = false;
-        this.add(this.helper);
 
         this.add(this.lod);
 

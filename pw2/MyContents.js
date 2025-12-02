@@ -185,13 +185,13 @@ class MyContents  {
         }
         
 
-        const coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4, this.coralTexture);
-        coralReef1.position.y = 0;
-        this.app.scene.add(coralReef1);
+        this.coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4, this.coralTexture);
+        this.coralReef1.position.y = 0;
+        this.app.scene.add(this.coralReef1);
 
-        const coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4, this.coralTexture);
-        coralReef2.position.y = 0;
-        this.app.scene.add(coralReef2);
+        this.coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4, this.coralTexture);
+        this.coralReef2.position.y = 0;
+        this.app.scene.add(this.coralReef2);
 
         const urchinLOD = new THREE.LOD();
         const seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
@@ -522,9 +522,16 @@ class MyContents  {
             
         }
         this.shark.helper.visible = enable;
-        this.swordFish.helper.visible = enable;
-
+        for(const helper of this.swordFish.helpers){
+            helper.visible = enable;
+        }
         for(const helper of this.jellyfish.helpers){
+            helper.visible = enable;
+        }
+        for(const helper of this.jellyfishMedium.helpers){
+            helper.visible = enable;
+        }
+        for(const helper of this.jellyfishLow.helpers){
             helper.visible = enable;
         }
         for(const helper of this.submarine.helpers){

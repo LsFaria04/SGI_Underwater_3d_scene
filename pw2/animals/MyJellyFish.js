@@ -104,6 +104,12 @@ class MyJellyFish extends THREE.Object3D {
         const headGeometry = new THREE.SphereGeometry(this.radius, 16, 12, Math.PI, Math.PI);
         const headTop = new THREE.Mesh(headGeometry, jellyFishMaterial);
         headTop.rotation.x = Math.PI / 2;
+        headGeometry.computeBoundsTree();
+        const helper = new MeshBVHHelper(headTop);
+        helper.visible = false;
+        this.helpers.push(helper);
+        this.add(helper);
+        
 
         const headBottomGeometry = new THREE.CircleGeometry(this.radius, 16);
         const headBottom = new THREE.Mesh(headBottomGeometry, jellyFishMaterial);
@@ -131,6 +137,10 @@ class MyJellyFish extends THREE.Object3D {
             );
             
             tentacles.add(tentacle);
+            const helper = new MeshBVHHelper(tentacle);
+            helper.visible = false;
+            this.helpers.push(helper);
+            this.add(helper);
         }
 
         jellyFishGroup.add(tentacles);
@@ -156,6 +166,11 @@ class MyJellyFish extends THREE.Object3D {
         const headGeometry = new THREE.SphereGeometry(this.radius, 8, 6, Math.PI, Math.PI);
         const headTop = new THREE.Mesh(headGeometry, jellyFishMaterial);
         headTop.rotation.x = Math.PI / 2;
+        headGeometry.computeBoundsTree();
+        const helper = new MeshBVHHelper(headTop);
+        helper.visible = false;
+        this.helpers.push(helper);
+        this.add(helper);
 
         const headBottomGeometry = new THREE.CircleGeometry(this.radius, 8);
         const headBottom = new THREE.Mesh(headBottomGeometry, jellyFishMaterial);
@@ -187,6 +202,10 @@ class MyJellyFish extends THREE.Object3D {
                 Math.sin(THREE.MathUtils.degToRad(angle + (anglestep * i))) * this.radius * 0.6
             );
             tentacles.add(copyTentacle);
+            const helper = new MeshBVHHelper(tentacle);
+            helper.visible = false;
+            this.helpers.push(helper);
+            this.add(helper);
         }
 
         jellyFishGroup.add(tentacles);
