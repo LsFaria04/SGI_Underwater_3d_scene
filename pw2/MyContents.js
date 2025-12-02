@@ -103,27 +103,27 @@ class MyContents  {
         }
         
 
-        const seaStarLOD = new THREE.LOD();
-        const seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined, "H");
+        this.seaStarLOD = new THREE.LOD();
+        this.seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined, "H");
         const seaStarMid = new MySeaStar(0.1,0.2,"#ff0000", undefined, "M");
         const seaStarLow = new MySeaStar(0.1,0.2,"#ff0000", undefined, "L");
-        seaStarLOD.addLevel(seaStar, 0);
-        seaStarLOD.addLevel(seaStarMid, 5);
-        seaStarLOD.addLevel(seaStarLow, 20);
-        this.app.scene.add(seaStarLOD);
-        seaStarLOD.position.set(2,0.25,2);
+        this.seaStarLOD.addLevel(this.seaStar, 0);
+        this.seaStarLOD.addLevel(seaStarMid, 5);
+        this.seaStarLOD.addLevel(seaStarLow, 20);
+        this.app.scene.add(this.seaStarLOD);
+        this.seaStarLOD.position.set(2,0.25,2);
 
 
-
-        const crabLOD = new THREE.LOD();
-        const crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
+        
+        this.crabLOD = new THREE.LOD();
+        this.crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
         const crabDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "H");
         const crabMediumDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "M");
-        crabLOD.addLevel(crab, 20);
-        crabLOD.addLevel(crabDetailed, 0);
-        crabLOD.addLevel(crabMediumDetailed, 5);
-        this.app.scene.add(crabLOD);
-        crabLOD.position.set(3,0.3,1);
+        this.crabLOD.addLevel(this.crab, 20);
+        this.crabLOD.addLevel(crabDetailed, 0);
+        this.crabLOD.addLevel(crabMediumDetailed, 5);
+        this.app.scene.add(this.crabLOD);
+        this.crabLOD.position.set(3,0.3,1);
 
         this.bubbles = [];
         for (let i = 0; i < 10; i++) {
@@ -163,27 +163,27 @@ class MyContents  {
         }
         
 
-        const coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4);
-        coralReef1.position.y = 0;
-        this.app.scene.add(coralReef1);
+        this.coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4);
+        this.coralReef1.position.y = 0;
+        this.app.scene.add(this.coralReef1);
 
-        const coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4);
-        coralReef2.position.y = 0;
-        this.app.scene.add(coralReef2);
+        this.coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4);
+        this.coralReef2.position.y = 0;
+        this.app.scene.add(this.coralReef2);
 
-        const urchinLOD = new THREE.LOD();
-        const seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
+        this.seaUrchinLOD = new THREE.LOD();
+        this.seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
         const seaUrchinMid = new MySeaUrchin(0.1, 0.5, 100, "#000000", "M");
         const seaUrchinHigh = new MySeaUrchin(0.1, 0.5, 100, "#000000", "H");
-        urchinLOD.addLevel(seaUrchin, 20);
-        urchinLOD.addLevel(seaUrchinMid, 10);
-        urchinLOD.addLevel(seaUrchinHigh, 0);
-        urchinLOD.position.set(4, 0.3, 4);
-        this.app.scene.add(urchinLOD);
+        this.seaUrchinLOD.addLevel(this.seaUrchin, 20);
+        this.seaUrchinLOD.addLevel(seaUrchinMid, 10);
+        this.seaUrchinLOD.addLevel(seaUrchinHigh, 0);
+        this.seaUrchinLOD.position.set(4, 0.3, 4);
+        this.app.scene.add(this.seaUrchinLOD);
 
-        const turtle = new MyTurtle(0.5, 0.15);
-        turtle.position.set(-4, 0.3, 4);
-        this.app.scene.add(turtle);
+        this.turtle = new MyTurtle(0.5, 0.15);
+        this.turtle.position.set(-4, 0.3, 4);
+        this.app.scene.add(this.turtle);
 
         this.jellyfishLOD = new THREE.LOD();
         this.jellyfish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
@@ -236,11 +236,23 @@ class MyContents  {
         for (const rocks of this.rockGroups) {
             rocks.rocks.forEach(rock => bvhMeshes.push(rock));
         }
+        for (const seaPlantGroup of this.seaPlantGroups) {
+            seaPlantGroup.children.forEach(plant => {
+                bvhMeshes.push(plant);
+            });
+        }
+        this.coralReef1.children.forEach(coral => bvhMeshes.push(coral));
+        this.coralReef2.children.forEach(coral => bvhMeshes.push(coral));
         bvhMeshes.push(this.shark);
         bvhMeshes.push(this.sign);
         bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(this.jellyfish);
+        bvhMeshes.push(this.seaUrchinLOD);
+        bvhMeshes.push(this.turtle);
+        bvhMeshes.push(this.crabLOD);
+        bvhMeshes.push(this.seaStarLOD);
+
 
         // 3. Intersect
         const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
