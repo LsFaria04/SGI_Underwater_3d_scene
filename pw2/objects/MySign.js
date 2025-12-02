@@ -31,6 +31,7 @@ class MySign extends THREE.Object3D {
 	) {
 		super();
 		this.bvh = false;
+		this.helpers = [];
 
 		// --- Post ---
 		const stickGeometry = new THREE.CylinderGeometry(stickRadius, stickRadius, stickHeight, 8);
@@ -39,6 +40,10 @@ class MySign extends THREE.Object3D {
 		stick.position.y = stickHeight / 2;
 		this.add(stick);
 		stickGeometry.computeBoundsTree();
+		const helper = new MeshBVHHelper(stick);
+        helper.visible = false;
+        this.helpers.push(helper);
+        this.add(helper);
 
 		stick.castShadow = true;
 		stick.receiveShadow = true;
@@ -67,7 +72,7 @@ class MySign extends THREE.Object3D {
 		// --- Main Board (Video Container) ---
 		const boardGeometry = new THREE.BoxGeometry(boardWidth, boardHeight, boardDepth);
 		boardGeometry.computeBoundsTree();
-
+		
 		// Materials: [right, left, top, bottom, front, back]
 		const materials = [
 			new THREE.MeshStandardMaterial({ color: boardColor }), // right
@@ -81,6 +86,12 @@ class MySign extends THREE.Object3D {
 
 		const board = new THREE.Mesh(boardGeometry, materials);
 		board.position.y = stickHeight + boardHeight / 2;
+
+		const helper2 = new MeshBVHHelper(board);
+        helper2.visible = false;
+        this.helpers.push(helper2);
+        this.add(helper2);
+
 		this.add(board);
 		
 		// --- Text Overlay Plane ---

@@ -636,6 +636,10 @@ class MySwordFish extends THREE.Object3D {
     
         this.position.y = this.widthBody / 2;
 
+        this.helper = new MeshBVHHelper(this.mesh)
+        this.helper.visible = false;
+        this.add(this.helper);
+
         this.add(this.lod);
 
     }

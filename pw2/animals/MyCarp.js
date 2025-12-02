@@ -313,6 +313,11 @@ class MyCarp extends THREE.Object3D {
         
         this.position.y = this.widthBody * 1.5;
 
+        this.helper = new MeshBVHHelper(this.mesh)
+        this.add(this.helper)
+        this.helper.visible = false;
+        
+
         this.add(lod);
     }
 

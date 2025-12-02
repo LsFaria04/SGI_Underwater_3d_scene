@@ -240,11 +240,6 @@ class MyContents  {
         this.submarine.position.set(5,4,5);
         this.app.scene.add(this.submarine);
 
-        const videoMaterial = new THREE.MeshBasicMaterial({
-        map: this.videoTexture,
-        side: THREE.DoubleSide // Useful for flat screens
-        });
-
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2, 50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
     }
@@ -517,6 +512,28 @@ class MyContents  {
             this.jellyfish.bvh = enable;
             this.sign.bvh = enable;
         }
+    }
+
+    setBVHHelper(enable){
+        for(const fishGroup of this.fishGroups){
+            for(const fish of fishGroup.fishes){
+                fish.helper.visible = enable;
+            }
+            
+        }
+        this.shark.helper.visible = enable;
+        this.swordFish.helper.visible = enable;
+
+        for(const helper of this.jellyfish.helpers){
+            helper.visible = enable;
+        }
+        for(const helper of this.submarine.helpers){
+            helper.visible = enable;
+        }
+        for(const helper of this.sign.helpers){
+            helper.visible = enable;
+        }
+            
     }
 
     /**

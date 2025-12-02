@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import {
+    MeshBVHHelper
+} from '../index.module.js';
 
 class MyJellyFish extends THREE.Object3D {
     constructor(radius = 1, height = 2, color = "#0000FF", jellyFishTexture) {
@@ -9,6 +12,7 @@ class MyJellyFish extends THREE.Object3D {
         this.height = height;
         this.color = color;
         this.jellyFishTexture = jellyFishTexture;
+        this.helpers = [];
         
         // LOD thresholds
         this.lodMediumThreshold = 10;
@@ -42,6 +46,10 @@ class MyJellyFish extends THREE.Object3D {
         this.headGeometry = new THREE.SphereGeometry(this.radius, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2); // Only top half (dome)
         const headTop = new THREE.Mesh(this.headGeometry, jellyFishMaterial);
         this.headGeometry.computeBoundsTree();
+        const helper = new MeshBVHHelper(headTop);
+        helper.visible = false;
+        this.helpers.push(helper);
+        this.add(helper);
         
 
         // circular opening at the bottom
@@ -216,6 +224,10 @@ class MyJellyFish extends THREE.Object3D {
             const tentacle = new THREE.Mesh(tubeGeometry, material);~
             tubeGeometry.computeBoundsTree();
             this.tentaclesGeo.push(tubeGeometry);
+            const helper = new MeshBVHHelper(tentacle);
+            helper.visible = false;
+            this.helpers.push(helper);
+            this.add(helper);
             
             tentacle.position.y = this.height - this.radius;
             tentacles.add(tentacle);

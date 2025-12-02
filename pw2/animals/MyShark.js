@@ -78,6 +78,9 @@ class MyShark extends THREE.Object3D {
         this.mesh = new THREE.Mesh(this.newgeometry, this.generator.getMaterials());
         this.add(this.mesh)
         this.mesh.visible = false;
+        this.helper = new MeshBVHHelper(this.mesh)
+        this.helper.visible = false;
+        this.add(this.helper)
 
         // eyes
         const eyeGroup = new THREE.Group();

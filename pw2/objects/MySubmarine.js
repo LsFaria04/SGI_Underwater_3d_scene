@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import {
+    MeshBVHHelper
+} from '../index.module.js';
 
 
 class MySubmarine extends THREE.Object3D {
@@ -6,6 +9,7 @@ class MySubmarine extends THREE.Object3D {
         super();
 
         this.bvh = false;
+        this.helpers = [];
 
         const bodyMaterial = new THREE.MeshPhongMaterial({ 
             color: 0x2a4b5e,
@@ -63,6 +67,10 @@ class MySubmarine extends THREE.Object3D {
         body.castShadow = true;
         body.receiveShadow = true;
         this.bodyGeometry.computeBoundsTree();
+        const helper = new MeshBVHHelper(body);
+        this.add(helper);
+        helper.visible = false;
+        this.helpers.push(helper);
         
 
         // hatch
@@ -73,6 +81,10 @@ class MySubmarine extends THREE.Object3D {
         hatch.castShadow = true;
         hatch.receiveShadow = true;
         this.hatchGeometry.computeBoundsTree();
+        const helper2 = new MeshBVHHelper(hatch);
+        this.add(helper2);
+        helper2.visible = false;
+        this.helpers.push(helper2);
         
 
         // periscope
@@ -92,6 +104,10 @@ class MySubmarine extends THREE.Object3D {
         periscope.castShadow = true;
         periscope.receiveShadow = true;
         this.tubeGeometry.computeBoundsTree();
+        const helper3 = new MeshBVHHelper(periscope);
+        this.add(helper3);
+        helper3.visible = false;
+        this.helpers.push(helper3);
 
         const lensGeometry = new THREE.CircleGeometry(0.035, 16);
 
