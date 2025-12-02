@@ -85,22 +85,28 @@ class MyInterface  {
             frontLight: true,
             warningLight: true,
             frontIntensity: 2.0,
-            warningIntensity: 1.5
+            warningIntensity: 1.5,
+            frontLightColor: 0xffffcc,
+            frontLightAttenuation: 3,
+            warningFlashRate: 0.5
         };
 
         submarineFolder.add(lightState, 'frontLight')
-            .name('Front Light')
-            .onChange((value) => {
-                if (this.contents.submarine && this.contents.submarine.frontLight) {
-                    this.contents.submarine.frontLight.visible = value;
-                }
-            });
+        .name('Front Light')
+        .onChange((value) => {
+            if (this.contents.submarine) {
+                this.contents.submarine.toggleFrontLight();
+                // Update state to match new value
+                lightState.frontLight = this.contents.submarine.frontLightEnabled;
+            }
+        });
 
         submarineFolder.add(lightState, 'warningLight')
             .name('Warning Light')
             .onChange((value) => {
-                if (this.contents.submarine && this.contents.submarine.warningLight) {
-                    this.contents.submarine.warningLight.visible = value;
+                if (this.contents.submarine) {
+                    this.contents.submarine.toggleWarningLight();
+                    lightState.warningLight = this.contents.submarine.warningLightEnabled;
                 }
             });
 
@@ -108,8 +114,8 @@ class MyInterface  {
             .name('Front Light Intensity')
             .step(0.1)
             .onChange((value) => {
-                if (this.contents.submarine && this.contents.submarine.frontLight) {
-                    this.contents.submarine.frontLight.intensity = value;
+                if (this.contents.submarine) {
+                    this.contents.submarine.setFrontLightIntensity(value);
                 }
             });
 
@@ -117,8 +123,34 @@ class MyInterface  {
             .name('Warn Light Intensity')
             .step(0.1)
             .onChange((value) => {
-                if (this.contents.submarine && this.contents.submarine.warningLight) {
-                    this.contents.submarine.warningLight.intensity = value;
+                if (this.contents.submarine) {
+                    this.contents.submarine.setWarningLightIntensity(value);
+                }
+            });
+
+        submarineFolder.addColor(lightState, 'frontLightColor')
+            .name('Front Light Color')
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setFrontLightColor(value);
+                }
+            });
+
+        submarineFolder.add(lightState, 'frontLightAttenuation', 1, 10)
+            .name('Front Light Attenuation')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setFrontLightDecay(value);
+                }
+            });
+
+        submarineFolder.add(lightState, 'warningFlashRate', 0.1, 2.0)
+            .name('Warning Flash Rate')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setWarningFlashRate(value);
                 }
             });
 

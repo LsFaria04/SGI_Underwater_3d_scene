@@ -9,9 +9,12 @@ class MySubmarine extends THREE.Object3D {
 
         this.frontLightEnabled = true;
         this.frontLightIntensity = 2.0;
+        this.frontLightColor = 0xffffcc;
+        this.frontLightDecay = 3;
 
         this.warningLightEnabled = true;
         this.warningLightIntensity = 1.5;
+        this.warningFlashRate = 0.5;
 
         const bodyMaterial = new THREE.MeshPhongMaterial({ 
             color: 0x2a4b5e,
@@ -192,6 +195,8 @@ class MySubmarine extends THREE.Object3D {
         );
         frontLightBulb.position.set(1.85, -0.3, 0);
         this.add(frontLightBulb);
+        this.frontLightBulb = frontLightBulb;
+        
 
         this.frontLight = new THREE.SpotLight(0xffffcc, this.frontLightIntensity);
         this.frontLight.position.set(1.8, -0.3, 0); 
@@ -270,20 +275,36 @@ class MySubmarine extends THREE.Object3D {
         return this.frontLightEnabled;
     }
     
+    setFrontLightIntensity(value) {
+        this.frontLightIntensity = value;
+        this.frontLight.intensity = value;
+    }
+
+    setFrontLightColor(hexColor) {
+        this.frontLightColor = hexColor;
+        this.frontLight.color.setHex(hexColor);
+        this.frontLightBulb.material.color.set(hexColor);
+    }
+
+    setFrontLightDecay(value) {
+        this.frontLightDecay = value;
+        this.frontLight.decay = value;
+    }
+
     toggleWarningLight() {
         this.warningLightEnabled = !this.warningLightEnabled;
         this.warningLight.visible = this.warningLightEnabled && this.isWarningLightOn;
         return this.warningLightEnabled;
     }
     
-    setFrontLightIntensity(value) {
-        this.frontLightIntensity = value;
-        this.frontLight.intensity = value;
-    }
-    
     setWarningLightIntensity(value) {
         this.warningLightIntensity = value;
         this.warningLight.intensity = value;
+    }
+
+    setWarningFlashRate(value) {
+        this.warningFlashRate = value;
+        this.warningLightFlashRate = value;
     }
 }
 
