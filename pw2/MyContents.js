@@ -58,7 +58,7 @@ class MyContents  {
         this.seaweedUniforms = {
             uTime: { value: 0 },
             uColorLow: { value: new THREE.Color("#3a6c3a") }, // Darker Green
-            uColorHigh: { value: new THREE.Color("#6e783e") } // Lighter Green
+            uColorHigh: { value: new THREE.Color("#219a00") } // Lighter Green
         };
 
         this.seaweedMaterial = new THREE.ShaderMaterial({
@@ -348,12 +348,12 @@ class MyContents  {
 
         //Rock PBR
         const loader = new THREE.TextureLoader();
-        this.albedoRock = loader.load('./textures/ocean-rock-bl/ocean-rock_albedo.png');
-        this.normalRock = loader.load('./textures/ocean-rock-bl/ocean-rock_normal-ogl.png');
-        this.roughnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_roughness.png');
-        this.metalnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_metallic.png');
-        this.displacementRock = loader.load("./textures/ocean-rock-bl/ocean-rock_height.png");
-        this.ambientOcclusionRock = loader.load("./textures/ocean-rock-bl/ocean-rock_ao.png");
+        this.albedoRock = loader.load('./textures/ocean-rock-bl/ocean-rock_albedo_512x512.png');
+        this.normalRock = loader.load('./textures/ocean-rock-bl/ocean-rock_normal-ogl_512x512.png');
+        this.roughnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_roughness_512x512.png');
+        this.metalnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_metallic_512x512.png');
+        this.displacementRock = loader.load("./textures/ocean-rock-bl/ocean-rock_height_512x512.png");
+        this.ambientOcclusionRock = loader.load("./textures/ocean-rock-bl/ocean-rock_ao_512x512.png");
         this.rockTexture = {
                 ao: this.ambientOcclusionRock,
                 albedo: this.albedoRock,
@@ -367,12 +367,12 @@ class MyContents  {
         const maxAnisotropy = this.app.renderer.capabilities.getMaxAnisotropy();
 
         //Sand PBR
-        this.albedoSand = loader.load('./textures/wavy-sand-bl/wavy-sand_albedo.png');
-        this.normalSand = loader.load('./textures/wavy-sand-bl/wavy-sand_normal-ogl.png');
-        this.roughnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_roughness.png');
-        this.metalnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_metallic.png');
-        this.displacementSand = loader.load("./textures/wavy-sand-bl/wavy-sand_height.png");
-        this.ambientOcclusionSand = loader.load("./textures/wavy-sand-bl/wavy-sand_ao.png");
+        this.albedoSand = loader.load('./textures/wavy-sand-bl/wavy-sand_albedo_1024x1024.png');
+        this.normalSand = loader.load('./textures/wavy-sand-bl/wavy-sand_normal-ogl_1024x1024.png');
+        this.roughnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_roughness_1024x1024.png');
+        this.metalnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_metallic_1024x1024.png');
+        this.displacementSand = loader.load("./textures/wavy-sand-bl/wavy-sand_height_1024x1024.png");
+        this.ambientOcclusionSand = loader.load("./textures/wavy-sand-bl/wavy-sand_ao_1024x1024.png");
         //use anisotropy filter for the sand
         this.albedoSand.anisotropy = maxAnisotropy;
         this.normalSand.anisotropy = maxAnisotropy;
@@ -397,12 +397,12 @@ class MyContents  {
         }
 
         //coral texture pbr
-        this.albedoCoral = loader.load('./textures/coral1-bl/coral1_albedo.png');
-        this.normalCoral = loader.load('./textures/coral1-bl/coral1_normal-ogl.png');
-        this.roughnessCoral = loader.load('./textures/coral1-bl/coral1_roughness.png');
-        this.metalnessCoral = loader.load('./textures/coral1-bl/coral1_metallic.png');
-        this.displacementCoral = loader.load("./textures/coral1-bl/coral1_height.png");
-        this.ambientOcclusionCoral = loader.load("./textures/coral1-bl/coral1_ao.png");
+        this.albedoCoral = loader.load('./textures/coral1-bl/coral1_albedo_512x512.png');
+        this.normalCoral = loader.load('./textures/coral1-bl/coral1_normal-ogl_511x511.png');
+        this.roughnessCoral = loader.load('./textures/coral1-bl/coral1_roughness_512x512.png');
+        this.metalnessCoral = loader.load('./textures/coral1-bl/coral1_metallic_512x512.png');
+        this.displacementCoral = loader.load("./textures/coral1-bl/coral1_height_511x511.png");
+        this.ambientOcclusionCoral = loader.load("./textures/coral1-bl/coral1_ao_512x512.png");
          this.coralTexture = {
                 ao: this.ambientOcclusionCoral,
                 albedo: this.albedoCoral,
