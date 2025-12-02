@@ -8,7 +8,7 @@ class MySubmarine extends THREE.Object3D {
         this.bvh = false;
 
         this.frontLightEnabled = true;
-        this.frontLightIntensity = 10.0;
+        this.frontLightIntensity = 20.0;
         this.frontLightColor = 0xffffcc;
         this.frontLightDecay = 3;
 
@@ -296,14 +296,14 @@ class MySubmarine extends THREE.Object3D {
         this.frontLight.intensity = value;
 
         if (this.frontLightEnabled) {
-            this.frontLightBulb.material.color.setHex(hexColor);
+            this.frontLightBulb.material.color.set(value);
         }
     }
 
-    setFrontLightColor(hexColor) {
-        this.frontLightColor = hexColor;
-        this.frontLight.color.setHex(hexColor);
-        this.frontLightBulb.material.color.set(hexColor);
+    setFrontLightColor(value) {
+        this.frontLightColor = value;
+        this.frontLight.color.setHex(value);
+        this.frontLightBulb.material.color.set(value);
     }
 
     setFrontLightDecay(value) {
