@@ -590,6 +590,12 @@ class MyContents  {
                 helper.visible = enable;
             }
         }
+
+        for(const star of this.seaStarLOD.children){
+            for(const helper of star.helpers){
+                helper.visible = enable;
+            }
+        }
             
     }
 
