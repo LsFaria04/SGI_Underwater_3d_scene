@@ -20,7 +20,7 @@ class MySwordFish extends THREE.Object3D {
      */
     constructor(widthBody = 1, lengthBody = 3, widthFin = 0.5, lengthFin = 0.5, color = 0xffaa00, texture) {
         super();
-
+ 
         this.widthBody = widthBody;
         this.lengthBody = lengthBody;
         this.widthFin = widthFin;
@@ -291,8 +291,6 @@ class MySwordFish extends THREE.Object3D {
         this.mesh.visible = false;
 
         skinnedMesh.castShadow = true;
-        skinnedMesh.receiveShadow = true;
-        material.shadowSide = THREE.BackSide;
 
         const helper = new MeshBVHHelper(this.mesh)
         helper.visible = false;

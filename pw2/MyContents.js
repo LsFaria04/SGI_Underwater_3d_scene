@@ -222,7 +222,7 @@ class MyContents  {
         this.app.scene.add(this.jellyfishLOD);
         this.jellyfishLOD.position.set(0,5,0);
         
-        this.shark = new MyShark();
+        this.shark = new MyShark(1, "#2244aa", this.sharkTexture);
         this.shark.position.set(-8, 10, 0);
         this.app.scene.add(this.shark);
 
@@ -430,6 +430,14 @@ class MyContents  {
         }
 
         this.fishTexture1 = new THREE.TextureLoader().load("./textures/fish.jpg");
+
+        this.sharkTexture = new THREE.TextureLoader().load("./textures/shark-skin.jpg");
+
+        this.sharkTexture.minFilter = THREE.LinearMipmapLinearFilter;
+        this.sharkTexture.magFilter = THREE.LinearFilter;
+        //this.sharkTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        this.sharkTexture.generateMipmaps = true;
+        this.sharkTexture.needsUpdate = true;
 
         // Video texture
 

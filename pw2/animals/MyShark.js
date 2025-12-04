@@ -10,9 +10,10 @@ class MyShark extends THREE.Object3D {
      * 
      * @param {string} color Body color
      */
-    constructor(scale = 1, color = "#2244aa") {
+    constructor(scale = 1, color = "#2244aa", texture) {
         super();
         this.bvh = false;
+        this.texture = texture;
         
         const tailWidth = 0.1;
         const bodyWidth = 0.6;
@@ -57,7 +58,8 @@ class MyShark extends THREE.Object3D {
         const mergedGeometry = this.createMergedBodyGeometry(tailWidth, bodyWidth, headWidth);
         
         const material = new THREE.MeshStandardMaterial({
-            color,
+            map: texture || null,
+            color: texture ? undefined : color,
             side: THREE.DoubleSide,
             flatShading: false,
         });
@@ -65,7 +67,6 @@ class MyShark extends THREE.Object3D {
         const sharkBody = new THREE.SkinnedMesh(mergedGeometry, material);
 
         sharkBody.castShadow = true;
-        sharkBody.receiveShadow = true;
         
         this.applyMergedSkinning(sharkBody, skeleton);
         
@@ -593,6 +594,19 @@ class MyShark extends THREE.Object3D {
         geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(allVertices), 3));
         geometry.setIndex(allIndices);
         geometry.computeVertexNormals();
+
+        const pos = geometry.getAttribute("position");
+        const uv = new THREE.Float32BufferAttribute(pos.count * 2, 2);
+
+        for (let i = 0; i < pos.count; i++) {
+            const x = pos.getX(i);
+            const y = pos.getY(i);
+            const z = pos.getZ(i);
+
+            uv.setXY(i, x * 0.1, z * 0.1);
+        }
+
+        geometry.setAttribute("uv", uv);
 
         return geometry;
     }
