@@ -159,6 +159,37 @@ class MyInterface  {
             });
 
         submarineFolder.open();
+
+        //Depth of Field controls
+        const DOF = {
+            focus: 8.0,
+            aperture: 0.0004,
+            maxBlur: 0.01
+        };
+        const depthOfFieldFolder = this.datgui.addFolder(' Depth of Field');
+        depthOfFieldFolder.add(DOF, "focus", 1, 20)
+            .name('Focus')
+            .step(0.5)
+            .onChange((value) => {
+                if(this.app && this.app.postprocessing.bokeh)
+                    this.app.postprocessing.bokeh.uniforms["focus"].value = value
+        });
+        depthOfFieldFolder.add(DOF, "aperture", 0, 0.002)
+            .name('Aperture')
+            .step(0.0002)
+            .onChange((value) => {
+                if(this.app && this.app.postprocessing.bokeh)
+                    this.app.postprocessing.bokeh.uniforms["aperture"].value = value
+        });
+        depthOfFieldFolder.add(DOF, "maxBlur", 0, 0.01)
+            .name('Max Blur')
+            .step(0.001)
+            .onChange((value) => {
+                if(this.app && this.app.postprocessing.bokeh)
+                    this.app.postprocessing.bokeh.uniforms["maxblur"].value = value
+        });
+
+        depthOfFieldFolder.open();
     }
 }
 

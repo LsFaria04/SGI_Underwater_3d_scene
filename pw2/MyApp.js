@@ -270,8 +270,8 @@ class MyApp  {
     initPostProcessing(){
         const renderPass = new RenderPass(this.scene, this.activeCamera);
         const bokehPass = new BokehPass(this.scene, this.activeCamera, {
-            focus: 1,
-            aperture: 0.005,
+            focus: 8.0,
+            aperture: 0.0004,
             maxblur: 0.01
          });
          const outputPass = new OutputPass();
