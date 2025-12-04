@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { generateRandom } from '../utils.js';
+import { MeshBVHHelper } from '../index.module.js';
 
 /**
  * This class represents a rock with different levels of detail
@@ -18,6 +19,7 @@ class MyRock extends THREE.Object3D {
         this.radius = radius;
         this.rockTexture = rockTexture;
         this.color = color;
+        this.helper = null;
         
         switch (LOD){
             case "L":
@@ -42,6 +44,10 @@ class MyRock extends THREE.Object3D {
         const rockMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.rockTexture ? this.rockTexture : null});
         const rock = new THREE.Mesh(rockGeometry, rockMaterial);
         rockGeometry.computeBoundsTree();
+        this.helper = new MeshBVHHelper(rock);
+        this.helper.visible = false;
+        this.add(this.helper);
+
 
         this.add(rock);
     }
@@ -53,6 +59,9 @@ class MyRock extends THREE.Object3D {
         const rockMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.rockTexture ? this.rockTexture : null});
         const rock = new THREE.Mesh(rockGeometry, rockMaterial);
         rockGeometry.computeBoundsTree();
+        this.helper = new MeshBVHHelper(rock);
+        this.helper.visible = false;
+        this.add(this.helper);
 
         rock.castShadow = true;    
         rock.receiveShadow = true;
@@ -75,6 +84,9 @@ class MyRock extends THREE.Object3D {
         const rockMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.rockTexture ? this.rockTexture : null});
         const rock = new THREE.Mesh(geometry, rockMaterial);
         geometry.computeBoundsTree();
+        this.helper = new MeshBVHHelper(rock);
+        this.helper.visible = false;
+        this.add(this.helper);
 
         rock.castShadow = true;    
         rock.receiveShadow = true;

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MeshBVHHelper } from '../index.module.js';
 
 /**
  * This class represents a crab
@@ -21,6 +22,7 @@ class MyCrab extends THREE.Object3D {
         this.depth = depth;
         this.color = color;
         this.crabTexture = crabTexture;
+        this.helpers = [];
 
         switch(LOD){
             case "L":
@@ -49,6 +51,13 @@ class MyCrab extends THREE.Object3D {
         body.position.y = this.height  / 2;
 
         this.add(body);
+
+        bodyGeometry.computeBoundsTree();
+
+        const helper = new MeshBVHHelper(body);
+        helper.visible = false;
+        this.add(helper);
+        this.helpers.push(helper);
     }
 
     initMediumLOD(){
@@ -68,11 +77,30 @@ class MyCrab extends THREE.Object3D {
 
         this.add(body);
 
+        bodyGeometry.computeBoundsTree();
+
+        const helper = new MeshBVHHelper(body);
+        helper.visible = false;
+        this.add(helper);
+        this.helpers.push(helper);
+
         //legs
         const toplegGeometry = new THREE.CylinderGeometry(this.depth * 0.2, this.depth * 0.1, this.height * 0.8  / 2, 5,2);
         const topleg = new THREE.Mesh(toplegGeometry, crabMaterial);
         const bottomlegGeometry = new THREE.ConeGeometry(this.depth * 0.1, this.height * 0.8  / 2, 5,2);
         const bottomleg = new THREE.Mesh(bottomlegGeometry, crabMaterial);
+
+        toplegGeometry.computeBoundsTree();
+        bottomlegGeometry.computeBoundsTree();
+
+        const helper3 = new MeshBVHHelper(bottomleg);
+        helper3.visible = false;
+        this.add(helper3);
+        this.helpers.push(helper3);
+        const helper4 = new MeshBVHHelper(topleg);
+        helper4.visible = false;
+        this.add(helper4);
+        this.helpers.push(helper4);
         
         bottomleg.rotation.x = THREE.MathUtils.degToRad(-135);
         bottomleg.position.y = -this.height * 0.8  / 2;
@@ -112,8 +140,23 @@ class MyCrab extends THREE.Object3D {
         const eyeMaterial = new THREE.MeshPhongMaterial({color: "#000000"});
         const eyeBall = new THREE.Mesh(eyeGeometry, eyeMaterial);
 
+        eyeGeometry.computeBoundsTree();
+
+        const helper5 = new MeshBVHHelper(eyeBall);
+        helper5.visible = false;
+        this.add(helper5);
+        this.helpers.push(helper5);
+
         const eyeSupportGeometry = new THREE.BoxGeometry(this.width * 0.05, this.height * 0.3, this.width * 0.05);
         const eyeSupport = new THREE.Mesh(eyeSupportGeometry, crabMaterial);
+
+        eyeSupportGeometry.computeBoundsTree();
+        
+        const helper6 = new MeshBVHHelper(eyeSupport);
+        helper6.visible = false;
+        this.add(helper6);
+        this.helpers.push(helper6);
+
 
         eyeBall.position.y = this.height * 0.3 / 2 + this.width * 0.05 / 2;
 
@@ -138,6 +181,13 @@ class MyCrab extends THREE.Object3D {
         arm.rotation.z = Math.PI / 2;
         arm.position.x = this.height * 0.3;
         claw.add(arm);
+
+        armGeom.computeBoundsTree();
+        
+        const helper7 = new MeshBVHHelper(arm);
+        helper7.visible = false;
+        this.add(helper7);
+        this.helpers.push(helper7);
 
         claw.position.set(this.depth*1.1 - 0.02, this.height - this.depth*0.2, this.width*0.4);
 
@@ -164,6 +214,13 @@ class MyCrab extends THREE.Object3D {
 
         this.add(body);
 
+        bodyGeometry.computeBoundsTree();
+
+        const helper = new MeshBVHHelper(body);
+        helper.visible = false;
+        this.add(helper);
+        this.helpers.push(helper);
+
         //legs
         const toplegGeometry = new THREE.CylinderGeometry(this.depth * 0.2, this.depth * 0.1, this.height * 0.8  / 2);
         const topleg = new THREE.Mesh(toplegGeometry, crabMaterial);
@@ -171,6 +228,23 @@ class MyCrab extends THREE.Object3D {
         const bottomleg = new THREE.Mesh(bottomlegGeometry, crabMaterial);
         const legJointGeometry = new THREE.SphereGeometry(this.depth * 0.1, 8, 8);
         const legJoint = new THREE.Mesh(legJointGeometry, crabMaterial);
+
+        toplegGeometry.computeBoundsTree();
+        bottomlegGeometry.computeBoundsTree();
+        legJointGeometry.computeBoundsTree();
+
+        const helper3 = new MeshBVHHelper(bottomleg);
+        helper3.visible = false;
+        this.add(helper3);
+        this.helpers.push(helper3);
+        const helper4 = new MeshBVHHelper(topleg);
+        helper4.visible = false;
+        this.add(helper4);
+        this.helpers.push(helper4);
+        const helper8 = new MeshBVHHelper(legJoint);
+        helper8.visible = false;
+        this.add(helper8);
+        this.helpers.push(helper8);
         
         bottomleg.rotation.x = THREE.MathUtils.degToRad(-135);
         bottomleg.position.y = -this.height * 0.8  / 2;
@@ -214,8 +288,23 @@ class MyCrab extends THREE.Object3D {
         const eyeMaterial = new THREE.MeshPhongMaterial({color: "#000000"});
         const eyeBall = new THREE.Mesh(eyeGeometry, eyeMaterial);
 
+        eyeGeometry.computeBoundsTree()
+
+        const helper5 = new MeshBVHHelper(eyeBall);
+        helper5.visible = false;
+        this.add(helper5);
+        this.helpers.push(helper5);
+
+
         const eyeSupportGeometry = new THREE.CylinderGeometry(this.width * 0.05, this.width * 0.05, this.height * 0.3);
         const eyeSupport = new THREE.Mesh(eyeSupportGeometry, crabMaterial);
+
+        eyeSupportGeometry.computeBoundsTree();
+        
+        const helper6 = new MeshBVHHelper(eyeSupport);
+        helper6.visible = false;
+        this.add(helper6);
+        this.helpers.push(helper6);
 
         eyeBall.position.y = this.height * 0.3 / 2 + this.width * 0.05 / 2;
 
@@ -242,10 +331,24 @@ class MyCrab extends THREE.Object3D {
         arm.position.x = this.height * 0.3;
         claw.add(arm);
 
+        armGeom.computeBoundsTree();
+        
+        const helper7 = new MeshBVHHelper(arm);
+        helper7.visible = false;
+        this.add(helper7);
+        this.helpers.push(helper7);
+
         const hingeGeom = new THREE.SphereGeometry(this.depth * 0.12, 8, 8);
         const hinge = new THREE.Mesh(hingeGeom, crabMaterial);
         hinge.position.x = this.height * 0.6 - 0.005;
         claw.add(hinge);
+
+        hingeGeom.computeBoundsTree();
+        
+        const helper9 = new MeshBVHHelper(hinge);
+        helper9.visible = false;
+        this.add(helper9);
+        this.helpers.push(helper9);
 
         const upperGeom = new THREE.ConeGeometry(this.depth*0.15, this.height*0.4, 8);
         const upperJaw = new THREE.Mesh(upperGeom, crabMaterial);
@@ -253,11 +356,25 @@ class MyCrab extends THREE.Object3D {
         upperJaw.position.set(0, this.depth*0.06, 0);
         hinge.add(upperJaw);
 
+        upperGeom.computeBoundsTree();
+        
+        const helper10 = new MeshBVHHelper(upperJaw);
+        helper10.visible = false;
+        this.add(helper10);
+        this.helpers.push(helper10);
+
         const lowerGeom = new THREE.ConeGeometry(this.depth*0.12, this.height*0.35, 8);
         const lowerJaw = new THREE.Mesh(lowerGeom, crabMaterial);
         lowerJaw.rotation.z = Math.PI / 2 - Math.PI / 12;   
         lowerJaw.position.set(0, -this.depth*0.06, 0); 
         hinge.add(lowerJaw);
+
+        lowerGeom.computeBoundsTree();
+        
+        const helper11 = new MeshBVHHelper(lowerJaw);
+        helper11.visible = false;
+        this.add(helper11);
+        this.helpers.push(helper11);
 
         claw.position.set(this.depth*1.1 - 0.02, this.height - this.depth*0.2, this.width*0.4);
 

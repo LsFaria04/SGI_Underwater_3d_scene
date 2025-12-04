@@ -546,6 +546,18 @@ class MyContents  {
             }
             
         }
+
+        for(const rockGroup of this.rockGroups){
+            for(const rock of rockGroup.rocks){
+                //Lod with multiple rock versions
+                rock.children.forEach(rockClass => {
+                    if (rockClass.helper) {
+                        rockClass.helper.visible = enable;
+                    }
+                    });
+            }
+            
+        }
         this.shark.helper.visible = enable;
         for(const helper of this.swordFish.helpers){
             helper.visible = enable;
@@ -564,6 +576,19 @@ class MyContents  {
         }
         for(const helper of this.sign.helpers){
             helper.visible = enable;
+        }
+        for(const helper of this.turtle.helpers){
+            helper.visible = enable;
+        }
+        for(const seaUrchin of this.seaUrchinLOD.children){
+            for(const helper of seaUrchin.helpers){
+                helper.visible = enable;
+            }
+        }
+        for(const crab of this.crabLOD.children){
+            for(const helper of crab.helpers){
+                helper.visible = enable;
+            }
         }
             
     }

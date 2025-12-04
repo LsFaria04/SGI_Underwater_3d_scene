@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-
+import { MeshBVHHelper } from '../index.module.js';
 /**
  * This class represents a sea urchin
  */
@@ -17,6 +17,7 @@ class MySeaUrchin extends THREE.Object3D {
         this.spikeLength = spikeLength;
         this.numSpikes = numSpikes;
         this.color = color;
+        this.helpers = [];
 
         switch(LOD){
             case "L":
@@ -41,6 +42,13 @@ class MySeaUrchin extends THREE.Object3D {
         const bodyMesh = new THREE.Mesh(bodyGeom, bodyMat);
         this.add(bodyMesh);
 
+        bodyGeom.computeBoundsTree();
+
+        const helper = new MeshBVHHelper(bodyMesh);
+        helper.visible = false;
+        this.add(helper);
+        this.helpers.push(helper);
+
     }
 
     initMediumLOD() {
@@ -50,6 +58,13 @@ class MySeaUrchin extends THREE.Object3D {
         const bodyMat = new THREE.MeshStandardMaterial({ color: this.color });
         const bodyMesh = new THREE.Mesh(bodyGeom, bodyMat);
         this.add(bodyMesh);
+
+        bodyGeom.computeBoundsTree();
+
+        const helper = new MeshBVHHelper(bodyMesh);
+        helper.visible = false;
+        this.add(helper);
+        this.helpers.push(helper);
 
         const spikeGeom = new THREE.ConeGeometry(0.02, this.spikeLength, 4, 1);
         const spikeMat = new THREE.MeshStandardMaterial({ color: this.color });
@@ -87,6 +102,13 @@ class MySeaUrchin extends THREE.Object3D {
         const bodyMat = new THREE.MeshStandardMaterial({ color: this.color });
         const bodyMesh = new THREE.Mesh(bodyGeom, bodyMat);
         this.add(bodyMesh);
+
+        bodyGeom.computeBoundsTree();
+
+        const helper = new MeshBVHHelper(bodyMesh);
+        helper.visible = false;
+        this.add(helper);
+        this.helpers.push(helper);
 
         const spikeGeom = new THREE.ConeGeometry(0.02, this.spikeLength, 4);
         const spikeMat = new THREE.MeshStandardMaterial({ color: this.color });
