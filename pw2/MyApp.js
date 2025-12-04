@@ -9,6 +9,12 @@ import {
 	computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast,
 } from './index.module.js';
 
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+
 /**
  * This class contains the application object
  */
@@ -33,6 +39,12 @@ class MyApp  {
         this.gui = null
         this.axis = null
         this.contents = null
+
+        //postprocessing attributes
+        this.postprocessing = {
+            composer: null,
+            bokeh: null
+        };
 
         this.clock = new THREE.Clock();
 
@@ -100,6 +112,9 @@ class MyApp  {
         THREE.BatchedMesh.prototype.computeBoundsTree = computeBatchedBoundsTree;
         THREE.BatchedMesh.prototype.disposeBoundsTree = disposeBatchedBoundsTree;
         THREE.BatchedMesh.prototype.raycast = acceleratedRaycast;
+
+        //initialize the postprocessing effect
+        this.initPostProcessing();
     }
 
     /**
@@ -250,6 +265,28 @@ class MyApp  {
     }
 
     /**
+     * Initializes the postprocessing effects including the depth of field effect
+     */
+    initPostProcessing(){
+        const renderPass = new RenderPass(this.scene, this.activeCamera);
+        const bokehPass = new BokehPass(this.scene, this.activeCamera, {
+            focus: 1,
+            aperture: 0.005,
+            maxblur: 0.01
+         });
+         const outputPass = new OutputPass();
+        const composer = new EffectComposer(this.renderer);
+
+        composer.addPass(renderPass);
+        composer.addPass(bokehPass);
+        composer.addPass(outputPass);
+
+        this.postprocessing.composer = composer;
+        this.postprocessing.bokeh = bokehPass;
+
+    }
+
+    /**
     * the main render function. Called in a requestAnimationFrame loop
     */
     render () {
@@ -275,8 +312,14 @@ class MyApp  {
             this.controls.update();
         }
 
-        // render the scene
+        if(this.activeCameraName === "UnderWater"){
+            this.postprocessing.composer.render();
+        }
+        else{
+            // render the scene
         this.renderer.render(this.scene, this.activeCamera);
+        }
+        
 
         // subsequent async calls to the render loop
         requestAnimationFrame( this.render.bind(this) );
