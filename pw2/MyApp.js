@@ -15,6 +15,7 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { TintShader } from './shaders/TintShader.js';
+import { LensDirtShader } from './shaders/LensDirtShader.js';
 
 
 /**
@@ -277,10 +278,18 @@ class MyApp  {
             { focus: 8.0, aperture: 0.0004, maxblur: 0.01 }
         );
 
+        const textureLoader = new THREE.TextureLoader();
+        const dirtTexture = textureLoader.load('./textures/cracked_glass.jpg');
+        
+        const tintPass = new ShaderPass(TintShader);
+        const dirtPass = new ShaderPass(LensDirtShader);
+        dirtPass.uniforms['tDirt'].value = dirtTexture;
+        dirtPass.uniforms['dirtIntensity'].value = 0.6;
+
         this.postprocessing.submarine = this.createDOFComposer(
             this.cameras["Submarine"],
             { focus: 10.0, aperture: 0.0008, maxblur: 0.015 },
-            [ new ShaderPass(TintShader) ]
+            [ tintPass, dirtPass ]
         );
     }
 
