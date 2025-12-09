@@ -42,6 +42,8 @@ class MyContents  {
         this.raycaster.firstHitOnly = true;
         this.object = null;
 
+        this.lodObjects = [];
+
         this.onMouseClick = this.onMouseClick.bind(this);
         window.addEventListener('click', this.onMouseClick);
     }
@@ -139,6 +141,7 @@ class MyContents  {
         this.seaStarLOD.addLevel(seaStarLow, 20);
         this.app.scene.add(this.seaStarLOD);
         this.seaStarLOD.position.set(2,0.25,2);
+        this.lodObjects.push(this.seaStarLOD);
 
 
         
@@ -151,6 +154,7 @@ class MyContents  {
         this.crabLOD.addLevel(crabMediumDetailed, 5);
         this.app.scene.add(this.crabLOD);
         this.crabLOD.position.set(3,0.3,1);
+        this.lodObjects.push(this.crabLOD);
 
         this.bubbles = [];
         for (let i = 0; i < 10; i++) {
@@ -166,7 +170,7 @@ class MyContents  {
             cohesion: 1.0,
             maxSpeed: 2.0
         }
-        const carpsGroupsPosSize = [[-10, 1, -10, 100], [10, 1, 5, 5]];
+        const carpsGroupsPosSize = [[-10, 1, -10, 25], [10, 1, 5, 5]];
         this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
@@ -207,6 +211,7 @@ class MyContents  {
         this.seaUrchinLOD.addLevel(seaUrchinHigh, 0);
         this.seaUrchinLOD.position.set(4, 0.3, 4);
         this.app.scene.add(this.seaUrchinLOD);
+        this.lodObjects.push(this.seaUrchinLOD);
 
         this.turtle = new MyTurtle(0.5, 0.15);
         this.turtle.position.set(-4, 0.3, 4);
@@ -221,6 +226,7 @@ class MyContents  {
         this.jellyfishLOD.addLevel(this.jellyfishLow, 30);
         this.app.scene.add(this.jellyfishLOD);
         this.jellyfishLOD.position.set(0,5,0);
+        this.lodObjects.push(this.jellyfishLOD);
         
         this.shark = new MyShark(1, "#2244aa", this.sharkTexture);
         this.shark.position.set(-8, 10, 0);
@@ -506,12 +512,9 @@ class MyContents  {
 
         this.jellyfish.update(delta);
 
-        // Update all LOD objects with the active camera
-        this.app.scene.traverse((child) => {
-            if (child instanceof THREE.LOD) {
-                child.update(this.app.activeCamera);
-            }
-        });
+        for (const lod of this.lodObjects) {
+            lod.update(this.app.activeCamera);
+        }
     }
 
     setWireframeMode(enabled) {

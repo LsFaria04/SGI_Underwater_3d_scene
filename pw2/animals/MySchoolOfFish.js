@@ -40,6 +40,11 @@ class MySchoolfOfFish extends THREE.Group {
 
         this.fishGroupsAnimations = []; // Store all animations for the fishes
 
+        this.sharedMaterial = new THREE.MeshPhongMaterial({ 
+            map: this.fishTexture,
+            side: THREE.DoubleSide 
+        });
+
         const cellWidth = baseWidth * maxScale + minSpace;
         const cellLen = baseLen * maxScale + minSpace;
 
@@ -50,11 +55,7 @@ class MySchoolfOfFish extends THREE.Group {
                     
                     cloneSpecie.traverse(child => {
                         if (child.isMesh) {
-                            // Don't use texture map since geometry doesn't have UV coordinates
-                            child.material = new THREE.MeshPhongMaterial({ 
-                                map: this.fishTexture, // <--- Apply the texture here
-                                side: THREE.DoubleSide 
-                            });
+                            child.material = this.sharedMaterial;
                             child.material.needsUpdate = true;
                         }
                     });
