@@ -269,52 +269,44 @@ class MyApp  {
     }
 
     /**
-     * Initializes the postprocessing effects including the depth of field effect
+     * Initializes the postprocessing effects
      */
-    initPostProcessing(){
-        this.initDepthOfField();
-        this.initSubmarineDepthOfField();
+    initPostProcessing() {
+        this.postprocessing.underwater = this.createDOFComposer(
+            this.cameras["UnderWater"],
+            { focus: 8.0, aperture: 0.0004, maxblur: 0.01 }
+        );
+
+        this.postprocessing.submarine = this.createDOFComposer(
+            this.cameras["Submarine"],
+            { focus: 10.0, aperture: 0.0008, maxblur: 0.015 },
+            [ new ShaderPass(TintShader) ]
+        );
     }
 
-    initDepthOfField(){
-        const renderPass = new RenderPass(this.scene, this.activeCamera);
-        const bokehPass = new BokehPass(this.scene, this.activeCamera, {
-            focus: 8.0,
-            aperture: 0.0004,
-            maxblur: 0.01
-         });
-        const outputPass = new OutputPass();
+    /**
+     * Creates a DOF composer pipeline for a given camera
+     */
+    createDOFComposer(camera, dofSettings, extraPasses = []) {
+
         const composer = new EffectComposer(this.renderer);
 
+        const renderPass = new RenderPass(this.scene, camera);
         composer.addPass(renderPass);
+
+        const bokehPass = new BokehPass(this.scene, camera, dofSettings);
         composer.addPass(bokehPass);
-        composer.addPass(outputPass);
 
-        this.postprocessing.composer = composer;
-        this.postprocessing.bokeh = bokehPass;
-    }
+        // additional effects (optional)
+        for (const pass of extraPasses) composer.addPass(pass);
 
-    initSubmarineDepthOfField(){
-        const submarineCam = this.cameras['Submarine'];
-        const renderPass = new RenderPass(this.scene, submarineCam);
-        const bokehPass = new BokehPass(this.scene, submarineCam, {
-            focus: 10.0,
-            aperture: 0.0008,
-            maxblur: 0.015
-         });
-        
-        const tintPass = new ShaderPass(TintShader);
-        
-        const outputPass = new OutputPass();
-        const composer = new EffectComposer(this.renderer);
+        composer.addPass(new OutputPass());
 
-        composer.addPass(renderPass);
-        composer.addPass(bokehPass);
-        composer.addPass(tintPass);
-        composer.addPass(outputPass);
-
-        this.postprocessing.submarineComposer = composer;
-        this.postprocessing.submarineBokeh = bokehPass;
+        return {
+            composer,
+            bokeh: bokehPass,
+            camera
+        };
     }
 
 
@@ -323,16 +315,11 @@ class MyApp  {
     */
     render () {
         this.stats.begin()
-        this.updateCameraIfRequired()
-
         const delta = this.clock.getDelta();
+
+        this.updateCameraIfRequired()
         if (this.contents) this.contents.update(delta);
 
-
-        // update the animation if contents were provided
-        if (this.activeCamera !== undefined && this.activeCamera !== null) {
-            this.contents.update(delta);    
-        }
 
         // submarine camera movement
         if (this.activeCameraName === 'Submarine') {
@@ -344,15 +331,19 @@ class MyApp  {
             this.controls.update();
         }
 
-        if(this.activeCameraName === "UnderWater"){
-            this.postprocessing.composer.render();
-        }
-        else if(this.activeCameraName === "Submarine"){
-            this.postprocessing.submarineComposer.render();
-        }
-        else{
-            // render the scene
-            this.renderer.render(this.scene, this.activeCamera);
+        switch (this.activeCameraName) {
+            case "UnderWater":
+                this.postprocessing.underwater.composer.render()
+                break;
+
+            case "Submarine":
+                this.postprocessing.submarine.composer.render();
+                break;
+
+            default:
+                // No postprocessing
+                this.renderer.render(this.scene, this.activeCamera);
+                break;
         }
         
 
