@@ -13,6 +13,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { TintShader } from './shaders/TintShader.js';
 
 
 /**
@@ -300,11 +302,15 @@ class MyApp  {
             aperture: 0.0008,
             maxblur: 0.015
          });
+        
+        const tintPass = new ShaderPass(TintShader);
+        
         const outputPass = new OutputPass();
         const composer = new EffectComposer(this.renderer);
 
         composer.addPass(renderPass);
         composer.addPass(bokehPass);
+        composer.addPass(tintPass);
         composer.addPass(outputPass);
 
         this.postprocessing.submarineComposer = composer;
