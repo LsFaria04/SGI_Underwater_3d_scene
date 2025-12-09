@@ -158,7 +158,51 @@ class MyInterface  {
                 }
             });
 
+        // Shield controls
+        const shieldState = {
+            shield: false,
+            c: 1.0,
+            p: 2.0,
+            color: 0x00ffff
+        };
+
+        submarineFolder.add(shieldState, 'shield')
+            .name('Shield')
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.toggleShield();
+                    shieldState.shield = this.contents.submarine.shieldEnabled;
+                }
+            });
+
+        submarineFolder.add(shieldState, 'c', 0, 1)
+            .name('Shield C')
+            .step(0.01)
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setShieldC(value);
+                }
+            });
+
+        submarineFolder.add(shieldState, 'p', 0, 10)
+            .name('Shield P')
+            .step(0.1)
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setShieldP(value);
+                }
+            });
+
+        submarineFolder.addColor(shieldState, 'color')
+            .name('Shield Color')
+            .onChange((value) => {
+                if (this.contents.submarine) {
+                    this.contents.submarine.setShieldColor(value);
+                }
+            });
+
         submarineFolder.open();
+        
 
         //Depth of Field controls
         const DOF = {

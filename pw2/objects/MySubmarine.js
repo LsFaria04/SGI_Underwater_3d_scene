@@ -274,6 +274,53 @@ class MySubmarine extends THREE.Object3D {
 
         // frontlight on layer 1 so that it is not visible in submarine camera
         frontLightBulb.layers.set(1);
+
+        // shield effect
+        this.shieldEnabled = false;
+        this.shieldC = 1.0;
+        this.shieldP = 2.0;
+        
+        const shieldGeometry = new THREE.SphereGeometry(2.2, 32, 32);
+        
+        // Fresnel shader material for shield effect
+        const shieldMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                c: { value: this.shieldC },
+                p: { value: this.shieldP },
+                glowColor: { value: new THREE.Color(0x00ffff) }
+            },
+            vertexShader: `
+                varying vec3 vNormal;
+                varying vec3 vViewPosition;
+                void main() {
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    vViewPosition = -mvPosition.xyz;
+                    vNormal = normalize(normalMatrix * normal);
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 glowColor;
+                uniform float c;
+                uniform float p;
+                varying vec3 vNormal;
+                varying vec3 vViewPosition;
+                void main() {
+                    vec3 viewDir = normalize(vViewPosition);
+                    float fresnel = max(0.0, c - dot(vNormal, viewDir));
+                    float intensity = pow(fresnel, p);
+                    gl_FragColor = vec4(glowColor, intensity);
+                }
+            `,
+            side: THREE.FrontSide,
+            blending: THREE.AdditiveBlending,
+            transparent: true,
+            depthWrite: false
+        });
+        
+        this.shield = new THREE.Mesh(shieldGeometry, shieldMaterial);
+        this.shield.visible = false;
+        this.add(this.shield);
     }
 
     update(delta) {
@@ -365,6 +412,26 @@ class MySubmarine extends THREE.Object3D {
     setWarningFlashRate(value) {
         this.warningFlashRate = value;
         this.warningLightFlashRate = value;
+    }
+
+    toggleShield() {
+        this.shieldEnabled = !this.shieldEnabled;
+        this.shield.visible = this.shieldEnabled;
+        return this.shieldEnabled;
+    }
+
+    setShieldC(value) {
+        this.shieldC = value;
+        this.shield.material.uniforms.c.value = value;
+    }
+
+    setShieldP(value) {
+        this.shieldP = value;
+        this.shield.material.uniforms.p.value = value;
+    }
+
+    setShieldColor(color) {
+        this.shield.material.uniforms.glowColor.value.set(color);
     }
 }
 
