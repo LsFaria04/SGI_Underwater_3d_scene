@@ -43,7 +43,9 @@ class MyApp  {
         //postprocessing attributes
         this.postprocessing = {
             composer: null,
-            bokeh: null
+            bokeh: null,
+            submarineComposer: null,
+            submarineBokeh: null
         };
 
         this.clock = new THREE.Clock();
@@ -268,13 +270,18 @@ class MyApp  {
      * Initializes the postprocessing effects including the depth of field effect
      */
     initPostProcessing(){
+        this.initDepthOfField();
+        this.initSubmarineDepthOfField();
+    }
+
+    initDepthOfField(){
         const renderPass = new RenderPass(this.scene, this.activeCamera);
         const bokehPass = new BokehPass(this.scene, this.activeCamera, {
             focus: 8.0,
             aperture: 0.0004,
             maxblur: 0.01
          });
-         const outputPass = new OutputPass();
+        const outputPass = new OutputPass();
         const composer = new EffectComposer(this.renderer);
 
         composer.addPass(renderPass);
@@ -283,8 +290,27 @@ class MyApp  {
 
         this.postprocessing.composer = composer;
         this.postprocessing.bokeh = bokehPass;
-
     }
+
+    initSubmarineDepthOfField(){
+        const submarineCam = this.cameras['Submarine'];
+        const renderPass = new RenderPass(this.scene, submarineCam);
+        const bokehPass = new BokehPass(this.scene, submarineCam, {
+            focus: 10.0,
+            aperture: 0.0008,
+            maxblur: 0.015
+         });
+        const outputPass = new OutputPass();
+        const composer = new EffectComposer(this.renderer);
+
+        composer.addPass(renderPass);
+        composer.addPass(bokehPass);
+        composer.addPass(outputPass);
+
+        this.postprocessing.submarineComposer = composer;
+        this.postprocessing.submarineBokeh = bokehPass;
+    }
+
 
     /**
     * the main render function. Called in a requestAnimationFrame loop
@@ -315,9 +341,12 @@ class MyApp  {
         if(this.activeCameraName === "UnderWater"){
             this.postprocessing.composer.render();
         }
+        else if(this.activeCameraName === "Submarine"){
+            this.postprocessing.submarineComposer.render();
+        }
         else{
             // render the scene
-        this.renderer.render(this.scene, this.activeCamera);
+            this.renderer.render(this.scene, this.activeCamera);
         }
         
 
