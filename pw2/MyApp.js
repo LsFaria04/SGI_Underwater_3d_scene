@@ -18,6 +18,7 @@ import { TintShader } from './shaders/TintShader.js';
 import { CrosshairShader } from './shaders/CrosshairShader.js';
 import { TextureOverlayShader } from './shaders/TextureOverlayShader.js';
 import { CircularClipShader } from './shaders/CircularClipShader.js';
+import { SpritesheetHUDShader } from './shaders/SpritesheetHUDShader.js';
 
 
 /**
@@ -284,10 +285,13 @@ class MyApp  {
      * Initializes the postprocessing effects
      */
     initPostProcessing() {
+        // Depth of Field effect
         this.postprocessing.underwater = this.createDOFComposer(
             this.cameras["UnderWater"],
             { focus: 8.0, aperture: 0.0004, maxblur: 0.01 }
         );
+
+        this.initHUDCoordinates();
 
         const textureLoader = new THREE.TextureLoader();
         const scratchedGlassTexture = textureLoader.load('./textures/scratched_glass.jpeg', (tex) => {
@@ -295,6 +299,7 @@ class MyApp  {
             tex.magFilter = THREE.LinearFilter;
             tex.generateMipmaps = false;
         });
+
         const crosshairTexture = textureLoader.load('./textures/crosshair.png', (tex) => {
             tex.minFilter = THREE.LinearFilter;
             tex.magFilter = THREE.LinearFilter;
@@ -313,6 +318,10 @@ class MyApp  {
         crosshairPass.uniforms['scale'].value = 1.1;
         crosshairPass.uniforms['aspect'].value = window.innerWidth / window.innerHeight;
         
+        const hudPass = new ShaderPass(SpritesheetHUDShader);
+        hudPass.uniforms['tSpritesheet'].value = this.hudTexture;
+        hudPass.uniforms['hudColor'].value = new THREE.Vector3(0.0, 1.0, 0.0);
+        
         const circularClipPass = new ShaderPass(CircularClipShader);
         circularClipPass.uniforms['radius'].value = 0.5;
         circularClipPass.uniforms['smoothness'].value = 0.02;
@@ -321,11 +330,94 @@ class MyApp  {
         this.postprocessing.submarine = this.createDOFComposer(
             this.cameras["Submarine"],
             { focus: 10.0, aperture: 0.0008, maxblur: 0.015 },
-            [ tintPass, scratchedGlassPass, crosshairPass, circularClipPass ]
+            [ tintPass, scratchedGlassPass, crosshairPass, hudPass, circularClipPass ]
         );
         
         this.circularClipPass = circularClipPass;
         this.crosshairPass = crosshairPass;
+        this.hudPass = hudPass;
+
+    }
+    
+    /**
+     * Initializes the HUD coordinates display using spritesheet
+     */
+    initHUDCoordinates() {
+        const spritesheetTexture = new THREE.TextureLoader().load('./textures/numbers_spritesheet.png');
+        spritesheetTexture.minFilter = THREE.NearestFilter;
+        spritesheetTexture.magFilter = THREE.NearestFilter;
+        
+        this.hudCanvas = document.createElement('canvas');
+        this.hudCanvas.width = 512;
+        this.hudCanvas.height = 128;
+        this.hudContext = this.hudCanvas.getContext('2d');
+        
+        this.hudTexture = new THREE.CanvasTexture(this.hudCanvas);
+        this.hudTexture.minFilter = THREE.LinearFilter;
+        this.hudTexture.magFilter = THREE.LinearFilter;
+        
+        this.spritesheetTexture = spritesheetTexture;
+        this.spritesheetImage = null;
+        
+        const img = new Image();
+        img.onload = () => {
+            this.spritesheetImage = img;
+        };
+        img.src = './textures/numbers_spritesheet.png';
+    }
+    
+    /**
+     * Updates HUD coordinates text
+     */
+    updateHUDCoordinates() {
+        if (!this.hudContext || !this.spritesheetImage) return;
+        
+        const camera = this.cameras['Submarine'];
+        const x = camera.position.x.toFixed(1);
+        const y = camera.position.y.toFixed(1);
+        const z = camera.position.z.toFixed(1);
+        
+        this.hudContext.clearRect(0, 0, this.hudCanvas.width, this.hudCanvas.height);
+        
+        const text = `X:${x} Y:${y} Z:${z}`;
+        const fontSize = 8; 
+        const textWidth = text.length * fontSize * 0.6;
+        const rightX = this.hudCanvas.width - textWidth - 140; // distance in pixels from right edge
+        const bottomY = this.hudCanvas.height - 40; // distance in pixels from bottom
+        
+        this.drawSpritesheetText(text, rightX, bottomY, fontSize);
+        
+        this.hudTexture.needsUpdate = true;
+    }
+    
+    /**
+     * Draws text using spritesheet (assumes 0-9 digits in single row)
+     * Shader will convert white to green
+     */
+    drawSpritesheetText(text, x, y, size) {
+        if (!this.spritesheetImage) return;
+        
+        // Assume 10 digits (0-9) in a single row
+        const charWidth = this.spritesheetImage.width / 10;
+        const charHeight = this.spritesheetImage.height;
+        
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+            let charIndex = -1;
+            
+            // Map characters to spritesheet indices (only digits 0-9)
+            if (char >= '0' && char <= '9') {
+                charIndex = parseInt(char);
+            }
+            
+            if (charIndex >= 0 && charIndex < 10) {
+                this.hudContext.drawImage(
+                    this.spritesheetImage,
+                    charIndex * charWidth, 0, charWidth, charHeight,
+                    x + i * size * 0.6, y, size, size
+                );
+            }
+        }
     }
 
     /**
@@ -368,6 +460,7 @@ class MyApp  {
         // submarine camera movement
         if (this.activeCameraName === 'Submarine') {
             this.updateSubmarineMovement(delta);
+            this.updateHUDCoordinates();
         }
 
         // required if controls.enableDamping or controls.autoRotate are set to true

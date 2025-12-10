@@ -1,5 +1,4 @@
 /**
- * Circular Clip Shader
  * Creates a circular viewport with black border (periscope effect)
  */
 

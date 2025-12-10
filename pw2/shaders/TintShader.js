@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 
+/**
+ * Adds a greenish-yellowish tint to the scene
+ */
+
 const TintShader = {
     uniforms: {
         'tDiffuse': { value: null },
