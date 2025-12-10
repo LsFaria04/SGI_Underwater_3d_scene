@@ -15,7 +15,8 @@ import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { TintShader } from './shaders/TintShader.js';
-import { LensDirtShader } from './shaders/LensDirtShader.js';
+import { CrosshairShader } from './shaders/CrosshairShader.js';
+import { TextureOverlayShader } from './shaders/TextureOverlayShader.js';
 
 
 /**
@@ -279,17 +280,31 @@ class MyApp  {
         );
 
         const textureLoader = new THREE.TextureLoader();
-        const dirtTexture = textureLoader.load('./textures/cracked_glass.jpg');
+        const scratchedGlassTexture = textureLoader.load('./textures/scratched_glass.jpeg', (tex) => {
+            tex.minFilter = THREE.LinearFilter;
+            tex.magFilter = THREE.LinearFilter;
+            tex.generateMipmaps = false;
+        });
+        const crosshairTexture = textureLoader.load('./textures/crosshair.png', (tex) => {
+            tex.minFilter = THREE.LinearFilter;
+            tex.magFilter = THREE.LinearFilter;
+            tex.generateMipmaps = false;
+        });
         
         const tintPass = new ShaderPass(TintShader);
-        const dirtPass = new ShaderPass(LensDirtShader);
-        dirtPass.uniforms['tDirt'].value = dirtTexture;
-        dirtPass.uniforms['dirtIntensity'].value = 0.6;
+        
+        const scratchedGlassPass = new ShaderPass(TextureOverlayShader);
+        scratchedGlassPass.uniforms['tOverlay'].value = scratchedGlassTexture;
+        scratchedGlassPass.uniforms['opacity'].value = 0.5;
+        
+        const crosshairPass = new ShaderPass(CrosshairShader);
+        crosshairPass.uniforms['tCrosshair'].value = crosshairTexture;
+        crosshairPass.uniforms['crosshairColor'].value = new THREE.Vector3(0.0, 1.0, 0.0);
 
         this.postprocessing.submarine = this.createDOFComposer(
             this.cameras["Submarine"],
             { focus: 10.0, aperture: 0.0008, maxblur: 0.015 },
-            [ tintPass, dirtPass ]
+            [ tintPass, scratchedGlassPass, crosshairPass ]
         );
     }
 
