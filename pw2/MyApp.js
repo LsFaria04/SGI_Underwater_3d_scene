@@ -17,6 +17,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { TintShader } from './shaders/TintShader.js';
 import { CrosshairShader } from './shaders/CrosshairShader.js';
 import { TextureOverlayShader } from './shaders/TextureOverlayShader.js';
+import { CircularClipShader } from './shaders/CircularClipShader.js';
 
 
 /**
@@ -253,6 +254,15 @@ class MyApp  {
             this.activeCamera.aspect = window.innerWidth / window.innerHeight;
             this.activeCamera.updateProjectionMatrix();
             this.renderer.setSize( window.innerWidth, window.innerHeight );
+            
+            // update aspect ratio for shaders
+            const aspect = window.innerWidth / window.innerHeight;
+            if (this.circularClipPass) {
+                this.circularClipPass.uniforms['aspect'].value = aspect;
+            }
+            if (this.crosshairPass) {
+                this.crosshairPass.uniforms['aspect'].value = aspect;
+            }
         }
     }
     /**
@@ -300,12 +310,22 @@ class MyApp  {
         const crosshairPass = new ShaderPass(CrosshairShader);
         crosshairPass.uniforms['tCrosshair'].value = crosshairTexture;
         crosshairPass.uniforms['crosshairColor'].value = new THREE.Vector3(0.0, 1.0, 0.0);
+        crosshairPass.uniforms['scale'].value = 1.1;
+        crosshairPass.uniforms['aspect'].value = window.innerWidth / window.innerHeight;
+        
+        const circularClipPass = new ShaderPass(CircularClipShader);
+        circularClipPass.uniforms['radius'].value = 0.5;
+        circularClipPass.uniforms['smoothness'].value = 0.02;
+        circularClipPass.uniforms['aspect'].value = window.innerWidth / window.innerHeight;
 
         this.postprocessing.submarine = this.createDOFComposer(
             this.cameras["Submarine"],
             { focus: 10.0, aperture: 0.0008, maxblur: 0.015 },
-            [ tintPass, scratchedGlassPass, crosshairPass ]
+            [ tintPass, scratchedGlassPass, crosshairPass, circularClipPass ]
         );
+        
+        this.circularClipPass = circularClipPass;
+        this.crosshairPass = crosshairPass;
     }
 
     /**

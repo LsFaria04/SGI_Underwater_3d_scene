@@ -7,8 +7,10 @@ import * as THREE from 'three';
 const CrosshairShader = {
     uniforms: {
         'tDiffuse': { value: null },
-        'tCrosshair': { value: null }, // crosshair texture
-        'crosshairColor': { value: new THREE.Vector3(0.0, 1.0, 0.0) } // green color
+        'tCrosshair': { value: null },
+        'crosshairColor': { value: new THREE.Vector3(0.0, 1.0, 0.0) },
+        'scale': { value: 0.3 }, // scale of the crosshair (0.0 - 1.0)
+        'aspect': { value: 1.0 }
     },
 
     vertexShader: `
@@ -24,18 +26,29 @@ const CrosshairShader = {
         uniform sampler2D tDiffuse;
         uniform sampler2D tCrosshair;
         uniform vec3 crosshairColor;
+        uniform float scale;
+        uniform float aspect;
         
         varying vec2 vUv;
         
         void main() {
             vec4 color = texture2D(tDiffuse, vUv);
-            vec4 crosshair = texture2D(tCrosshair, vUv);
             
-            // Use luminance to detect black lines (dark = crosshair line)
+            // Scale and center the crosshair
+            vec2 center = vec2(0.5, 0.5);
+            vec2 scaledUv = (vUv - center) / scale + center;
+            
+            // Correct aspect ratio
+            scaledUv.x = (scaledUv.x - 0.5) * aspect + 0.5;
+            
+            // Only sample if within bounds
+            vec4 crosshair = vec4(0.0);
+            if (scaledUv.x >= 0.0 && scaledUv.x <= 1.0 && scaledUv.y >= 0.0 && scaledUv.y <= 1.0) {
+                crosshair = texture2D(tCrosshair, scaledUv);
+            }
+            
+            // Use luminance to detect black lines
             float luminance = (crosshair.r + crosshair.g + crosshair.b) / 3.0;
-            
-            // Where texture is dark (black lines), replace with green
-            // Invert luminance: dark becomes 1.0, bright becomes 0.0
             float crosshairMask = 1.0 - luminance;
             
             // Blend green crosshair over the scene
