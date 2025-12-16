@@ -1,12 +1,13 @@
 import * as THREE from 'three';
-import {getRandomInt} from '../utils.js';
+import {floorHeightPosition, getRandomInt} from '../utils.js';
 import { MySeaPlant } from './MySeaPlant.js';
 
 
 class MySeaPlantGroup extends THREE.Group {
-    constructor(numbSeaPlants, minSpace,maxScale, minScale, colors, overlap){
+    constructor(numbSeaPlants,x, z, minSpace,maxScale, minScale, colors, overlap){
         super();
         
+        this.position.set(x, 0, z);
 
         //default plant
         const gridSide = Math.ceil(Math.sqrt(numbSeaPlants));
@@ -61,12 +62,11 @@ class MySeaPlantGroup extends THREE.Group {
                 cellDepth = THREE.MathUtils.lerp(baseDepth * minScale + minSpace, baseCellDepth, Math.random());
             }
             
-            // Position Plant
-            lod.position.set(
-                cellWidth * x,
-                0,
-                cellDepth * y
-            );
+            const worldX = this.position.x + cellWidth * x;
+            const worldZ = this.position.z + cellDepth * y;
+            const worldY = floorHeightPosition(worldX, worldZ);
+            lod.position.set(cellWidth * x, worldY, cellDepth * y);
+
             lod.addLevel(plant, 20);
             lod.addLevel(highLODPlant,0);
             lod.addLevel(midLODPlant,10);
