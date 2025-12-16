@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
-import { MyBubble } from './objects/MyBubble.js';
+import {MyBubbleParticles} from './objects/MyBubbleParticles.js';
 import { MySeaStar } from './animals/MySeaStar.js';
 import { MyJellyFish } from './animals/MyJellyFish.js';
 import { MyCrab } from './animals/MyCrab.js';
@@ -16,10 +16,8 @@ import { My2DShark } from './animals/My2DShark.js';
 import { MySign } from './objects/MySign.js';
 import { MyShark } from './animals/MyShark.js';
 import { MySwordFish } from './animals/MySwordFish.js';
-import { MySeaPlant } from './objects/MySeaPlant.js';
 import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
 import { MySubmarine } from './objects/MySubmarine.js';
-import { acceleratedRaycast } from './index.module.js';
 
 
 /**
@@ -156,12 +154,14 @@ class MyContents  {
         this.crabLOD.position.set(3,0.3,1);
         this.lodObjects.push(this.crabLOD);
 
-        this.bubbles = [];
-        for (let i = 0; i < 10; i++) {
-            const bubble = new MyBubble(0.10 + Math.random() * 0.08, 1); 
-            this.app.scene.add(bubble);
-            this.bubbles.push(bubble);
-        }
+        this.bubbles = new MyBubbleParticles([
+        { x: 5, z: 5 }
+        ],
+        1000,
+        this.bubbleTexture
+        );
+
+        this.app.scene.add(this.bubbles.points);
         
         //carps position and size [x, y, z, number of carps]
         this.fishesFlockingParams = {
@@ -180,7 +180,6 @@ class MyContents  {
             fishGroup.position.set(pos[0],pos[1],pos[2]);
         }
 
-        
 
         //rock position and size [x, z, number of rocks]
         this.rockGroups = [];
@@ -460,6 +459,8 @@ class MyContents  {
 
         // 3. Store the video element to control playback later if needed
         this.videoElement = this.video;
+
+        this.bubbleTexture = new THREE.TextureLoader().load("./textures/bubble.png");
     }
 
     update(delta) {
@@ -479,9 +480,7 @@ class MyContents  {
             this.submarine.rotation.y += Math.PI / 2; 
         }
 
-        
-
-        for (const b of this.bubbles) b.update(delta);
+        this.bubbles.update();
         this.swordFish.update(delta);
         this.shark.update(delta);
         
