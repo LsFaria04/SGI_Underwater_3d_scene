@@ -20,6 +20,7 @@ import { MySeaPlant } from './objects/MySeaPlant.js';
 import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
 import { MySubmarine } from './objects/MySubmarine.js';
 import { acceleratedRaycast } from './index.module.js';
+import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
 
 
 /**
@@ -46,6 +47,7 @@ class MyContents  {
 
         this.onMouseClick = this.onMouseClick.bind(this);
         window.addEventListener('click', this.onMouseClick);
+        
     }
 
     // initializes the scene contents
@@ -104,6 +106,25 @@ class MyContents  {
             this.axis = new MyAxis(this)
             //this.app.scene.add(this.axis)
         }
+
+        const loader = new GLTFLoader(); //Used to import objects in the GLTF format that were not moddeled by us 
+
+        loader.load('objects/malletts_bay_old_tour_boat/scene.gltf', (gltf) => {
+
+            const model = gltf.scene
+            model.scale.set(0.1, 0.1, 0.1);
+            model.position.set(0,3,0);
+            model.traverse((child) => {
+  if (child.isMesh && child.material) {
+    child.material.emissive.set(0x000000);
+    child.material.emissiveIntensity = 0;
+  }
+});
+
+            this.app.scene.add(model);
+        }, undefined, (error) => {
+            console.error(error);
+        });
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
