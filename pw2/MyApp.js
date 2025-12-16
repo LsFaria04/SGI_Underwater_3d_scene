@@ -48,10 +48,8 @@ class MyApp  {
 
         //postprocessing attributes
         this.postprocessing = {
-            composer: null,
-            bokeh: null,
-            submarineComposer: null,
-            submarineBokeh: null
+            underwater: null,
+            submarine: null
         };
 
         this.clock = new THREE.Clock();
