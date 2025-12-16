@@ -236,7 +236,7 @@ class MyInterface  {
             .onChange((value) => {
                 if(this.app && this.app.postprocessing){
                     this.app.postprocessing.submarine.bokeh.uniforms["maxblur"].value = value;
-                    this.app.underwater.submarine.bokeh.uniforms["maxblur"].value = value;
+                    this.app.postprocessing.underwater.bokeh.uniforms["maxblur"].value = value;
                 }
         });
 

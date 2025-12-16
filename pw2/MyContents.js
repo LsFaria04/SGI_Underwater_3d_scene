@@ -73,11 +73,11 @@ class MyContents  {
 
     initLights() {
 
-        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.5);
+        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.2);
         this.app.scene.add( ambientLight );
 
         // directional light to simulate sun from above
-        const directionalLight = new THREE.DirectionalLight(0x88aaff, 2);
+        const directionalLight = new THREE.DirectionalLight(0x88aaff, 0.5);
         directionalLight.position.set(10, 20, 10);
         directionalLight.castShadow = true;
 
