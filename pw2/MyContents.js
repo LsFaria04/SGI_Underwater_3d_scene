@@ -144,7 +144,7 @@ class MyContents  {
         const floor = new MyFloor(50, 256, this.sandTexture);
         this.app.scene.add(floor);
 
-        const water = new MyWater();
+        const water = new MyWater(50, 20);
         this.app.scene.add(water);
 
         //plant position and size [x, z, number of plants]
@@ -218,7 +218,7 @@ class MyContents  {
 
         //rock position and size [x, z, number of rocks]
         this.rockGroups = [];
-        const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [1, 4, 3], [-10, 4, 8], [3, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
+        const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [4, 4, 3], [-10, 4, 8], [5, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
         for(let i = 0; i < rockPosSize.length; i++){
             const pos = rockPosSize[i];
             const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], true, [this.rockTexture]);
@@ -228,12 +228,12 @@ class MyContents  {
         }
         
 
-        this.coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4, this.coralTexture);
-        this.coralReef1.position.y = 0;
+        this.coralReef1 = new MyCoralReef(40, "fanCoral", 10, 4, this.coralTexture);
+        this.coralReef1.position.set(-10, 0,1);
         this.app.scene.add(this.coralReef1);
 
-        this.coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4, this.coralTexture);
-        this.coralReef2.position.y = 0;
+        this.coralReef2 = new MyCoralReef(40, "branchingCoral", 10, 4, this.coralTexture);
+        this.coralReef2.position.set(10,0,1);
         this.app.scene.add(this.coralReef2);
 
         this.seaUrchinLOD = new THREE.LOD();
