@@ -20,6 +20,7 @@ import { MySeaPlant } from './objects/MySeaPlant.js';
 import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
 import { MySubmarine } from './objects/MySubmarine.js';
 import { acceleratedRaycast } from './index.module.js';
+import { MyMarineSnow } from './objects/MyMarineSnow.js';
 
 
 /**
@@ -253,6 +254,10 @@ class MyContents  {
 
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2, 50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
+
+        this.marineSnow = new MyMarineSnow([0.1], ["#FFFFFF"], [this.snowTexture1], 0.05);
+        this.marineSnow.position.set(0,10,0);
+        this.app.scene.add(this.marineSnow);
     }
 
     onMouseClick(mousePos) {
@@ -460,11 +465,18 @@ class MyContents  {
 
         // 3. Store the video element to control playback later if needed
         this.videoElement = this.video;
+
+        // Marine Snow Textures
+        this.snowTexture1 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake1.png");
+        this.snowTexture2 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake2.png");
     }
 
     update(delta) {
         if (!delta) return;
 
+        if (this.marineSnow) {
+            this.marineSnow.update(delta);
+        }
 
         if (this.seaweedUniforms) {
             this.seaweedUniforms.uTime.value += delta;
