@@ -20,6 +20,7 @@ import { MySeaPlant } from './objects/MySeaPlant.js';
 import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
 import { MySubmarine } from './objects/MySubmarine.js';
 import { acceleratedRaycast } from './index.module.js';
+import { MeshBVHHelper } from './index.module.js';
 import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
 
 
@@ -111,17 +112,29 @@ class MyContents  {
 
         loader.load('objects/malletts_bay_old_tour_boat/scene.gltf', (gltf) => {
 
-            const model = gltf.scene
-            model.scale.set(0.1, 0.1, 0.1);
-            model.position.set(0,3,0);
-            model.traverse((child) => {
-  if (child.isMesh && child.material) {
-    child.material.emissive.set(0x000000);
-    child.material.emissiveIntensity = 0;
-  }
-});
+            this.boat = gltf.scene
+            this.boat.scale.set(0.1, 0.1, 0.1);
+            this.boat.position.set(0,3,0);
+            this.boat.traverse((child) => {
+                if (child.isMesh && child.material) {
+                    child.material.emissive.set(0x000000);
+                    child.material.emissiveIntensity = 0;
+                }
+            });
+            this.boat.helpers = [];
+            this.boat.traverse((child) => {
+            if (child.isMesh) {
+                child.geometry.computeBoundsTree();
+                const helper = new MeshBVHHelper(child);
+                helper.visible = false;
+                child.add(helper);
+                this.boat.helpers.push(helper);
+                
+            }
+            });
 
-            this.app.scene.add(model);
+
+            this.app.scene.add(this.boat);
         }, undefined, (error) => {
             console.error(error);
         });
@@ -161,7 +174,7 @@ class MyContents  {
         this.seaStarLOD.addLevel(seaStarMid, 5);
         this.seaStarLOD.addLevel(seaStarLow, 20);
         this.app.scene.add(this.seaStarLOD);
-        this.seaStarLOD.position.set(2,0.25,2);
+        this.seaStarLOD.position.set(4,0.25,2);
         this.lodObjects.push(this.seaStarLOD);
 
 
@@ -174,7 +187,7 @@ class MyContents  {
         this.crabLOD.addLevel(crabDetailed, 0);
         this.crabLOD.addLevel(crabMediumDetailed, 5);
         this.app.scene.add(this.crabLOD);
-        this.crabLOD.position.set(3,0.3,1);
+        this.crabLOD.position.set(5,0.3,1);
         this.lodObjects.push(this.crabLOD);
 
         this.bubbles = [];
@@ -306,6 +319,7 @@ class MyContents  {
         bvhMeshes.push(this.turtle);
         bvhMeshes.push(this.crabLOD);
         bvhMeshes.push(this.seaStarLOD);
+        bvhMeshes.push(this.boat);
 
 
         // 3. Intersect
@@ -521,7 +535,12 @@ class MyContents  {
         this.enemies.push(this.submarine);
 
         this.colisionObjects = [];
-        this.colisionObjects.push(this.sign)
+        this.colisionObjects.push(this.sign);
+        //addthe boat only if it is loaded
+        if(this.boat){
+             this.colisionObjects.push(this.boat);
+        }
+       
 
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
@@ -619,6 +638,10 @@ class MyContents  {
             for(const helper of star.helpers){
                 helper.visible = enable;
             }
+        }
+
+        for(const helper of this.boat.helpers){
+            helper.visible = enable;
         }
             
     }
