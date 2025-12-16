@@ -77,11 +77,11 @@ class MyContents  {
 
     initLights() {
 
-        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.2);
+        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.1);
         this.app.scene.add( ambientLight );
 
         // directional light to simulate sun from above
-        const directionalLight = new THREE.DirectionalLight(0x88aaff, 0.5);
+        const directionalLight = new THREE.DirectionalLight(0x88aaff, 0.3);
         directionalLight.position.set(10, 20, 10);
         directionalLight.castShadow = true;
 
@@ -120,6 +120,8 @@ class MyContents  {
                 if (child.isMesh && child.material) {
                     child.material.emissive.set(0x000000);
                     child.material.emissiveIntensity = 0;
+                    child.castShadow = true;
+                    child.receiveShadow = true;
                 }
             });
             this.boat.helpers = [];
@@ -142,7 +144,7 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        const floor = new MyFloor(50, 256, this.sandTexture);
+        const floor = new MyFloor(50, 128, this.sandTexture);
         this.app.scene.add(floor);
 
         const water = new MyWater(50, 20);
@@ -221,7 +223,7 @@ class MyContents  {
         const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [4, 4, 3], [-10, 4, 8], [5, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
         for(let i = 0; i < rockPosSize.length; i++){
             const pos = rockPosSize[i];
-            const rockGroup = new MyRockGroup(pos[2],pos[0], pos[1], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], true, [this.rockTexture]);
+            const rockGroup = new MyRockGroup(pos[2],pos[0], pos[1], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], false, [this.rockTexture]);
             this.rockGroups.push(rockGroup);
             this.app.scene.add(rockGroup);
         }
