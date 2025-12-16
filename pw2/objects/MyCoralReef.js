@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MyCoral } from './MyCoral.js';
+import { floorHeightPosition } from '../utils.js';
 
 class MyCoralReef extends THREE.Group {
       /**
@@ -9,15 +10,13 @@ class MyCoralReef extends THREE.Group {
      * @param {number} radius Radius of the reef
      * @param {number} iterations Iterations of L Stochastic 
      */
-    constructor(numbCorals = 5, type = 'branchingCoral', radius = 3, iterations = 4, texture){
+    constructor(numbCorals = 5,x, z, type = 'branchingCoral', radius = 3, iterations = 4, texture){
         super();
-    
+        this.position.set(x, 0, z);
         this.name = "CoralReefGroup";
 
         this.coralGen = new MyCoral(texture);
         this.type = this.coralGen.coralPresets[type];
-        //console.log(this.type);
-        //console.log(type in this.types);
 
         const coralMeshTemplate = this.coralGen.generateCoralMesh(this.type, iterations);
 
@@ -30,13 +29,14 @@ class MyCoralReef extends THREE.Group {
 
             const coralMeshGroup = coralMeshTemplate.clone();
 
-            coralMeshGroup.position.set(x, 0, z);
+            const worldX = this.position.x + x;
+            const worldZ = this.position.z + z;
+            coralMeshGroup.position.set(x, floorHeightPosition(worldX, worldZ), z);
             coralMeshGroup.rotation.y = Math.random() * Math.PI * 2;
 
             this.add(coralMeshGroup);
         }
         
-        this.position.y = -4;
     }
 
     dispose() {

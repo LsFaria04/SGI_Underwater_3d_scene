@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import {getRandomInt} from '../utils.js';
+import {floorHeightPosition, getRandomInt} from '../utils.js';
 import { MyRock } from './MyRock.js';
 
 
 class MyRockGroup extends THREE.Group {
-    constructor(numbRocks, minSpace,maxScale, minScale, colors, overlap, textures){
+    constructor(numbRocks,x, z,  minSpace,maxScale, minScale, colors, overlap, textures){
         super();
         
-
+        this.position.set(x, 0, z);
         const gridSide = Math.ceil(Math.sqrt(numbRocks));
         let rockCount = 0;
         this.rocks = []
@@ -92,12 +92,11 @@ class MyRockGroup extends THREE.Group {
                 cellDepth = THREE.MathUtils.lerp(baseDepth * minScale + minSpace, baseCellDepth, Math.random());
             }
             
-            // Position fish
-            lod.position.set(
-                cellWidth * x,
-                0,
-                cellDepth * y
-            );
+            const worldX = this.position.x + cellWidth * x;
+            const worldZ = this.position.z + cellDepth * y;
+            const worldY = floorHeightPosition(worldX, worldZ);
+            lod.position.set(cellWidth * x, worldY, cellDepth * y);
+
             lod.addLevel(rock, 30);
             lod.addLevel(highLODRock,0);
             lod.addLevel(midLODRock,15);

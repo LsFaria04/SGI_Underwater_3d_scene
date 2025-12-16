@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { floorHeightPosition } from '../utils.js';
 /**
  * This class represents the sea floor
  */
@@ -17,7 +18,7 @@ class MyFloor extends THREE.Mesh {
         for (let i = 0; i < positions.count; i++) {
             const x = positions.getX(i);
             const y = positions.getY(i);
-            const height = 0.4 * Math.sin(x * 0.3) * Math.cos(y * 0.3) 
+            const height = floorHeightPosition(x, y); 
             positions.setZ(i, height);
         }
         positions.needsUpdate = true;
