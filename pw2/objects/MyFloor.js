@@ -22,7 +22,6 @@ class MyFloor extends THREE.Mesh {
             positions.setZ(i, height);
         }
         positions.needsUpdate = true;
-        geometry.computeVertexNormals();
 
 
         texture.albedo.wrapS = THREE.MirroredRepeatWrapping;

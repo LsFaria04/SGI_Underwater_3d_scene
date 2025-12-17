@@ -22,6 +22,7 @@ import { acceleratedRaycast } from './index.module.js';
 import { MeshBVHHelper } from './index.module.js';
 import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
 import { floorHeightPosition } from './utils.js';
+import { SandPuffSystem } from './particles/MySandPuffParticles.js';
 
 
 /**
@@ -143,8 +144,8 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        const floor = new MyFloor(50, 128, this.sandTexture);
-        this.app.scene.add(floor);
+        this.floor = new MyFloor(50, 128, this.sandTexture);
+        this.app.scene.add(this.floor);
 
         const water = new MyWater(50, 20);
         this.app.scene.add(water);
@@ -199,6 +200,9 @@ class MyContents  {
         );
 
         this.app.scene.add(this.bubbles.points);
+
+        this.sandPuff = new SandPuffSystem(this.app.scene, 500);
+
         
         //carps position and size [x, y, z, number of carps]
         this.fishesFlockingParams = {
@@ -352,7 +356,24 @@ class MyContents  {
                 this.restoreObject(this.currentSelection);
                 this.currentSelection = null;
             }
+            //Mouse click on the sea floor 
+            this.onMouseClickSandPuff(mousePos);
         }
+    }
+
+    onMouseClickSandPuff(mousePos){
+        // 1. Setup Raycaster
+        this.mouse.x = (mousePos.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(mousePos.clientY / window.innerHeight) * 2 + 1;
+        this.raycaster.setFromCamera(this.mouse, this.app.activeCamera);
+
+        const hits = this.raycaster.intersectObject(this.floor);
+
+        if (hits.length > 0) {
+            const hit = hits[0];
+            this.sandPuff.spawn(hit.point, hit.face.normal, 500);
+        }
+
     }
 
     highlightObject(rootObject) {
@@ -475,7 +496,6 @@ class MyContents  {
 
         this.sharkTexture.minFilter = THREE.LinearMipmapLinearFilter;
         this.sharkTexture.magFilter = THREE.LinearFilter;
-        //this.sharkTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         this.sharkTexture.generateMipmaps = true;
         this.sharkTexture.needsUpdate = true;
 
@@ -516,6 +536,7 @@ class MyContents  {
         }
 
         this.bubbles.update();
+        this.sandPuff.update(delta);
         this.swordFish.update(delta);
         this.shark.update(delta);
         

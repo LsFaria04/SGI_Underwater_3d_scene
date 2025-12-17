@@ -12,4 +12,5 @@ function floorHeightPosition(x, y){
   return Math.sin(x * 0.3) * Math.cos(y * 0.3);
 }
 
+
 export{getRandomInt, generateRandom, floorHeightPosition}
