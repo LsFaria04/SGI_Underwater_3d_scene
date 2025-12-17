@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { floorHeightPosition } from '../utils.js';
 
 class SandPuffSystem {
-  constructor(scene, maxParticles = 5000, texture) {
+  constructor(scene, maxParticles = 5000) {
     this.maxParticles = maxParticles;
 
     this.positions = new Float32Array(maxParticles * 3);
