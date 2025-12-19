@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyCoral } from './MyCoral.js';
-import { floorHeightPosition } from '../utils.js';
+import { floorHeightPosition, generateRandom } from '../utils.js';
 
 class MyCoralReef extends THREE.Group {
       /**
@@ -18,7 +18,6 @@ class MyCoralReef extends THREE.Group {
         this.coralGen = new MyCoral(texture);
         this.type = this.coralGen.coralPresets[type];
 
-        const coralMeshTemplate = this.coralGen.generateCoralMesh(this.type, iterations);
 
         for (let i = 0; i < numbCorals; i++){
 
@@ -27,7 +26,7 @@ class MyCoralReef extends THREE.Group {
             const x = Math.cos(angle) * dist;
             const z = Math.sin(angle) * dist;
 
-            const coralMeshGroup = coralMeshTemplate.clone();
+            const coralMeshGroup = this.coralGen.generateCoralMesh(this.type, iterations, generateRandom(0.05, 0.1));
 
             const worldX = this.position.x + x;
             const worldZ = this.position.z + z;

@@ -233,10 +233,10 @@ class MyContents  {
         }
         
 
-        this.coralReef1 = new MyCoralReef(40,-10, 1, "fanCoral", 10, 4, this.coralTexture);
+        this.coralReef1 = new MyCoralReef(10,-10, 1, "fanCoral", 10, 4, this.coralTexture);
         this.app.scene.add(this.coralReef1);
 
-        this.coralReef2 = new MyCoralReef(40,10, 1, "branchingCoral", 10, 4, this.coralTexture);
+        this.coralReef2 = new MyCoralReef(10,10, 1, "branchingCoral", 10, 4, this.coralTexture);
         this.app.scene.add(this.coralReef2);
 
         this.seaUrchinLOD = new THREE.LOD();

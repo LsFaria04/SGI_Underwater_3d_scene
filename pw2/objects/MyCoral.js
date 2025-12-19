@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { generateRandom } from '../utils.js';
  /**
      * This class creates a coral
      */
@@ -16,14 +17,14 @@ export class MyCoral {
                 { prob: 0.05, rule: 'F' }
             ],
             'F': [
-                { prob: 0.70, rule: 'FF' },
-                { prob: 0.20, rule: 'F' },
+                { prob: 0.90, rule: 'F' },
                 { prob: 0.10, rule: 'F[+F][-F]' }
             ],
-            angle: 15,
-            variableAngle: 5,
+            
+            },
+            angle: 30,
+            variableAngle: 20,
             lengthFactor: 0.8
-            }
         },
         branchingCoral: {
             rules: {
@@ -32,12 +33,12 @@ export class MyCoral {
                  { prob: 0.7, rule: 'F[+X][-X]^X' }
             ],
             'F': [
-                { prob: 1.0, rule: 'FF' }
+                { prob: 1.0, rule: 'F' }
             ]
             },
-            angle: 45,
+            angle: 35,
             variableAngle: 10,
-            lengthFactor: 0.1
+            lengthFactor: 1
         },
         };
     }
@@ -67,10 +68,10 @@ export class MyCoral {
         return coral;
     }
 
-    generateCoralMesh(coralType, complexity) {
+    generateCoralMesh(coralType, complexity, radius = 0.05) {
         const iterations = complexity;
-        const baseAngle = 25 * THREE.MathUtils.DEG2RAD;
-        const variableAngle = 10 * THREE.MathUtils.DEG2RAD; // random angle variation for more natural trees
+        const baseAngle = coralType.angle * THREE.MathUtils.DEG2RAD;
+        const variableAngle = coralType.variableAngle * THREE.MathUtils.DEG2RAD;
 
         // --- Stochastic L-System Rules ---
 
@@ -98,8 +99,9 @@ export class MyCoral {
             quaternion: new THREE.Quaternion(),
         };
 
-        let branchLength = 0.2;
-        const lengthFactor = 0.6;
+        console.log(coralType)
+        let branchLength = coralType.lengthFactor * 0.7;
+        const lengthFactor = coralType.lengthFactor;
         const branchMatrices = [];
         const leafMatrices = [];
 
@@ -182,7 +184,7 @@ export class MyCoral {
 
         }
 
-        const branchGeo = new THREE.CylinderGeometry(0.05, 0.05, 1, 8);
+        const branchGeo = new THREE.CylinderGeometry(radius, radius, 1, 8);
         branchGeo.computeBoundsTree();
         branchGeo.translate(0, 0.5, 0);
         const branchMat = new THREE.MeshStandardMaterial(
@@ -202,6 +204,7 @@ export class MyCoral {
 
 
         if (leafMatrices.length > 0) {
+            console.log("here")
             const leafShape = new THREE.Shape();
             leafShape.moveTo(0, 0);
             leafShape.bezierCurveTo(0.05, 0.2, 0.1, 0.3, 0, 0.5);
@@ -227,7 +230,7 @@ export class MyCoral {
         }
 
         group.scale.setScalar(0.4);
-        
+    
         // Detailed coral
         LOD.addLevel(group, 0);
 
