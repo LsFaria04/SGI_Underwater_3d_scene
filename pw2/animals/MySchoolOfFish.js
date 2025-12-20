@@ -175,7 +175,7 @@ class MySchoolfOfFish extends THREE.Group {
                 this.neighbors = this.fishes; 
                 this.neighborEnemies = this.enemies;
                 //static objects use a slightly more advanced technique to see if it is in the range of the fish
-                this.neighborObjects = this.findNeighborsSimple(fish, this.objects, 1);
+                this.neighborObjects = this.findNeighborsSimple(fish, this.objects, 6);
             }
 
             

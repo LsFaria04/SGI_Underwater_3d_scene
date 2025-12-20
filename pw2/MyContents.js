@@ -119,7 +119,7 @@ class MyContents  {
                 
             }
             });
-            this.boat.box = new THREE.Box3().setFromObject(this.boat);
+            this.boat.box = new THREE.Box3().setFromObject(this.boat, true);
 
 
             this.app.scene.add(this.boat);
@@ -223,7 +223,7 @@ class MyContents  {
         this.sign = new MySign(1.5, 0.05, 1.5, 1, 0.05, 0x8b5a2b, 0xdeb887, "BEWARE OF THE SHARK", this.videoTexture);
         this.sign.position.set(0,floorHeightPosition(0, 15),15);
         this.sign.scale.set(2,2,2);
-        this.sign.box = new THREE.Box3().setFromObject(this.sign);
+        this.sign.box = new THREE.Box3().setFromObject(this.sign, true);
         this.app.scene.add(this.sign); 
 
 
