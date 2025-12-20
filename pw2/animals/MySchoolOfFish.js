@@ -127,6 +127,31 @@ class MySchoolfOfFish extends THREE.Group {
     }
 
     /**
+     * Finds neighbours without using BVH. Uses only a simple bounding box to test intersections.
+     */
+    findNeighborsSimple(fish, others, radius) {
+        const neighbors = [];
+
+        // Expand fish bounding box by radius
+        const fishBox = new THREE.Box3().setFromObject(fish);
+        fishBox.expandByScalar(radius);
+
+        
+
+        for (const other of others) {
+            if (other === fish) continue;
+
+            const otherBox = other.box;
+            
+            if (fishBox.intersectsBox(otherBox)) {
+                neighbors.push(other);
+            }
+        }
+
+        return neighbors;
+    }
+
+    /**
      * Controls the flocking behaviour in the school of fish
      */
     flocking(delta){
@@ -147,9 +172,10 @@ class MySchoolfOfFish extends THREE.Group {
                  this.neighborObjects = this.findNeighbors(fish, this.objects, 6);
             }
             else{
-                this.neighbors = this.fishes
-                this.neighborEnemies = this.enemies
-                this.neighborObjects = this.objects
+                this.neighbors = this.fishes; 
+                this.neighborEnemies = this.enemies;
+                //static objects use a slightly more advanced technique to see if it is in the range of the fish
+                this.neighborObjects = this.findNeighborsSimple(fish, this.objects, 1);
             }
 
             
@@ -161,7 +187,7 @@ class MySchoolfOfFish extends THREE.Group {
             //extra rules
             v4 = this.bound_position(fish);
             v5 = this.avoid_predators(fish);
-            v6 = this.avoid_predators(fish); //it is also used for objects
+            v6 = this.avoid_objects(fish); //it is also used for objects
 
             
             //reduce weight of rule with bvh acceleration to make the movements more natural
@@ -177,7 +203,7 @@ class MySchoolfOfFish extends THREE.Group {
             .addScaledVector(v3, 0.4 * this.cohesionW * reduceWeight)
             .addScaledVector(v4, 15 * this.separationW * reduceWeight)
             .addScaledVector(v5, 10 * this.separationW * reduceWeight)
-            .addScaledVector(v6, 3 * this.separationW * reduceWeight);
+            .addScaledVector(v6, 10 * this.separationW * reduceWeight);
 
 
             
@@ -225,11 +251,11 @@ class MySchoolfOfFish extends THREE.Group {
             if (fish !== fishj) {
                 const dist = fish.position.distanceTo(fishj.position);
 
-                //avoid collisions
-                if (dist < (this.minSpace / 2 + this.maxScale / 2)) {
-                    const diff = new THREE.Vector3().subVectors(fish.position, fishj.position);
-                    positionDisplacement.sub(diff);
-                }
+                if(!this.bvh && dist > (this.minSpace / 2 + this.maxScale / 2)) continue;
+
+                const diff = new THREE.Vector3().subVectors(fish.position, fishj.position);
+                positionDisplacement.sub(diff);
+                
             }
         }
 
@@ -324,12 +350,34 @@ class MySchoolfOfFish extends THREE.Group {
         for (const enemy of this.neighborEnemies) {
             const fishWorldPos = fish.position.clone().add(this.position);
             const dist = enemy.position.distanceTo(fishWorldPos);
+            if(!this.bvh && dist > 10) continue;
+            //avoid collisions with enemies
+
+            const diff = new THREE.Vector3().subVectors(enemy.position, fishWorldPos);
+            positionDisplacement.sub(diff);
+            
+        
+        }
+
+        
+        return positionDisplacement;
+    }
+
+    /**
+     * Extra Rule to avoid objects.
+     */
+    avoid_objects(fish){
+        let positionDisplacement = new THREE.Vector3();
+
+        for (const enemy of this.neighborObjects) {
+            const fishWorldPos = fish.position.clone().add(this.position);
+            const dist = enemy.position.distanceTo(fishWorldPos);
 
             //avoid collisions with enemies
-            if (dist < 10) {
-                const diff = new THREE.Vector3().subVectors(enemy.position, fishWorldPos);
-                positionDisplacement.sub(diff);
-            }
+
+            const diff = new THREE.Vector3().subVectors(enemy.position, fishWorldPos);
+            positionDisplacement.sub(diff);
+            
         
         }
 

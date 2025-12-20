@@ -40,6 +40,7 @@ class MySign extends THREE.Object3D {
 		stick.position.y = stickHeight / 2;
 		this.add(stick);
 		stickGeometry.computeBoundsTree();
+		stickGeometry.computeBoundingBox();
 		const helper = new MeshBVHHelper(stick);
         helper.visible = false;
         this.helpers.push(helper);
@@ -72,6 +73,7 @@ class MySign extends THREE.Object3D {
 		// --- Main Board (Video Container) ---
 		const boardGeometry = new THREE.BoxGeometry(boardWidth, boardHeight, boardDepth);
 		boardGeometry.computeBoundsTree();
+		boardGeometry.computeBoundingBox();
 		
 		// Materials: [right, left, top, bottom, front, back]
 		const materials = [

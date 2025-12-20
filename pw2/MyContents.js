@@ -135,6 +135,7 @@ class MyContents  {
                 
             }
             });
+            this.boat.box = new THREE.Box3().setFromObject(this.boat);
 
 
             this.app.scene.add(this.boat);
@@ -244,7 +245,10 @@ class MyContents  {
         this.sign = new MySign(1.5, 0.05, 1.5, 1, 0.05, 0x8b5a2b, 0xdeb887, "BEWARE OF THE SHARK", this.videoTexture);
         this.sign.position.set(0,floorHeightPosition(0, 15),15);
         this.sign.scale.set(2,2,2);
+        this.sign.box = new THREE.Box3().setFromObject(this.sign);
         this.app.scene.add(this.sign); 
+
+
 
         const twoDShark = new My2DShark();
         twoDShark.scale.set(0.2, 0.2, 0.2);
@@ -543,7 +547,7 @@ class MyContents  {
 
         this.colisionObjects = [];
         this.colisionObjects.push(this.sign);
-        //addthe boat only if it is loaded
+        //add the boat only if it is loaded
         if(this.boat){
              this.colisionObjects.push(this.boat);
         }
