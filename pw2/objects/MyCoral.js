@@ -99,7 +99,7 @@ export class MyCoral {
             quaternion: new THREE.Quaternion(),
         };
 
-        console.log(coralType)
+
         let branchLength = coralType.lengthFactor * 0.7;
         const lengthFactor = coralType.lengthFactor;
         const branchMatrices = [];
@@ -204,7 +204,7 @@ export class MyCoral {
 
 
         if (leafMatrices.length > 0) {
-            console.log("here")
+
             const leafShape = new THREE.Shape();
             leafShape.moveTo(0, 0);
             leafShape.bezierCurveTo(0.05, 0.2, 0.1, 0.3, 0, 0.5);

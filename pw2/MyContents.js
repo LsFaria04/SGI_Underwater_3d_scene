@@ -168,29 +168,13 @@ class MyContents  {
         }
         
 
-        this.seaStarLOD = new THREE.LOD();
         this.seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined, "H");
-        const seaStarMid = new MySeaStar(0.1,0.2,"#ff0000", undefined, "M");
-        const seaStarLow = new MySeaStar(0.1,0.2,"#ff0000", undefined, "L");
-        this.seaStarLOD.addLevel(this.seaStar, 0);
-        this.seaStarLOD.addLevel(seaStarMid, 5);
-        this.seaStarLOD.addLevel(seaStarLow, 20);
-        this.app.scene.add(this.seaStarLOD);
-        this.seaStarLOD.position.set(4,floorHeightPosition(4,2),2);
-        this.lodObjects.push(this.seaStarLOD);
+        this.app.scene.add(this.seaStar);
+        this.seaStar.position.set(4,floorHeightPosition(4,2),2);
 
-
-        
-        this.crabLOD = new THREE.LOD();
-        this.crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
-        const crabDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "H");
-        const crabMediumDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "M");
-        this.crabLOD.addLevel(this.crab, 20);
-        this.crabLOD.addLevel(crabDetailed, 0);
-        this.crabLOD.addLevel(crabMediumDetailed, 5);
-        this.app.scene.add(this.crabLOD);
-        this.crabLOD.position.set(5,floorHeightPosition(5,1),1);
-        this.lodObjects.push(this.crabLOD);
+        this.crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null);
+        this.app.scene.add(this.crab);
+        this.crab.position.set(5,floorHeightPosition(5,1),1);
 
         this.bubbles = new MyBubbleParticles([
         { x: 5, z: 5 }
@@ -320,8 +304,8 @@ class MyContents  {
         bvhMeshes.push(this.jellyfish);
         bvhMeshes.push(this.seaUrchinLOD);
         bvhMeshes.push(this.turtle);
-        bvhMeshes.push(this.crabLOD);
-        bvhMeshes.push(this.seaStarLOD);
+        bvhMeshes.push(this.crab);
+        bvhMeshes.push(this.seaStar);
         bvhMeshes.push(this.boat);
 
 
@@ -432,6 +416,13 @@ class MyContents  {
         this.metalnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_metallic_512x512.png');
         this.displacementRock = loader.load("./textures/ocean-rock-bl/ocean-rock_height_512x512.png");
         this.ambientOcclusionRock = loader.load("./textures/ocean-rock-bl/ocean-rock_ao_512x512.png");
+        //Mips map for the rock texture
+        this.albedoRock.generateMipmaps = true;
+        this.normalRock.generateMipmaps = true;
+        this.roughnessRock.generateMipmaps = true;
+        this.metalnessRock.generateMipmaps = true;
+        this.displacementRock.generateMipmaps = true;
+        this.ambientOcclusionRock.generateMipmaps = true;
         this.rockTexture = {
                 ao: this.ambientOcclusionRock,
                 albedo: this.albedoRock,
@@ -481,6 +472,13 @@ class MyContents  {
         this.metalnessCoral = loader.load('./textures/coral1-bl/coral1_metallic_512x512.png');
         this.displacementCoral = loader.load("./textures/coral1-bl/coral1_height_511x511.png");
         this.ambientOcclusionCoral = loader.load("./textures/coral1-bl/coral1_ao_512x512.png");
+        //Mip map for the coral texture
+        this.albedoCoral.generateMipmaps = true;
+        this.normalCoral.generateMipmaps = true;
+        this.roughnessCoral.generateMipmaps = true;
+        this.metalnessCoral.generateMipmaps = true;
+        this.displacementCoral.generateMipmaps = true;
+        this.ambientOcclusionCoral.generateMipmaps = true;
          this.coralTexture = {
                 ao: this.ambientOcclusionCoral,
                 albedo: this.albedoCoral,
@@ -491,6 +489,7 @@ class MyContents  {
         }
 
         this.fishTexture1 = new THREE.TextureLoader().load("./textures/fish.jpg");
+        this.fishTexture1.generateMipmaps = true;
 
         this.sharkTexture = new THREE.TextureLoader().load("./textures/shark-skin.jpg");
 
@@ -648,17 +647,15 @@ class MyContents  {
                 helper.visible = enable;
             }
         }
-        for(const crab of this.crabLOD.children){
-            for(const helper of crab.helpers){
+        for(const helper of this.crab.helpers){
                 helper.visible = enable;
-            }
+            
         }
 
-        for(const star of this.seaStarLOD.children){
-            for(const helper of star.helpers){
+        for(const helper of this.seaStar.helpers){
                 helper.visible = enable;
-            }
         }
+        
 
         for(const helper of this.boat.helpers){
             helper.visible = enable;
