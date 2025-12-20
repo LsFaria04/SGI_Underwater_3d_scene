@@ -355,6 +355,7 @@ class MyContents  {
 
         if (hits.length > 0) {
             const hit = hits[0];
+
             this.sandPuff.spawn(hit.point, hit.face.normal, 500);
         }
 

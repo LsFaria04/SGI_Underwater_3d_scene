@@ -94,7 +94,7 @@ class SandPuffSystem {
 
       //Check if the particle is already in the seabed. Hide it if that is the case
       const floorHeight = floorHeightPosition(this.positions[i * 3], this.positions[i * 3 + 2]);
-      if(this.positions[i * 3 + 1] <= floorHeight){
+      if(this.positions[i * 3 + 1] <= (floorHeight - 1)){
         this.alive[i] = false;
         this.positions[i * 3 + 1] = -9999; // hide
         continue;

@@ -44,6 +44,7 @@ class MyFloor extends THREE.Mesh {
         texture.displacement.repeat.set(size * 4 /25, size * 4 /25);
 
         geometry.setAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
+        geometry.computeBoundsTree();
                         
         const material = new THREE.MeshStandardMaterial({
             color: "#C2B280",   // sand color
