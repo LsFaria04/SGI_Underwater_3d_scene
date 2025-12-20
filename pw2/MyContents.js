@@ -223,31 +223,18 @@ class MyContents  {
         this.coralReef2 = new MyCoralReef(10,10, 1, "branchingCoral", 10, 4, this.coralTexture);
         this.app.scene.add(this.coralReef2);
 
-        this.seaUrchinLOD = new THREE.LOD();
+
         this.seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
-        const seaUrchinMid = new MySeaUrchin(0.1, 0.5, 100, "#000000", "M");
-        const seaUrchinHigh = new MySeaUrchin(0.1, 0.5, 100, "#000000", "H");
-        this.seaUrchinLOD.addLevel(this.seaUrchin, 20);
-        this.seaUrchinLOD.addLevel(seaUrchinMid, 10);
-        this.seaUrchinLOD.addLevel(seaUrchinHigh, 0);
-        this.seaUrchinLOD.position.set(4, floorHeightPosition(4,4), 4);
-        this.app.scene.add(this.seaUrchinLOD);
-        this.lodObjects.push(this.seaUrchinLOD);
+        this.seaUrchin.position.set(4, floorHeightPosition(4,-10) + 0.2, -10);
+        this.app.scene.add(this.seaUrchin);
 
         this.turtle = new MyTurtle(0.5, 0.15);
         this.turtle.position.set(-4, floorHeightPosition(-4,1) + 0.3 , 1);
         this.app.scene.add(this.turtle);
 
-        this.jellyfishLOD = new THREE.LOD();
-        this.jellyfish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
-        this.jellyfishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
-        this.jellyfishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
-        this.jellyfishLOD.addLevel(this.jellyfish, 0);
-        this.jellyfishLOD.addLevel(this.jellyfishMedium, 15);
-        this.jellyfishLOD.addLevel(this.jellyfishLow, 30);
-        this.app.scene.add(this.jellyfishLOD);
-        this.jellyfishLOD.position.set(0,5,0);
-        this.lodObjects.push(this.jellyfishLOD);
+        this.jellyfish = new MyJellyFish(0.5, 1);
+        this.app.scene.add(this.jellyfish);
+        this.jellyfish.position.set(0,5,0);
         
         this.shark = new MyShark(1, "#2244aa", this.sharkTexture);
         this.shark.position.set(-8, 10, 0);
@@ -302,7 +289,7 @@ class MyContents  {
         bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(this.jellyfish);
-        bvhMeshes.push(this.seaUrchinLOD);
+        bvhMeshes.push(this.seaUrchin);
         bvhMeshes.push(this.turtle);
         bvhMeshes.push(this.crab);
         bvhMeshes.push(this.seaStar);
@@ -570,11 +557,7 @@ class MyContents  {
 
         this.submarine.update(delta);
 
-        this.jellyfish.update(delta);
-
-        for (const lod of this.lodObjects) {
-            lod.update(this.app.activeCamera);
-        }
+        this.jellyfish.updateAnimation(delta);
     }
 
     setWireframeMode(enabled) {
@@ -628,12 +611,6 @@ class MyContents  {
         for(const helper of this.jellyfish.helpers){
             helper.visible = enable;
         }
-        for(const helper of this.jellyfishMedium.helpers){
-            helper.visible = enable;
-        }
-        for(const helper of this.jellyfishLow.helpers){
-            helper.visible = enable;
-        }
         for(const helper of this.submarine.helpers){
             helper.visible = enable;
         }
@@ -643,11 +620,10 @@ class MyContents  {
         for(const helper of this.turtle.helpers){
             helper.visible = enable;
         }
-        for(const seaUrchin of this.seaUrchinLOD.children){
-            for(const helper of seaUrchin.helpers){
+        for(const helper of this.seaUrchin.helpers){
                 helper.visible = enable;
-            }
         }
+        
         for(const helper of this.crab.helpers){
                 helper.visible = enable;
             

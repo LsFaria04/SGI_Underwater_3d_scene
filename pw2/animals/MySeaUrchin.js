@@ -1,83 +1,95 @@
 import * as THREE from 'three';
 import { MeshBVHHelper } from '../index.module.js';
+
 /**
  * This class represents a sea urchin
  */
-class MySeaUrchin extends THREE.Object3D {
+class MySeaUrchin extends THREE.LOD {
+
     /**
      * 
-     * @param {*} radius Sea urchin body radius
-     * @param {*} spikeLength Sea urchin spike lenght
-     * @param {*} numSpikes Sea urchin number of spikes in the body
-     * @param {*} color Sea urchin color
+     * @param {*} radius Radius of the sea urchin body
+     * @param {*} spikeLength Lenght of the spikes
+     * @param {*} numSpikes Number og spikes
+     * @param {*} color color or the sea urchin
      */
-    constructor(radius = 0.1, spikeLength = 0.5, numSpikes = 100, color = 0x000000, LOD) {
+    constructor(radius = 0.1, spikeLength = 0.5, numSpikes = 100, color = 0x000000) {
         super();
+
         this.radius = radius;
         this.spikeLength = spikeLength;
         this.numSpikes = numSpikes;
         this.color = color;
         this.helpers = [];
 
-        switch(LOD){
-            case "L":
-                this.initLowLOD();
-                break;
-            case "M":
-                this.initMediumLOD();
-                break;
-            case "H":
-                this.initHighLOD();
-                break;
-            default:
-                this.initLowLOD();
-        }
+        this.init();
     }
-    
+
+    addBVHHelper(mesh) {
+        const helper = new MeshBVHHelper(mesh);
+        helper.visible = false;
+        mesh.add(helper);
+        this.helpers.push(helper);
+    }
+
+    init() {
+        // High detail (LOD 0)
+        const high = this.initHighLOD();
+        this.addLevel(high, 0);
+
+        // Medium detail (LOD 1)
+        const medium = this.initMediumLOD();
+        this.addLevel(medium, 5);
+
+        // Low detail (LOD 2)
+        const low = this.initLowLOD();
+        this.addLevel(low, 20);
+    }
+
+
     initLowLOD() {
-        //No spikes and boxy body
-        
-        const bodyGeom = new THREE.BoxGeometry(this.radius + this.spikeLength * 0.5, this.radius  + this.spikeLength * 0.5, this.radius  + this.spikeLength * 0.5);
+        const urchin = new THREE.Object3D();
+
+        const bodyGeom = new THREE.BoxGeometry(
+            this.radius + this.spikeLength * 0.5,
+            this.radius + this.spikeLength * 0.5,
+            this.radius + this.spikeLength * 0.5
+        );
         const bodyMat = new THREE.MeshStandardMaterial({ color: this.color });
         const bodyMesh = new THREE.Mesh(bodyGeom, bodyMat);
-        this.add(bodyMesh);
 
         bodyGeom.computeBoundsTree();
+        urchin.add(bodyMesh);
 
-        const helper = new MeshBVHHelper(bodyMesh);
-        helper.visible = false;
-        this.add(helper);
-        this.helpers.push(helper);
+        // Add helpers once
+        urchin.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
 
+        return urchin;
     }
 
+
     initMediumLOD() {
-        //lower number of spikes and less rounded body
+        const urchin = new THREE.Object3D();
 
         const bodyGeom = new THREE.SphereGeometry(this.radius, 5, 5);
         const bodyMat = new THREE.MeshStandardMaterial({ color: this.color });
         const bodyMesh = new THREE.Mesh(bodyGeom, bodyMat);
-        this.add(bodyMesh);
 
         bodyGeom.computeBoundsTree();
+        urchin.add(bodyMesh);
 
-        const helper = new MeshBVHHelper(bodyMesh);
-        helper.visible = false;
-        this.add(helper);
-        this.helpers.push(helper);
-
+        // Spikes (reduced count)
         const spikeGeom = new THREE.ConeGeometry(0.02, this.spikeLength, 4, 1);
         const spikeMat = new THREE.MeshStandardMaterial({ color: this.color });
-        const spikes = new THREE.InstancedMesh(spikeGeom, spikeMat, this.numSpikes);
+
+        const mediumCount = Math.round(this.numSpikes * 0.5);
+        const spikes = new THREE.InstancedMesh(spikeGeom, spikeMat, mediumCount);
 
         const spike = new THREE.Object3D();
 
-        //Reduced number og spikes for medium LOD
-        const mediumLODSpikeNumb = Math.round(this.numSpikes * 0.5);
-
-        for (let i = 0; i < mediumLODSpikeNumb; i++) {
-
-            // random distribution
+        for (let i = 0; i < mediumCount; i++) {
             const theta = Math.random() * 2 * Math.PI;
             const phi = Math.acos(2 * Math.random() - 1);
 
@@ -88,37 +100,40 @@ class MySeaUrchin extends THREE.Object3D {
             spike.position.set(x, y, z);
 
             const dir = new THREE.Vector3(x, y, z).normalize();
-            const axis = new THREE.Vector3(0, 1, 0);
-            spike.quaternion.setFromUnitVectors(axis, dir);
+            spike.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
 
             spike.updateMatrix();
             spikes.setMatrixAt(i, spike.matrix);
         }
-        this.add(spikes);
+
+        urchin.add(spikes);
+
+        // Add helpers once
+        urchin.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
+
+        return urchin;
     }
 
     initHighLOD() {
+        const urchin = new THREE.Object3D();
+
         const bodyGeom = new THREE.SphereGeometry(this.radius, 12, 12);
         const bodyMat = new THREE.MeshStandardMaterial({ color: this.color });
         const bodyMesh = new THREE.Mesh(bodyGeom, bodyMat);
-        this.add(bodyMesh);
 
         bodyGeom.computeBoundsTree();
+        urchin.add(bodyMesh);
 
-        const helper = new MeshBVHHelper(bodyMesh);
-        helper.visible = false;
-        this.add(helper);
-        this.helpers.push(helper);
-
+        // Spikes (full count)
         const spikeGeom = new THREE.ConeGeometry(0.02, this.spikeLength, 4);
         const spikeMat = new THREE.MeshStandardMaterial({ color: this.color });
-        const spikes = new THREE.InstancedMesh(spikeGeom, spikeMat, this.numSpikes);
 
+        const spikes = new THREE.InstancedMesh(spikeGeom, spikeMat, this.numSpikes);
         const spike = new THREE.Object3D();
 
         for (let i = 0; i < this.numSpikes; i++) {
-
-            // random distribution
             const theta = Math.random() * 2 * Math.PI;
             const phi = Math.acos(2 * Math.random() - 1);
 
@@ -129,13 +144,20 @@ class MySeaUrchin extends THREE.Object3D {
             spike.position.set(x, y, z);
 
             const dir = new THREE.Vector3(x, y, z).normalize();
-            const axis = new THREE.Vector3(0, 1, 0);
-            spike.quaternion.setFromUnitVectors(axis, dir);
+            spike.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
 
             spike.updateMatrix();
             spikes.setMatrixAt(i, spike.matrix);
         }
-        this.add(spikes);
+
+        urchin.add(spikes);
+
+        // Add helpers once
+        urchin.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
+
+        return urchin;
     }
 }
 
