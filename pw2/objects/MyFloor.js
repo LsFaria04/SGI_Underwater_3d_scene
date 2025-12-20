@@ -26,22 +26,22 @@ class MyFloor extends THREE.Mesh {
 
         texture.albedo.wrapS = THREE.MirroredRepeatWrapping;
         texture.albedo.wrapT = THREE.MirroredRepeatWrapping;
-        texture.albedo.repeat.set(4, 4);
+        texture.albedo.repeat.set(size * 4 /25, size * 4 /25);
         texture.roughness.wrapS = THREE.MirroredRepeatWrapping;
         texture.roughness.wrapT = THREE.MirroredRepeatWrapping;
-        texture.roughness.repeat.set(4, 4);
+        texture.roughness.repeat.set(size * 4 /25, size * 4 /25);
         texture.metallic.wrapS = THREE.MirroredRepeatWrapping;
         texture.metallic.wrapT = THREE.MirroredRepeatWrapping;
-        texture.metallic.repeat.set(4, 4);
+        texture.metallic.repeat.set(size * 4 /25, size * 4 /25);
         texture.normal.wrapS = THREE.MirroredRepeatWrapping;
         texture.normal.wrapT = THREE.MirroredRepeatWrapping;
-        texture.normal.repeat.set(4, 4);
+        texture.normal.repeat.set(size * 4 /25, size * 4 /25);
         texture.ao.wrapS = THREE.MirroredRepeatWrapping;
         texture.ao.wrapT = THREE.MirroredRepeatWrapping;
-        texture.ao.repeat.set(4, 4);
+        texture.ao.repeat.set(size * 4 /25, size * 4 /25);
         texture.displacement.wrapS = THREE.MirroredRepeatWrapping;
         texture.displacement.wrapT = THREE.MirroredRepeatWrapping;
-        texture.displacement.repeat.set(4, 4);
+        texture.displacement.repeat.set(size * 4 /25, size * 4 /25);
 
         geometry.setAttribute('uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2));
                         

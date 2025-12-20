@@ -144,7 +144,7 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        this.floor = new MyFloor(50, 128, this.sandTexture);
+        this.floor = new MyFloor(200, 128, this.sandTexture);
         this.app.scene.add(this.floor);
 
         const water = new MyWater(50, 20);
