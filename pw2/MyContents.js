@@ -56,23 +56,7 @@ class MyContents  {
     init() {
         this.initLights();
         this.initTextures();
-        this.initCustomShaders();
         this.initObjects(); 
-    }
-
-    initCustomShaders() {
-        this.seaweedUniforms = {
-            uTime: { value: 0 },
-            uColorLow: { value: new THREE.Color("#3a6c3a") }, // Darker Green
-            uColorHigh: { value: new THREE.Color("#219a00") } // Lighter Green
-        };
-
-        this.seaweedMaterial = new THREE.ShaderMaterial({
-            vertexShader: document.getElementById('vertexShader').textContent,
-            fragmentShader: document.getElementById('fragmentShader').textContent,
-            uniforms: this.seaweedUniforms,
-            side: THREE.DoubleSide
-        });
     }
 
     initLights() {
@@ -156,12 +140,6 @@ class MyContents  {
         for(let i = 0; i < plantGroupsPosSize.length; i++){
             const pos = plantGroupsPosSize[i];
             const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[0], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
-
-            seaPlantGroup.traverse((child) => {
-                if (child.isMesh) {
-                    child.material = this.seaweedMaterial;
-                }
-            });
 
             this.app.scene.add(seaPlantGroup);
             this.seaPlantGroups.push(seaPlantGroup);
@@ -354,11 +332,29 @@ class MyContents  {
                 
                 if (!child.userData.isCloned) {
                     if (Array.isArray(child.material)) {
-
-                        child.material = child.material.map(m => m.clone());
+                        child.material = child.material.map(m => {
+                            const cloned = m.clone();
+                            // Preserve shader modifications
+                            if (m.onBeforeCompile) {
+                                cloned.onBeforeCompile = m.onBeforeCompile;
+                                cloned.customProgramCacheKey = m.customProgramCacheKey;
+                            }
+                            if (m.userData.uniforms) {
+                                cloned.userData.uniforms = m.userData.uniforms;
+                            }
+                            return cloned;
+                        });
                     } else {
-    
-                        child.material = child.material.clone();
+                        const originalMat = child.material;
+                        child.material = originalMat.clone();
+                        // Preserve shader modifications
+                        if (originalMat.onBeforeCompile) {
+                            child.material.onBeforeCompile = originalMat.onBeforeCompile;
+                            child.material.customProgramCacheKey = originalMat.customProgramCacheKey;
+                        }
+                        if (originalMat.userData.uniforms) {
+                            child.material.userData.uniforms = originalMat.userData.uniforms;
+                        }
                     }
                     child.userData.isCloned = true;
                 }
@@ -508,11 +504,6 @@ class MyContents  {
     update(delta) {
         if (!delta) return;
 
-
-        if (this.seaweedUniforms) {
-            this.seaweedUniforms.uTime.value += delta;
-        }
-
         // update submarine model to follow submarine camera 
         if (this.submarine && this.app.activeCameraName === 'Submarine') {
             this.submarine.position.copy(this.app.activeCamera.position);
@@ -527,6 +518,21 @@ class MyContents  {
         this.swordFish.update(delta);
         this.shark.update(delta);
         
+
+        // Update coral Perlin noise animation
+        for (var coral of this.coralReef1.children) {
+            if (coral.userData.uniforms) {
+                coral.userData.uniforms.uTime.value += delta;
+            } else {
+                console.warn('Coral missing uniforms:', coral.name, coral.userData);
+            }
+        }
+        
+        for (var coral of this.coralReef2.children) {
+            if (coral.userData.uniforms) {
+                coral.userData.uniforms.uTime.value += delta;
+            }
+        }
         
         //update the animation in the sea plants
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
