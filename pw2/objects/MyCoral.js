@@ -195,12 +195,12 @@ export class MyCoral {
         };
         
         const branchMat = new THREE.MeshStandardMaterial({
-            color: coralColor, 
+            color: coralColor,
             map: this.texture.albedo,
             normalMap: this.texture.normal,
             roughnessMap: this.texture.roughness,
             metalnessMap: this.texture.metallic,
-            aoMap: this.texture.ao
+
         });
 
         // Store uniforms on material userData
@@ -228,17 +228,25 @@ export class MyCoral {
             shader.vertexShader = shader.vertexShader.replace(
                 '#include <begin_vertex>',
                 `#include <begin_vertex>
-                // Get instance world position
-                vec3 instancePos = (instanceMatrix * vec4(position, 1.0)).xyz;
-                vWorldPos = instancePos;
+                // Get world position for global sway (not per-instance)
+                vec4 worldPos = modelMatrix * instanceMatrix * vec4(position, 1.0);
+                vWorldPos = worldPos.xyz;
                 
-                // Perlin noise wave movement - stronger at top of coral
-                float heightFactor = clamp(position.y, 0.0, 1.0);
-                float waveNoise = cnoise(instancePos * 1.5 + vec3(uTime * 0.8, uTime * 0.5, uTime * 0.3));
+                // Global sway based on height from coral base
+                // This keeps the structure intact while adding gentle movement
+                float heightFromBase = worldPos.y + 4.0; // offset by coral base position
+                float swayInfluence = smoothstep(0.0, 2.0, heightFromBase); // only upper parts sway
                 
-                // Apply wave displacement (sway effect)
-                transformed.x += waveNoise * 0.15 * heightFactor;
-                transformed.z += waveNoise * 0.1 * heightFactor;
+                // Gentle perlin noise for organic variation
+                float noise = cnoise(worldPos.xyz * 0.8 + vec3(uTime * 0.2, 0.0, uTime * 0.15)) * 0.5;
+                
+                // Very subtle global sway - moves entire structure together
+                float swayX = sin(uTime * 0.5 + noise) * 0.05 * swayInfluence;
+                float swayZ = cos(uTime * 0.6 + noise * 0.8) * 0.025 * swayInfluence;
+                
+                // Apply to transformed position (minimal deformation to maintain structure)
+                transformed.x += swayX;
+                transformed.z += swayZ;
                 `
             );
 
@@ -256,17 +264,18 @@ export class MyCoral {
                 '#include <color_fragment>',
                 `#include <color_fragment>
                 // Multi-layered Perlin noise for rich organic patterns
-                float noise1 = cnoise(vWorldPos * 3.0 + vec3(uTime * 0.4, 0.0, uTime * 0.2));
-                float noise2 = cnoise(vWorldPos * 6.0 - vec3(uTime * 0.2, uTime * 0.3, 0.0)) * 0.5;
+                float noise1 = cnoise(vWorldPos * 3.0 + vec3(uTime * 0.8, 0.0, uTime * 0.4));
+                float noise2 = cnoise(vWorldPos * 6.0 - vec3(uTime * 0.4, uTime * 0.6, 0.0)) * 0.5;
                 float combinedNoise = noise1 + noise2;
                 
-                // Dramatic color pulsing
-                diffuseColor.rgb *= 0.4 + combinedNoise * 0.9;
+                // Vivid brightness pulsing
+                float pulse = sin(uTime * 1.2 + combinedNoise * 3.0) * 0.5 + 0.5;
+                diffuseColor.rgb *= 0.6 + pulse * 0.8;
                 
-                // Strong hue shifting for bioluminescent effect
-                diffuseColor.r *= 1.0 + combinedNoise * 0.4;
-                diffuseColor.g *= 1.0 + sin(uTime * 0.5 + combinedNoise) * 0.2;
-                diffuseColor.b *= 1.0 - combinedNoise * 0.3;
+                // Strong hue shifting for vivid bioluminescent effect
+                diffuseColor.r *= 1.0 + combinedNoise * 0.8 + pulse * 0.4;
+                diffuseColor.g *= 1.0 + sin(uTime * 0.7 + combinedNoise * 2.0) * 0.5;
+                diffuseColor.b *= 1.0 + cos(uTime * 0.9 + combinedNoise * 1.5) * 0.6 - combinedNoise * 0.4;
                 `
             );
 
