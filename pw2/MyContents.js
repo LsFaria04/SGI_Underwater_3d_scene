@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
-import {MyBubbleParticles} from './objects/MyBubbleParticles.js';
+import {MyBubbleParticles} from './particles/MyBubbleParticles.js';
 import { MySeaStar } from './animals/MySeaStar.js';
 import { MyJellyFish } from './animals/MyJellyFish.js';
 import { MyCrab } from './animals/MyCrab.js';
