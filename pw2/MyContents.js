@@ -18,7 +18,7 @@ import { MyShark } from './animals/MyShark.js';
 import { MySwordFish } from './animals/MySwordFish.js';
 import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
 import { MySubmarine } from './objects/MySubmarine.js';
-import { acceleratedRaycast } from './index.module.js';
+import { MyMarineSnow } from './objects/MyMarineSnow.js';
 import { MeshBVHHelper } from './index.module.js';
 import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
 import { floorHeightPosition } from './utils.js';
@@ -56,23 +56,7 @@ class MyContents  {
     init() {
         this.initLights();
         this.initTextures();
-        this.initCustomShaders();
         this.initObjects(); 
-    }
-
-    initCustomShaders() {
-        this.seaweedUniforms = {
-            uTime: { value: 0 },
-            uColorLow: { value: new THREE.Color("#3a6c3a") }, // Darker Green
-            uColorHigh: { value: new THREE.Color("#219a00") } // Lighter Green
-        };
-
-        this.seaweedMaterial = new THREE.ShaderMaterial({
-            vertexShader: document.getElementById('vertexShader').textContent,
-            fragmentShader: document.getElementById('fragmentShader').textContent,
-            uniforms: this.seaweedUniforms,
-            side: THREE.DoubleSide
-        });
     }
 
     initLights() {
@@ -157,12 +141,6 @@ class MyContents  {
         for(let i = 0; i < plantGroupsPosSize.length; i++){
             const pos = plantGroupsPosSize[i];
             const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[0], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
-
-            seaPlantGroup.traverse((child) => {
-                if (child.isMesh) {
-                    child.material = this.seaweedMaterial;
-                }
-            });
 
             this.app.scene.add(seaPlantGroup);
             this.seaPlantGroups.push(seaPlantGroup);
@@ -265,6 +243,10 @@ class MyContents  {
 
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2, 50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
+
+        this.marineSnow = new MyMarineSnow([0.1], ["#FFFFFF"], [this.snowTexture1], 0.01);
+        this.marineSnow.position.set(0,10,0);
+        this.app.scene.add(this.marineSnow);
     }
 
     onMouseClick(mousePos) {
@@ -358,11 +340,29 @@ class MyContents  {
                 
                 if (!child.userData.isCloned) {
                     if (Array.isArray(child.material)) {
-
-                        child.material = child.material.map(m => m.clone());
+                        child.material = child.material.map(m => {
+                            const cloned = m.clone();
+                            // Preserve shader modifications
+                            if (m.onBeforeCompile) {
+                                cloned.onBeforeCompile = m.onBeforeCompile;
+                                cloned.customProgramCacheKey = m.customProgramCacheKey;
+                            }
+                            if (m.userData.uniforms) {
+                                cloned.userData.uniforms = m.userData.uniforms;
+                            }
+                            return cloned;
+                        });
                     } else {
-    
-                        child.material = child.material.clone();
+                        const originalMat = child.material;
+                        child.material = originalMat.clone();
+                        // Preserve shader modifications
+                        if (originalMat.onBeforeCompile) {
+                            child.material.onBeforeCompile = originalMat.onBeforeCompile;
+                            child.material.customProgramCacheKey = originalMat.customProgramCacheKey;
+                        }
+                        if (originalMat.userData.uniforms) {
+                            child.material.userData.uniforms = originalMat.userData.uniforms;
+                        }
                     }
                     child.userData.isCloned = true;
                 }
@@ -506,12 +506,18 @@ class MyContents  {
         // 3. Store the video element to control playback later if needed
         this.videoElement = this.video;
 
+        // Marine Snow Textures
+        this.snowTexture1 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake1.png");
+        this.snowTexture2 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake2.png");
         this.bubbleTexture = new THREE.TextureLoader().load("./textures/bubble.png");
     }
 
     update(delta) {
         if (!delta) return;
 
+        if (this.marineSnow) {
+            this.marineSnow.update(delta);
+        }
 
         if (this.seaweedUniforms) {
             this.seaweedUniforms.uTime.value += delta;
@@ -531,6 +537,21 @@ class MyContents  {
         this.swordFish.update(delta);
         this.shark.update(delta);
         
+
+        // Update coral Perlin noise animation
+        for (var coral of this.coralReef1.children) {
+            if (coral.userData.uniforms) {
+                coral.userData.uniforms.uTime.value += delta;
+            } else {
+                console.warn('Coral missing uniforms:', coral.name, coral.userData);
+            }
+        }
+        
+        for (var coral of this.coralReef2.children) {
+            if (coral.userData.uniforms) {
+                coral.userData.uniforms.uTime.value += delta;
+            }
+        }
         
         //update the animation in the sea plants
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
