@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
-import { MyBubble } from './objects/MyBubble.js';
+import {MyBubbleParticles} from './particles/MyBubbleParticles.js';
 import { MySeaStar } from './animals/MySeaStar.js';
 import { MyJellyFish } from './animals/MyJellyFish.js';
 import { MyCrab } from './animals/MyCrab.js';
@@ -16,11 +16,13 @@ import { My2DShark } from './animals/My2DShark.js';
 import { MySign } from './objects/MySign.js';
 import { MyShark } from './animals/MyShark.js';
 import { MySwordFish } from './animals/MySwordFish.js';
-import { MySeaPlant } from './objects/MySeaPlant.js';
 import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
 import { MySubmarine } from './objects/MySubmarine.js';
-import { acceleratedRaycast } from './index.module.js';
 import { MyMarineSnow } from './objects/MyMarineSnow.js';
+import { MeshBVHHelper } from './index.module.js';
+import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
+import { floorHeightPosition } from './utils.js';
+import { SandPuffSystem } from './particles/MySandPuffParticles.js';
 
 
 /**
@@ -47,38 +49,23 @@ class MyContents  {
 
         this.onMouseClick = this.onMouseClick.bind(this);
         window.addEventListener('click', this.onMouseClick);
+        
     }
 
     // initializes the scene contents
     init() {
         this.initLights();
         this.initTextures();
-        this.initCustomShaders();
         this.initObjects(); 
-    }
-
-    initCustomShaders() {
-        this.seaweedUniforms = {
-            uTime: { value: 0 },
-            uColorLow: { value: new THREE.Color("#3a6c3a") }, // Darker Green
-            uColorHigh: { value: new THREE.Color("#219a00") } // Lighter Green
-        };
-
-        this.seaweedMaterial = new THREE.ShaderMaterial({
-            vertexShader: document.getElementById('vertexShader').textContent,
-            fragmentShader: document.getElementById('fragmentShader').textContent,
-            uniforms: this.seaweedUniforms,
-            side: THREE.DoubleSide
-        });
     }
 
     initLights() {
 
-        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.2);
+        const ambientLight = new THREE.AmbientLight(0x88aaff, 0.1);
         this.app.scene.add( ambientLight );
 
         // directional light to simulate sun from above
-        const directionalLight = new THREE.DirectionalLight(0x88aaff, 0.5);
+        const directionalLight = new THREE.DirectionalLight(0x88aaff, 0.3);
         directionalLight.position.set(10, 20, 10);
         directionalLight.castShadow = true;
 
@@ -106,63 +93,78 @@ class MyContents  {
             //this.app.scene.add(this.axis)
         }
 
+        const loader = new GLTFLoader(); //Used to import objects in the GLTF format that were not moddeled by us 
+
+        loader.load('objects/malletts_bay_old_tour_boat/scene.gltf', (gltf) => {
+
+            this.boat = gltf.scene
+            this.boat.scale.set(0.1, 0.1, 0.1);
+            this.boat.position.set(0,3,0);
+            this.boat.traverse((child) => {
+                if (child.isMesh && child.material) {
+                    child.material.emissive.set(0x000000);
+                    child.material.emissiveIntensity = 0;
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            this.boat.helpers = [];
+            this.boat.traverse((child) => {
+            if (child.isMesh) {
+                child.geometry.computeBoundsTree();
+                const helper = new MeshBVHHelper(child);
+                helper.visible = false;
+                child.add(helper);
+                this.boat.helpers.push(helper);
+                
+            }
+            });
+
+
+            this.app.scene.add(this.boat);
+        }, undefined, (error) => {
+            console.error(error);
+        });
+
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        const floor = new MyFloor(50, 256, this.sandTexture);
-        this.app.scene.add(floor);
+        this.floor = new MyFloor(200, 128, this.sandTexture);
+        this.app.scene.add(this.floor);
 
-        const water = new MyWater();
+        const water = new MyWater(50, 20);
         this.app.scene.add(water);
 
         //plant position and size [x, z, number of plants]
-        const plantGroupsPosSize = [[-20, -1, 100], [1, 8, 50], [10,5, 10]];
+        const plantGroupsPosSize = [[-20, -1, 100], [-4, 9, 50], [10,5, 10]];
         this.seaPlantGroups = [];
         for(let i = 0; i < plantGroupsPosSize.length; i++){
             const pos = plantGroupsPosSize[i];
-            const seaPlantGroup = new MySeaPlantGroup(pos[2], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
-
-            seaPlantGroup.traverse((child) => {
-                if (child.isMesh) {
-                    child.material = this.seaweedMaterial;
-                }
-            });
+            const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[0], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
 
             this.app.scene.add(seaPlantGroup);
             this.seaPlantGroups.push(seaPlantGroup);
-            seaPlantGroup.position.set(pos[0],0,pos[1]);
         }
         
 
-        this.seaStarLOD = new THREE.LOD();
         this.seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined, "H");
-        const seaStarMid = new MySeaStar(0.1,0.2,"#ff0000", undefined, "M");
-        const seaStarLow = new MySeaStar(0.1,0.2,"#ff0000", undefined, "L");
-        this.seaStarLOD.addLevel(this.seaStar, 0);
-        this.seaStarLOD.addLevel(seaStarMid, 5);
-        this.seaStarLOD.addLevel(seaStarLow, 20);
-        this.app.scene.add(this.seaStarLOD);
-        this.seaStarLOD.position.set(2,0.25,2);
-        this.lodObjects.push(this.seaStarLOD);
+        this.app.scene.add(this.seaStar);
+        this.seaStar.position.set(4,floorHeightPosition(4,2),2);
 
+        this.crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null);
+        this.app.scene.add(this.crab);
+        this.crab.position.set(5,floorHeightPosition(5,1),1);
 
-        
-        this.crabLOD = new THREE.LOD();
-        this.crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "L");
-        const crabDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "H");
-        const crabMediumDetailed = new MyCrab(0.2,0.2,0.1, "#FF0000", null, "M");
-        this.crabLOD.addLevel(this.crab, 20);
-        this.crabLOD.addLevel(crabDetailed, 0);
-        this.crabLOD.addLevel(crabMediumDetailed, 5);
-        this.app.scene.add(this.crabLOD);
-        this.crabLOD.position.set(3,0.3,1);
-        this.lodObjects.push(this.crabLOD);
+        this.bubbles = new MyBubbleParticles([
+        { x: 5, z: 5 }
+        ],
+        1000,
+        this.bubbleTexture
+        );
 
-        this.bubbles = [];
-        for (let i = 0; i < 10; i++) {
-            const bubble = new MyBubble(0.10 + Math.random() * 0.08, 1); 
-            this.app.scene.add(bubble);
-            this.bubbles.push(bubble);
-        }
+        this.app.scene.add(this.bubbles.points);
+
+        this.sandPuff = new SandPuffSystem(this.app.scene, 500);
+
         
         //carps position and size [x, y, z, number of carps]
         this.fishesFlockingParams = {
@@ -181,53 +183,36 @@ class MyContents  {
             fishGroup.position.set(pos[0],pos[1],pos[2]);
         }
 
-        
 
         //rock position and size [x, z, number of rocks]
         this.rockGroups = [];
-        const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [1, 4, 3], [-10, 4, 8], [3, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
+        const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [4, 4, 3], [-10, 4, 8], [5, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
         for(let i = 0; i < rockPosSize.length; i++){
             const pos = rockPosSize[i];
-            const rockGroup = new MyRockGroup(pos[2], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], true, [this.rockTexture]);
+            const rockGroup = new MyRockGroup(pos[2],pos[0], pos[1], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], false, [this.rockTexture]);
             this.rockGroups.push(rockGroup);
-            rockGroup.position.set(pos[0],0,pos[1]);
             this.app.scene.add(rockGroup);
         }
         
 
-        this.coralReef1 = new MyCoralReef(40, "fanCoral", 20, 4, this.coralTexture);
-        this.coralReef1.position.y = 0;
+        this.coralReef1 = new MyCoralReef(10,-10, 1, "fanCoral", 10, 4, this.coralTexture);
         this.app.scene.add(this.coralReef1);
 
-        this.coralReef2 = new MyCoralReef(40, "branchingCoral", 20, 4, this.coralTexture);
-        this.coralReef2.position.y = 0;
+        this.coralReef2 = new MyCoralReef(10,10, 1, "branchingCoral", 10, 4, this.coralTexture);
         this.app.scene.add(this.coralReef2);
 
-        this.seaUrchinLOD = new THREE.LOD();
+
         this.seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
-        const seaUrchinMid = new MySeaUrchin(0.1, 0.5, 100, "#000000", "M");
-        const seaUrchinHigh = new MySeaUrchin(0.1, 0.5, 100, "#000000", "H");
-        this.seaUrchinLOD.addLevel(this.seaUrchin, 20);
-        this.seaUrchinLOD.addLevel(seaUrchinMid, 10);
-        this.seaUrchinLOD.addLevel(seaUrchinHigh, 0);
-        this.seaUrchinLOD.position.set(4, 0.3, 4);
-        this.app.scene.add(this.seaUrchinLOD);
-        this.lodObjects.push(this.seaUrchinLOD);
+        this.seaUrchin.position.set(4, floorHeightPosition(4,-10) + 0.2, -10);
+        this.app.scene.add(this.seaUrchin);
 
         this.turtle = new MyTurtle(0.5, 0.15);
-        this.turtle.position.set(-4, 0.3, 4);
+        this.turtle.position.set(-4, floorHeightPosition(-4,1) + 0.3 , 1);
         this.app.scene.add(this.turtle);
 
-        this.jellyfishLOD = new THREE.LOD();
-        this.jellyfish = new MyJellyFish(0.5, 1, undefined, undefined, "H");
-        this.jellyfishMedium = new MyJellyFish(0.5, 1, undefined, undefined, "M");
-        this.jellyfishLow = new MyJellyFish(0.5, 1, undefined, undefined, "L");
-        this.jellyfishLOD.addLevel(this.jellyfish, 0);
-        this.jellyfishLOD.addLevel(this.jellyfishMedium, 15);
-        this.jellyfishLOD.addLevel(this.jellyfishLow, 30);
-        this.app.scene.add(this.jellyfishLOD);
-        this.jellyfishLOD.position.set(0,5,0);
-        this.lodObjects.push(this.jellyfishLOD);
+        this.jellyfish = new MyJellyFish(0.5, 1);
+        this.app.scene.add(this.jellyfish);
+        this.jellyfish.position.set(0,5,0);
         
         this.shark = new MyShark(1, "#2244aa", this.sharkTexture);
         this.shark.position.set(-8, 10, 0);
@@ -235,7 +220,7 @@ class MyContents  {
 
         // Sign with 2D Shark
         this.sign = new MySign(1.5, 0.05, 1.5, 1, 0.05, 0x8b5a2b, 0xdeb887, "BEWARE OF THE SHARK", this.videoTexture);
-        this.sign.position.set(0,0,15);
+        this.sign.position.set(0,floorHeightPosition(0, 15),15);
         this.sign.scale.set(2,2,2);
         this.app.scene.add(this.sign); 
 
@@ -286,10 +271,11 @@ class MyContents  {
         bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(this.jellyfish);
-        bvhMeshes.push(this.seaUrchinLOD);
+        bvhMeshes.push(this.seaUrchin);
         bvhMeshes.push(this.turtle);
-        bvhMeshes.push(this.crabLOD);
-        bvhMeshes.push(this.seaStarLOD);
+        bvhMeshes.push(this.crab);
+        bvhMeshes.push(this.seaStar);
+        bvhMeshes.push(this.boat);
 
 
         // 3. Intersect
@@ -323,7 +309,25 @@ class MyContents  {
                 this.restoreObject(this.currentSelection);
                 this.currentSelection = null;
             }
+            //Mouse click on the sea floor 
+            this.onMouseClickSandPuff(mousePos);
         }
+    }
+
+    onMouseClickSandPuff(mousePos){
+        // 1. Setup Raycaster
+        this.mouse.x = (mousePos.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(mousePos.clientY / window.innerHeight) * 2 + 1;
+        this.raycaster.setFromCamera(this.mouse, this.app.activeCamera);
+
+        const hits = this.raycaster.intersectObject(this.floor);
+
+        if (hits.length > 0) {
+            const hit = hits[0];
+
+            this.sandPuff.spawn(hit.point, hit.face.normal, 500);
+        }
+
     }
 
     highlightObject(rootObject) {
@@ -332,11 +336,29 @@ class MyContents  {
                 
                 if (!child.userData.isCloned) {
                     if (Array.isArray(child.material)) {
-
-                        child.material = child.material.map(m => m.clone());
+                        child.material = child.material.map(m => {
+                            const cloned = m.clone();
+                            // Preserve shader modifications
+                            if (m.onBeforeCompile) {
+                                cloned.onBeforeCompile = m.onBeforeCompile;
+                                cloned.customProgramCacheKey = m.customProgramCacheKey;
+                            }
+                            if (m.userData.uniforms) {
+                                cloned.userData.uniforms = m.userData.uniforms;
+                            }
+                            return cloned;
+                        });
                     } else {
-    
-                        child.material = child.material.clone();
+                        const originalMat = child.material;
+                        child.material = originalMat.clone();
+                        // Preserve shader modifications
+                        if (originalMat.onBeforeCompile) {
+                            child.material.onBeforeCompile = originalMat.onBeforeCompile;
+                            child.material.customProgramCacheKey = originalMat.customProgramCacheKey;
+                        }
+                        if (originalMat.userData.uniforms) {
+                            child.material.userData.uniforms = originalMat.userData.uniforms;
+                        }
                     }
                     child.userData.isCloned = true;
                 }
@@ -382,6 +404,13 @@ class MyContents  {
         this.metalnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_metallic_512x512.png');
         this.displacementRock = loader.load("./textures/ocean-rock-bl/ocean-rock_height_512x512.png");
         this.ambientOcclusionRock = loader.load("./textures/ocean-rock-bl/ocean-rock_ao_512x512.png");
+        //Mips map for the rock texture
+        this.albedoRock.generateMipmaps = true;
+        this.normalRock.generateMipmaps = true;
+        this.roughnessRock.generateMipmaps = true;
+        this.metalnessRock.generateMipmaps = true;
+        this.displacementRock.generateMipmaps = true;
+        this.ambientOcclusionRock.generateMipmaps = true;
         this.rockTexture = {
                 ao: this.ambientOcclusionRock,
                 albedo: this.albedoRock,
@@ -431,6 +460,13 @@ class MyContents  {
         this.metalnessCoral = loader.load('./textures/coral1-bl/coral1_metallic_512x512.png');
         this.displacementCoral = loader.load("./textures/coral1-bl/coral1_height_511x511.png");
         this.ambientOcclusionCoral = loader.load("./textures/coral1-bl/coral1_ao_512x512.png");
+        //Mip map for the coral texture
+        this.albedoCoral.generateMipmaps = true;
+        this.normalCoral.generateMipmaps = true;
+        this.roughnessCoral.generateMipmaps = true;
+        this.metalnessCoral.generateMipmaps = true;
+        this.displacementCoral.generateMipmaps = true;
+        this.ambientOcclusionCoral.generateMipmaps = true;
          this.coralTexture = {
                 ao: this.ambientOcclusionCoral,
                 albedo: this.albedoCoral,
@@ -441,12 +477,12 @@ class MyContents  {
         }
 
         this.fishTexture1 = new THREE.TextureLoader().load("./textures/fish.jpg");
+        this.fishTexture1.generateMipmaps = true;
 
         this.sharkTexture = new THREE.TextureLoader().load("./textures/shark-skin.jpg");
 
         this.sharkTexture.minFilter = THREE.LinearMipmapLinearFilter;
         this.sharkTexture.magFilter = THREE.LinearFilter;
-        //this.sharkTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         this.sharkTexture.generateMipmaps = true;
         this.sharkTexture.needsUpdate = true;
 
@@ -469,6 +505,7 @@ class MyContents  {
         // Marine Snow Textures
         this.snowTexture1 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake1.png");
         this.snowTexture2 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake2.png");
+        this.bubbleTexture = new THREE.TextureLoader().load("./textures/bubble.png");
     }
 
     update(delta) {
@@ -491,12 +528,26 @@ class MyContents  {
             this.submarine.rotation.y += Math.PI / 2; 
         }
 
-        
-
-        for (const b of this.bubbles) b.update(delta);
+        this.bubbles.update();
+        this.sandPuff.update(delta);
         this.swordFish.update(delta);
         this.shark.update(delta);
         
+
+        // Update coral Perlin noise animation
+        for (var coral of this.coralReef1.children) {
+            if (coral.userData.uniforms) {
+                coral.userData.uniforms.uTime.value += delta;
+            } else {
+                console.warn('Coral missing uniforms:', coral.name, coral.userData);
+            }
+        }
+        
+        for (var coral of this.coralReef2.children) {
+            if (coral.userData.uniforms) {
+                coral.userData.uniforms.uTime.value += delta;
+            }
+        }
         
         //update the animation in the sea plants
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
@@ -512,7 +563,12 @@ class MyContents  {
         this.enemies.push(this.submarine);
 
         this.colisionObjects = [];
-        this.colisionObjects.push(this.sign)
+        this.colisionObjects.push(this.sign);
+        //addthe boat only if it is loaded
+        if(this.boat){
+             this.colisionObjects.push(this.boat);
+        }
+       
 
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
@@ -522,11 +578,7 @@ class MyContents  {
 
         this.submarine.update(delta);
 
-        this.jellyfish.update(delta);
-
-        for (const lod of this.lodObjects) {
-            lod.update(this.app.activeCamera);
-        }
+        this.jellyfish.updateAnimation(delta);
     }
 
     setWireframeMode(enabled) {
@@ -580,12 +632,6 @@ class MyContents  {
         for(const helper of this.jellyfish.helpers){
             helper.visible = enable;
         }
-        for(const helper of this.jellyfishMedium.helpers){
-            helper.visible = enable;
-        }
-        for(const helper of this.jellyfishLow.helpers){
-            helper.visible = enable;
-        }
         for(const helper of this.submarine.helpers){
             helper.visible = enable;
         }
@@ -595,21 +641,22 @@ class MyContents  {
         for(const helper of this.turtle.helpers){
             helper.visible = enable;
         }
-        for(const seaUrchin of this.seaUrchinLOD.children){
-            for(const helper of seaUrchin.helpers){
+        for(const helper of this.seaUrchin.helpers){
                 helper.visible = enable;
-            }
         }
-        for(const crab of this.crabLOD.children){
-            for(const helper of crab.helpers){
+        
+        for(const helper of this.crab.helpers){
                 helper.visible = enable;
-            }
+            
         }
 
-        for(const star of this.seaStarLOD.children){
-            for(const helper of star.helpers){
+        for(const helper of this.seaStar.helpers){
                 helper.visible = enable;
-            }
+        }
+        
+
+        for(const helper of this.boat.helpers){
+            helper.visible = enable;
         }
             
     }

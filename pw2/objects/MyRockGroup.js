@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import {getRandomInt} from '../utils.js';
+import {floorHeightPosition, getRandomInt} from '../utils.js';
 import { MyRock } from './MyRock.js';
 
 
 class MyRockGroup extends THREE.Group {
-    constructor(numbRocks, minSpace,maxScale, minScale, colors, overlap, textures){
+    constructor(numbRocks,x, z,  minSpace,maxScale, minScale, colors, overlap, textures){
         super();
         
-
+        this.position.set(x, 0, z);
         const gridSide = Math.ceil(Math.sqrt(numbRocks));
         let rockCount = 0;
         this.rocks = []
@@ -38,16 +38,29 @@ class MyRockGroup extends THREE.Group {
             const texture = textures[randomTexture];
             
             
+            texture.albedo.wrapS = THREE.RepeatWrapping;
+            texture.albedo.wrapT = THREE.RepeatWrapping;
+            texture.albedo.repeat.set(4, 4);
+            texture.roughness.wrapS = THREE.RepeatWrapping;
+            texture.roughness.wrapT = THREE.RepeatWrapping;
+            texture.roughness.repeat.set(4, 4);
+            texture.metallic.wrapS = THREE.RepeatWrapping;
+            texture.metallic.wrapT = THREE.RepeatWrapping;
+            texture.metallic.repeat.set(4, 4);
+            texture.normal.wrapS = THREE.RepeatWrapping;
+            texture.normal.wrapT = THREE.RepeatWrapping;
+            texture.normal.repeat.set(4, 4);
+            texture.ao.wrapS = THREE.RepeatWrapping;
+            texture.ao.wrapT = THREE.RepeatWrapping;
+            texture.ao.repeat.set(4, 4);
 
+            
+            
             rock.traverse(child => {
                 if (child.isMesh) {
                     child.material = new THREE.MeshStandardMaterial(
                         { color: color, 
-                        map: texture.albedo,
-                        roughnessMap: texture.roughness,
-                        metalnessMap: texture.metallic,
                         
-
                         });
                     child.material.needsUpdate = true;
                 }
@@ -55,13 +68,16 @@ class MyRockGroup extends THREE.Group {
             highLODRock.traverse(
                 child => {
                 if (child.isMesh) {
+                    //for ao
+                    child.geometry.setAttribute('uv2', new THREE.BufferAttribute(child.geometry.attributes.uv.array, 2));
+
                     child.material = new THREE.MeshStandardMaterial(
                         { color: color, 
                         map: texture.albedo,
                         normalMap: texture.normal,
                         roughnessMap: texture.roughness,
                         metalnessMap: texture.metallic,
-                        aoMap: texture.ao
+                        aoMap: texture.ao,
                         });
                     child.material.needsUpdate = true;
                 }
@@ -72,11 +88,6 @@ class MyRockGroup extends THREE.Group {
                 if (child.isMesh) {
                     child.material = new THREE.MeshStandardMaterial(
                         { color: color, 
-                        map: texture.albedo,
-                        normalMap: texture.normal,
-                        roughnessMap: texture.roughness,
-                        metalnessMap: texture.metallic,
-                        aoMap: texture.ao,
                         
 
                         });
@@ -92,12 +103,11 @@ class MyRockGroup extends THREE.Group {
                 cellDepth = THREE.MathUtils.lerp(baseDepth * minScale + minSpace, baseCellDepth, Math.random());
             }
             
-            // Position fish
-            lod.position.set(
-                cellWidth * x,
-                0,
-                cellDepth * y
-            );
+            const worldX = this.position.x + cellWidth * x;
+            const worldZ = this.position.z + cellDepth * y;
+            const worldY = floorHeightPosition(worldX, worldZ);
+            lod.position.set(cellWidth * x, worldY, cellDepth * y);
+
             lod.addLevel(rock, 30);
             lod.addLevel(highLODRock,0);
             lod.addLevel(midLODRock,15);

@@ -1,7 +1,10 @@
 import * as THREE from 'three';
- /**
-     * This class creates a coral
-     */
+import { generateRandom } from '../utils.js';
+import { perlinNoiseGLSL } from '../shaders/PerlinNoiseGLSL.js';
+
+/**
+ * This class creates a coral
+ */
 export class MyCoral {
     constructor(texture) {
         this.texture = texture;
@@ -16,14 +19,14 @@ export class MyCoral {
                 { prob: 0.05, rule: 'F' }
             ],
             'F': [
-                { prob: 0.70, rule: 'FF' },
-                { prob: 0.20, rule: 'F' },
+                { prob: 0.90, rule: 'F' },
                 { prob: 0.10, rule: 'F[+F][-F]' }
             ],
-            angle: 15,
-            variableAngle: 5,
+            
+            },
+            angle: 30,
+            variableAngle: 20,
             lengthFactor: 0.8
-            }
         },
         branchingCoral: {
             rules: {
@@ -32,12 +35,12 @@ export class MyCoral {
                  { prob: 0.7, rule: 'F[+X][-X]^X' }
             ],
             'F': [
-                { prob: 1.0, rule: 'FF' }
+                { prob: 1.0, rule: 'F' }
             ]
             },
-            angle: 45,
+            angle: 35,
             variableAngle: 10,
-            lengthFactor: 0.1
+            lengthFactor: 1
         },
         };
     }
@@ -67,10 +70,10 @@ export class MyCoral {
         return coral;
     }
 
-    generateCoralMesh(coralType, complexity) {
+    generateCoralMesh(coralType, complexity, radius = 0.05) {
         const iterations = complexity;
-        const baseAngle = 25 * THREE.MathUtils.DEG2RAD;
-        const variableAngle = 10 * THREE.MathUtils.DEG2RAD; // random angle variation for more natural trees
+        const baseAngle = coralType.angle * THREE.MathUtils.DEG2RAD;
+        const variableAngle = coralType.variableAngle * THREE.MathUtils.DEG2RAD;
 
         // --- Stochastic L-System Rules ---
 
@@ -98,8 +101,9 @@ export class MyCoral {
             quaternion: new THREE.Quaternion(),
         };
 
-        let branchLength = 0.2;
-        const lengthFactor = 0.6;
+
+        let branchLength = coralType.lengthFactor * 0.7;
+        const lengthFactor = coralType.lengthFactor;
         const branchMatrices = [];
         const leafMatrices = [];
 
@@ -172,27 +176,104 @@ export class MyCoral {
 
         const group = new THREE.Group();
 
-        this.colorZ = "";
-
-        if (coralType == this.coralPresets.branchingCoral){
-            this.colorZ = '#ad0065';
+        // Set color based on coral type
+        let coralColor;
+        if (coralType === this.coralPresets.branchingCoral) {
+            coralColor = '#ad0065';
+        } else {
+            coralColor = '#ff9100';
         }
-        else{
-            this.colorZ = '#ff9100'
+        this.colorZ = coralColor;
 
-        }
-
-        const branchGeo = new THREE.CylinderGeometry(0.05, 0.05, 1, 8);
+        const branchGeo = new THREE.CylinderGeometry(radius, radius, 1, 8);
         branchGeo.computeBoundsTree();
         branchGeo.translate(0, 0.5, 0);
-        const branchMat = new THREE.MeshStandardMaterial(
-            { color: this.colorZ, 
-              map: this.texture.albedo,
-             normalMap: this.texture.normal,
-             roughnessMap: this.texture.roughness,
-             metalnessMap: this.texture.metallic,
+        
+        // Create uniforms object 
+        const coralUniforms = {
+            uTime: { value: 0.0 }
+        };
+        
+        const branchMat = new THREE.MeshStandardMaterial({
+            color: coralColor, 
+            map: this.texture.albedo,
+            normalMap: this.texture.normal,
+            roughnessMap: this.texture.roughness,
+            metalnessMap: this.texture.metallic,
             aoMap: this.texture.ao
-            });
+        });
+
+        // Store uniforms on material userData
+        branchMat.userData.uniforms = coralUniforms;
+
+        // Force unique perlin noise shader key
+        branchMat.customProgramCacheKey = function() {
+            return 'coral_perlin_noise';
+        };
+
+        branchMat.onBeforeCompile = (shader) => {
+            shader.uniforms.uTime = coralUniforms.uTime;
+
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <common>',
+                `#include <common>
+                uniform float uTime;
+                varying vec3 vWorldPos;
+                
+                // Perlin noise for vertex shader
+                ${perlinNoiseGLSL}
+                `
+            );
+            
+            shader.vertexShader = shader.vertexShader.replace(
+                '#include <begin_vertex>',
+                `#include <begin_vertex>
+                // Get instance world position
+                vec3 instancePos = (instanceMatrix * vec4(position, 1.0)).xyz;
+                vWorldPos = instancePos;
+                
+                // Perlin noise wave movement - stronger at top of coral
+                float heightFactor = clamp(position.y, 0.0, 1.0);
+                float waveNoise = cnoise(instancePos * 1.5 + vec3(uTime * 0.8, uTime * 0.5, uTime * 0.3));
+                
+                // Apply wave displacement (sway effect)
+                transformed.x += waveNoise * 0.15 * heightFactor;
+                transformed.z += waveNoise * 0.1 * heightFactor;
+                `
+            );
+
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <common>',
+                `#include <common>
+                uniform float uTime;
+                varying vec3 vWorldPos;
+                
+                ${perlinNoiseGLSL}
+                `
+            );
+
+            shader.fragmentShader = shader.fragmentShader.replace(
+                '#include <color_fragment>',
+                `#include <color_fragment>
+                // Multi-layered Perlin noise for rich organic patterns
+                float noise1 = cnoise(vWorldPos * 3.0 + vec3(uTime * 0.4, 0.0, uTime * 0.2));
+                float noise2 = cnoise(vWorldPos * 6.0 - vec3(uTime * 0.2, uTime * 0.3, 0.0)) * 0.5;
+                float combinedNoise = noise1 + noise2;
+                
+                // Dramatic color pulsing
+                diffuseColor.rgb *= 0.4 + combinedNoise * 0.9;
+                
+                // Strong hue shifting for bioluminescent effect
+                diffuseColor.r *= 1.0 + combinedNoise * 0.4;
+                diffuseColor.g *= 1.0 + sin(uTime * 0.5 + combinedNoise) * 0.2;
+                diffuseColor.b *= 1.0 - combinedNoise * 0.3;
+                `
+            );
+
+            // Store shader reference
+            branchMat.userData.shader = shader;
+        };
+
         const branchMesh = new THREE.InstancedMesh(branchGeo, branchMat, branchMatrices.length);
         branchMesh.name = "branches";
         for (let i = 0; i < branchMatrices.length; i++) {
@@ -202,6 +283,7 @@ export class MyCoral {
 
 
         if (leafMatrices.length > 0) {
+
             const leafShape = new THREE.Shape();
             leafShape.moveTo(0, 0);
             leafShape.bezierCurveTo(0.05, 0.2, 0.1, 0.3, 0, 0.5);
@@ -227,7 +309,7 @@ export class MyCoral {
         }
 
         group.scale.setScalar(0.4);
-        
+    
         // Detailed coral
         LOD.addLevel(group, 0);
 
@@ -242,6 +324,8 @@ export class MyCoral {
         // Set position on the LOD itself
         LOD.position.y = -4;
 
+        // Store uniforms reference on LOD for external update (MyContents.js)
+        LOD.userData.uniforms = coralUniforms;
 
         return LOD;
     }   

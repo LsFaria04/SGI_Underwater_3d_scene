@@ -1,17 +1,19 @@
 import * as THREE from 'three';
 import { MeshBVHHelper } from '../index.module.js';
+
 /**
- * TThis class represents a sea star
+ * This class represents a sea star
  */
-class MySeaStar extends THREE.Object3D {
+class MySeaStar extends THREE.LOD {
+
     /**
      * 
-     * @param {*} radius Radius of the sea star
-     * @param {*} height Height of the sea star
-     * @param {*} color  Color of the sea star
-     * @param {*} starTexture  Texture of the sea star
+     * @param {*} radius Radius of the star arms
+     * @param {*} height Height of the arms
+     * @param {*} color Color of the star
+     * @param {*} starTexture Texture of the star
      */
-    constructor(radius = 0.1, height = 0.2, color = "#ff0000", starTexture, LOD){
+    constructor(radius = 0.1, height = 0.2, color = "#ff0000", starTexture) {
         super();
 
         this.radius = radius;
@@ -20,181 +22,157 @@ class MySeaStar extends THREE.Object3D {
         this.starTexture = starTexture;
         this.helpers = [];
 
-        switch(LOD){
-            case "L":
-                this.initLowLOD();
-                break;
-            case "M":
-                this.initMediumLOD();
-                break;
-            case "H":
-                this.initHighLOD();
-                break;
-            default:
-                this.initLowLOD();
-        }
-
-        
-        
-        
-        
+        this.init();
     }
 
-    initLowLOD(){
-        //Just a simple box geometry
-
-        const starGeometry = new THREE.BoxGeometry(this.height * 2, this.height, this.height * 2);
-        const starMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.starTexture ? this.starTexture : null});
-        const star = new THREE.Mesh(starGeometry, starMaterial);
-        this.add(star);
-
-        starGeometry.computeBoundsTree();
-
-        const helper = new MeshBVHHelper(star);
+    addBVHHelper(mesh) {
+        const helper = new MeshBVHHelper(mesh);
         helper.visible = false;
-        this.add(helper);
+        mesh.add(helper);
         this.helpers.push(helper);
     }
 
-    initMediumLOD(){
+    init() {
+        // High detail (LOD 0)
+        const high = this.initHighLOD();
+        this.addLevel(high, 0);
 
-        //No arm tip and less detail in the arms and body
+        // Medium detail (LOD 1)
+        const medium = this.initMediumLOD();
+        this.addLevel(medium, 5);
 
-        //star geometry
-        const starArmGeometry = new THREE.CylinderGeometry(this.radius, this.radius / 3, this.height, 5,5);
-        const starBodyGeometry = new THREE.CylinderGeometry(this.radius /2, this.radius / 2, this.radius * 2, 5,5);
-        starArmGeometry.computeBoundsTree()
-        starBodyGeometry.computeBoundsTree();
-
-        //star arm 
-        const starMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.starTexture ? this.starTexture : null});
-        const starArm = new THREE.Mesh(starArmGeometry, starMaterial);
-
-        const helper = new MeshBVHHelper(starArm);
-        helper.visible = false;
-        this.add(helper);
-        this.helpers.push(helper);
+        // Low detail (LOD 2)
+        const low = this.initLowLOD();
+        this.addLevel(low, 20);
+    }
 
 
-        //star body
-        const starBody = new THREE.Mesh(starBodyGeometry, starMaterial);
+    initLowLOD() {
+        const star = new THREE.Object3D();
 
-        const helper2 = new MeshBVHHelper(starBody);
-        helper2.visible = false;
-        this.add(helper2);
-        this.helpers.push(helper2);
+        const geo = new THREE.BoxGeometry(
+            this.height * 2,
+            this.height,
+            this.height * 2
+        );
+        const mat = new THREE.MeshPhongMaterial({
+            color: this.color,
+            map: this.starTexture || null
+        });
 
-        //creates a group with the star arm and tip
+        const mesh = new THREE.Mesh(geo, mat);
+        geo.computeBoundsTree();
+        star.add(mesh);
+
+        // Add helpers once
+        star.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
+
+        return star;
+    }
+
+    // ---------------------------------------------------------
+    // MEDIUM LOD
+    // ---------------------------------------------------------
+    initMediumLOD() {
+        const star = new THREE.Object3D();
+
+        const mat = new THREE.MeshPhongMaterial({
+            color: this.color,
+            map: this.starTexture || null
+        });
+
+        const armGeo = new THREE.CylinderGeometry(this.radius, this.radius / 3, this.height, 5, 5);
+        const bodyGeo = new THREE.CylinderGeometry(this.radius / 2, this.radius / 2, this.radius * 2, 5, 5);
+
+        armGeo.computeBoundsTree();
+        bodyGeo.computeBoundsTree();
+
+        const body = new THREE.Mesh(bodyGeo, mat);
+        star.add(body);
+
+        // Build one arm
         const arm = new THREE.Group();
-        arm.add(starArm);
-
+        const armMesh = new THREE.Mesh(armGeo, mat);
+        arm.add(armMesh);
 
         arm.rotation.x = Math.PI / 2;
         arm.position.z = -(this.height / 2 + this.radius / 3);
 
-        //clone the original group to form the other arms
-        for(let i = 0; i < 5; i++){
-            const arm2 = arm.clone();
-            arm2.children[0].geometry.computeBoundsTree();
-            const helper = new MeshBVHHelper(arm2.children[0]);
-            helper.visible = false;
-            this.add(helper);
-            this.helpers.push(helper);
+        // Clone 5 arms around center
+        for (let i = 0; i < 5; i++) {
+            const armClone = arm.clone(true);
 
-            arm2.rotation.x = Math.PI / 2;
-            arm2.position.z = -(this.height / 2 + this.radius / 3);
-
-            //pivot to help rotate with a given point
             const pivot = new THREE.Group();
-            pivot.position.set(0,0,0)
-            pivot.add(arm2);
-            this.add(pivot);
-            pivot.rotation.y = THREE.MathUtils.degToRad( i * 72);
-           
-        }
-        
-        this.add(arm);
-        this.add(starBody);
+            pivot.add(armClone);
+            pivot.rotation.y = THREE.MathUtils.degToRad(i * 72);
 
+            star.add(pivot);
+        }
+
+        // Add helpers once
+        star.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
+
+        return star;
     }
 
-    initHighLOD(){
-        //star geometry
-        const starArmGeometry = new THREE.CylinderGeometry(this.radius, this.radius / 3, this.height);
-        const armTipGeometry = new THREE.SphereGeometry(this.radius /3 ,8, 8, Math.PI, Math.PI );
-        const starBodyGeometry = new THREE.CylinderGeometry(this.radius /2, this.radius / 2, this.radius * 2, 5);
+    // ---------------------------------------------------------
+    // HIGH LOD
+    // ---------------------------------------------------------
+    initHighLOD() {
+        const star = new THREE.Object3D();
 
-        starArmGeometry.computeBoundsTree()
-        starBodyGeometry.computeBoundsTree();
-        armTipGeometry.computeBoundsTree();
+        const mat = new THREE.MeshPhongMaterial({
+            color: this.color,
+            map: this.starTexture || null
+        });
 
-        //star arm 
-        const starMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.starTexture ? this.starTexture : null});
-        const starArm = new THREE.Mesh(starArmGeometry, starMaterial);
+        const armGeo = new THREE.CylinderGeometry(this.radius, this.radius / 3, this.height);
+        const tipGeo = new THREE.SphereGeometry(this.radius / 3, 8, 8, Math.PI, Math.PI);
+        const bodyGeo = new THREE.CylinderGeometry(this.radius / 2, this.radius / 2, this.radius * 2, 5);
 
-        const helper = new MeshBVHHelper(starArm);
-        helper.visible = false;
-        this.add(helper);
-        this.helpers.push(helper);
+        armGeo.computeBoundsTree();
+        tipGeo.computeBoundsTree();
+        bodyGeo.computeBoundsTree();
 
+        const body = new THREE.Mesh(bodyGeo, mat);
+        star.add(body);
 
-        //star arm tip
-        const starTip = new THREE.Mesh(armTipGeometry, starMaterial);
-        starTip.rotation.x = -Math.PI / 2;
-        starTip.position.y = -this.height / 2;
-
-        const helper2 = new MeshBVHHelper(starTip);
-        helper2.visible = false;
-        this.add(helper2);
-        this.helpers.push(helper2);
-
-        //star body
-        const starBody = new THREE.Mesh(starBodyGeometry, starMaterial);
-
-        const helper3 = new MeshBVHHelper(starBody);
-        helper3.visible = false;
-        this.add(helper3);
-        this.helpers.push(helper3);
-
-        //creates a group with the star arm and tip
+        // Build one arm with tip
         const arm = new THREE.Group();
-        arm.add(starArm);
-        arm.add(starTip);
+        const armMesh = new THREE.Mesh(armGeo, mat);
+        const tipMesh = new THREE.Mesh(tipGeo, mat);
 
+        tipMesh.rotation.x = -Math.PI / 2;
+        tipMesh.position.y = -this.height / 2;
+
+        arm.add(armMesh);
+        arm.add(tipMesh);
 
         arm.rotation.x = Math.PI / 2;
         arm.position.z = -(this.height / 2 + this.radius / 3);
 
-        //clone the original group to form the other arms
-        for(let i = 0; i < 5; i++){
-            const arm2 = arm.clone();
-            arm2.rotation.x = Math.PI / 2;
-            arm2.position.z = -(this.height / 2 + this.radius / 3);
+        // Clone 5 arms around center
+        for (let i = 0; i < 5; i++) {
+            const armClone = arm.clone(true);
 
-            arm2.children[0].geometry.computeBoundsTree();
-            const helper = new MeshBVHHelper(arm2.children[0]);
-            helper.visible = false;
-            this.add(helper);
-            this.helpers.push(helper);
-
-            arm2.children[1].geometry.computeBoundsTree();
-            const helper2 = new MeshBVHHelper(arm2.children[1]);
-            helper2.visible = false;
-            this.add(helper2);
-            this.helpers.push(helper2);
-
-            //pivot to help rotate with a given point
             const pivot = new THREE.Group();
-            pivot.position.set(0,0,0)
-            pivot.add(arm2);
-            this.add(pivot);
-            pivot.rotation.y = THREE.MathUtils.degToRad( i * 72);
-           
+            pivot.add(armClone);
+            pivot.rotation.y = THREE.MathUtils.degToRad(i * 72);
+
+            star.add(pivot);
         }
-        
-        this.add(arm);
-        this.add(starBody);
+
+        // Add helpers once
+        star.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
+
+        return star;
     }
 }
 
-export{ MySeaStar};
+export { MySeaStar };
