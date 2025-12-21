@@ -652,12 +652,9 @@ class MyContents  {
 
         for(const rockGroup of this.rockGroups){
             for(const rock of rockGroup.rocks){
-                //Lod with multiple rock versions
-                rock.children.forEach(rockClass => {
-                    if (rockClass.helper) {
-                        rockClass.helper.visible = enable;
-                    }
-                    });
+                for(const helper of rock.helpers){
+                    helper.visible = enable;
+                }
             }
             
         }
