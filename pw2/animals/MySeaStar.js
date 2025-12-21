@@ -44,6 +44,11 @@ class MySeaStar extends THREE.LOD {
         // Low detail (LOD 2)
         const low = this.initLowLOD();
         this.addLevel(low, 20);
+
+        this.box = new THREE.Box3().setFromObject(this, true);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        this.boxHelper.visible = false;
+        this.add(this.boxHelper);
     }
 
 

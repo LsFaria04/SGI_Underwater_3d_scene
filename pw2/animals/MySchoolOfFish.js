@@ -173,8 +173,7 @@ class MySchoolfOfFish extends THREE.Group {
             }
             else{
                 this.neighbors = this.fishes; 
-                this.neighborEnemies = this.enemies;
-                //static objects use a slightly more advanced technique to see if it is in the range of the fish
+                this.neighborEnemies = this.findNeighborsSimple(fish, this.enemies, 5);
                 this.neighborObjects = this.findNeighborsSimple(fish, this.objects, 3);
             }
 
@@ -344,7 +343,6 @@ class MySchoolfOfFish extends THREE.Group {
         for (const enemy of this.neighborEnemies) {
             const fishWorldPos = fish.position.clone().add(this.position);
             const dist = enemy.position.distanceTo(fishWorldPos);
-            if(!this.bvh && dist > 10) continue;
             //avoid collisions with enemies
 
             const diff = new THREE.Vector3().subVectors(enemy.position, fishWorldPos);

@@ -104,6 +104,11 @@ class MyTurtle extends THREE.Object3D {
         helper5.visible = false;
         this.add(helper5);
         this.helpers.push(helper5);
+
+        this.box = new THREE.Box3().setFromObject(this, true);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        this.boxHelper.visible = false;
+        this.add(this.boxHelper);
     }
 }
 

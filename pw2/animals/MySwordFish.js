@@ -651,10 +651,15 @@ class MySwordFish extends THREE.Object3D {
         lowWrapper.add(fishLow);
         this.lod.addLevel(lowWrapper, this.lodBasicThreshold);
     
-        this.position.y = this.widthBody / 2;
-
+        this.lod.position.y = this.widthBody / 2;
+        this.mesh.position.y = this.widthBody /2;
 
         this.add(this.lod);
+
+        this.box = new THREE.Box3().setFromObject(this, true);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        this.boxHelper.visible = false;
+        this.add(this.boxHelper);
 
     }
 

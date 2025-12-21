@@ -275,6 +275,12 @@ class MySubmarine extends THREE.Object3D {
         // frontlight on layer 1 so that it is not visible in submarine camera
         frontLightBulb.layers.set(1);
 
+        //Bounding box used in the simple collision system
+        this.box = new THREE.Box3().setFromObject(this, true);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        this.boxHelper.visible = false;
+        this.add(this.boxHelper);
+
         // shield effect
         this.shieldEnabled = false;
         this.shieldC = 1.0;
@@ -321,6 +327,8 @@ class MySubmarine extends THREE.Object3D {
         this.shield = new THREE.Mesh(shieldGeometry, shieldMaterial);
         this.shield.visible = false;
         this.add(this.shield);
+
+        
     }
 
     update(delta) {

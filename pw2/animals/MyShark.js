@@ -41,12 +41,6 @@ class MyShark extends THREE.Object3D {
         this.headBone = headBone;
         this.tailBone = tailBone;
 
-        
-        /*rootBone.add(tailBone);
-        tailBone.add(bodyBone1);
-        bodyBone1.add(bodyBone2);
-        bodyBone2.add(bodyBone3);
-        bodyBone3.add(headBone);*/
         rootBone.add(headBone);
         headBone.add(bodyBone3);
         bodyBone3.add(bodyBone2);
@@ -134,6 +128,11 @@ class MyShark extends THREE.Object3D {
         this.mesh.scale.set(scale,scale,scale)
 
         this.sharkBody = sharkBody;
+
+        this.box = new THREE.Box3().setFromObject(this, true);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        this.boxHelper.visible = false;
+        this.add(this.boxHelper);
     }
 
     createMergedBodyGeometry(tailWidth, bodyWidth, headWidth) {

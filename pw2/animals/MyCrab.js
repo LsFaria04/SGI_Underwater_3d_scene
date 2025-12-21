@@ -47,6 +47,11 @@ class MyCrab extends THREE.LOD {
         this.lowCrab = this.initLowLOD();
         this.addLevel(this.lowCrab, 20);
 
+        this.box = new THREE.Box3().setFromObject(this, true);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        this.boxHelper.visible = false;
+        this.add(this.boxHelper);
+
         
     }
 

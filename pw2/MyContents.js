@@ -567,6 +567,7 @@ class MyContents  {
 
         this.colisionObjects = [];
         this.colisionObjects.push(this.sign);
+        this.colisionObjects.push(this.turtle);
         for(const coral of this.coralReef1.corals){
             this.colisionObjects.push(coral)
         }for(const coral of this.coralReef2.corals){
@@ -631,6 +632,14 @@ class MyContents  {
 
         this.boat.boxHelper.visible = enable;
         this.sign.boxHelper.visible = enable;
+        this.turtle.boxHelper.visible = enable;
+        this.jellyfish.boxHelper.visible = enable;
+        this.swordFish.boxHelper.visible = enable;
+        this.shark.boxHelper.visible = enable;
+        this.submarine.boxHelper.visible = enable;
+        this.crab.boxHelper.visible = enable;
+        this.seaStar.boxHelper.visible = enable;
+        this.seaUrchin.boxHelper.visible = enable;
 
 
     }
