@@ -213,6 +213,7 @@ class MyCarp extends THREE.Object3D {
 
             geometry.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndices, 4));
             geometry.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeights, 4));
+            geometry.computeBoundingBox();
 
             
 
@@ -311,14 +312,20 @@ class MyCarp extends THREE.Object3D {
         const simplifiedFish = this.createSimplifiedMesh();
         lod.addLevel(simplifiedFish, this.lodBasicThreshold);
         
-        this.position.y = this.widthBody * 1.5;
+        lod.position.y = this.widthBody * 1.5;
+        this.mesh.position.y = this.widthBody * 1.5;
+
+        
+        this.add(lod);
 
         this.helper = new MeshBVHHelper(this.mesh)
         this.add(this.helper)
         this.helper.visible = false;
-        
 
-        this.add(lod);
+        this.box = new THREE.Box3().setFromObject(this, true);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        this.boxHelper.visible = false;
+        this.add(this.boxHelper)
     }
 
     /**
@@ -347,7 +354,7 @@ class MyCarp extends THREE.Object3D {
             if(this.generator && (this.elapsed % 4 == 0) && this.bvh){
                 this.generator.generate(this.newgeometry);
                 this.newgeometry.boundsTree.refit();
-                this.helper.update()
+                this.helper.update();
             }
             
         }
@@ -368,7 +375,7 @@ class MyCarp extends THREE.Object3D {
             if(this.generator && (this.elapsed % 4 == 0) && this.bvh){
                 this.generator.generate(this.newgeometry);
                 this.newgeometry.boundsTree.refit();
-                this.helper.update()
+                this.helper.update();
             }
 
             

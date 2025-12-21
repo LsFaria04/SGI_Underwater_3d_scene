@@ -39,7 +39,7 @@ class MyCoralReef extends THREE.Group {
             coralMeshGroup.box = new THREE.Box3().setFromObject(coralMeshGroup, true);
             const helper = new THREE.Box3Helper(coralMeshGroup.box, 0xff0000);
             helper.visible = false;
-            this.add(helper)
+            this.add(helper);
             this.helpers.push(helper);
 
             this.corals.push(coralMeshGroup);

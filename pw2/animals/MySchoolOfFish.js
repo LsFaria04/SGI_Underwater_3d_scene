@@ -133,17 +133,17 @@ class MySchoolfOfFish extends THREE.Group {
         const neighbors = [];
 
         // Expand fish bounding box by radius
-        const fishBox = new THREE.Box3().setFromObject(fish);
-        fishBox.expandByScalar(radius);
-
-        
+        const fishWorldBox = fish.box.clone();
+        fishWorldBox.applyMatrix4(fish.matrixWorld);
+        fishWorldBox.expandByScalar(radius);
 
         for (const other of others) {
             if (other === fish) continue;
 
-            const otherBox = other.box;
+            const otherWorldBox = other.box.clone();
+            otherWorldBox.applyMatrix4(other.matrixWorld);
             
-            if (fishBox.intersectsBox(otherBox)) {
+            if (fishWorldBox.intersectsBox(otherWorldBox)) {
                 neighbors.push(other);
             }
         }
@@ -172,7 +172,7 @@ class MySchoolfOfFish extends THREE.Group {
                  this.neighborObjects = this.findNeighbors(fish, this.objects, 3);
             }
             else{
-                this.neighbors = this.fishes; 
+                this.neighbors = this.findNeighborsSimple(fish, this.fishes, (this.minSpace / 2 + this.maxScale / 2) * 4); 
                 this.neighborEnemies = this.enemies;
                 //static objects use a slightly more advanced technique to see if it is in the range of the fish
                 this.neighborObjects = this.findNeighborsSimple(fish, this.objects, 3);

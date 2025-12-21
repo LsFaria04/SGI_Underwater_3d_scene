@@ -616,8 +616,16 @@ class MyContents  {
             helper.visible = enable;
         }
 
+        for(const fishGroup of this.fishGroups){
+            for(const fish of fishGroup.fishes){
+                fish.boxHelper.visible = enable;
+            }
+            
+        }
+
         this.boat.boxHelper.visible = enable;
         this.sign.boxHelper.visible = enable;
+
 
     }
 
