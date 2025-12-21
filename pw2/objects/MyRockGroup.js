@@ -1,124 +1,121 @@
 import * as THREE from 'three';
-import {floorHeightPosition, getRandomInt} from '../utils.js';
+import { floorHeightPosition, getRandomInt } from '../utils.js';
 import { MyRock } from './MyRock.js';
 
-
+/**
+ * This class represents a group of several rocks
+ */
 class MyRockGroup extends THREE.Group {
-    constructor(numbRocks,x, z,  minSpace,maxScale, minScale, colors, overlap, textures){
+
+    /**
+     * 
+     * @param {*} numbRocks Number of rocks in the group
+     * @param {*} x First x position
+     * @param {*} z First z position
+     * @param {*} minSpace Minimum space between rocks
+     * @param {*} maxScale Maximum scale applied to arock
+     * @param {*} minScale Minimum scale applied to a rock
+     * @param {*} colors Colors that can be applied to a rocks
+     * @param {*} overlap If the rocks can overlap
+     * @param {*} textures Set of textures that can be applied to a rock
+     */
+    constructor(
+        numbRocks,
+        x, z,
+        minSpace,
+        maxScale,
+        minScale,
+        colors,
+        overlap,
+        textures
+    ) {
         super();
-        
+
         this.position.set(x, 0, z);
+        this.rocks = [];
+
         const gridSide = Math.ceil(Math.sqrt(numbRocks));
         let rockCount = 0;
-        this.rocks = []
 
-        const baseWidth = 1 ;
-        const baseDepth = 1 ;
+        const baseWidth = 1;
+        const baseDepth = 1;
 
-        let baseCellWidth = baseWidth * maxScale + minSpace;
-        let baseCellDepth = baseDepth * maxScale + minSpace;
+        const baseCellWidth = baseWidth * maxScale + minSpace;
+        const baseCellDepth = baseDepth * maxScale + minSpace;
 
-        for (let x = 0; x < gridSide && rockCount < numbRocks; x++) {
-            for (let y = 0; y < gridSide && rockCount < numbRocks; y++) {
-            const rock = new MyRock(1,null, null,  "L");
-            const highLODRock = new MyRock(1,null,null, "H");
-            const midLODRock = new MyRock(1,null,null, "M");
-            const lod = new THREE.LOD();
+        for (let gx = 0; gx < gridSide && rockCount < numbRocks; gx++) {
+            for (let gy = 0; gy < gridSide && rockCount < numbRocks; gy++) {
 
-            // Random scale
-            const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());
-            rock.scale.set(scaleFactor, scaleFactor, scaleFactor);
-            highLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
-            midLODRock.scale.set(scaleFactor, scaleFactor,scaleFactor);
+                // Create a single LOD rock (the class handles L/M/H internally)
+                const rock = new MyRock(1, null, null);
 
-            //Random color and texture
-            const randomColor = getRandomInt(0,colors.length - 1);
-            const color = colors[randomColor];
-            const randomTexture = getRandomInt(0,textures.length - 1);
-            const texture = textures[randomTexture];
-            
-            
-            texture.albedo.wrapS = THREE.RepeatWrapping;
-            texture.albedo.wrapT = THREE.RepeatWrapping;
-            texture.albedo.repeat.set(4, 4);
-            texture.roughness.wrapS = THREE.RepeatWrapping;
-            texture.roughness.wrapT = THREE.RepeatWrapping;
-            texture.roughness.repeat.set(4, 4);
-            texture.metallic.wrapS = THREE.RepeatWrapping;
-            texture.metallic.wrapT = THREE.RepeatWrapping;
-            texture.metallic.repeat.set(4, 4);
-            texture.normal.wrapS = THREE.RepeatWrapping;
-            texture.normal.wrapT = THREE.RepeatWrapping;
-            texture.normal.repeat.set(4, 4);
-            texture.ao.wrapS = THREE.RepeatWrapping;
-            texture.ao.wrapT = THREE.RepeatWrapping;
-            texture.ao.repeat.set(4, 4);
+                // Random scale
+                const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());
+                rock.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
-            
-            
-            rock.traverse(child => {
-                if (child.isMesh) {
-                    child.material = new THREE.MeshStandardMaterial(
-                        { color: color, 
-                        
-                        });
-                    child.material.needsUpdate = true;
+                const color = colors[getRandomInt(0, colors.length - 1)];
+                const texture = textures[getRandomInt(0, textures.length - 1)];
+
+                // Configure texture tiling
+                for (const key of ["albedo", "roughness", "metallic", "normal", "ao"]) {
+                    const tex = texture[key];
+                    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+                    tex.repeat.set(4, 4);
                 }
-            });
-            highLODRock.traverse(
-                child => {
-                if (child.isMesh) {
-                    //for ao
-                    child.geometry.setAttribute('uv2', new THREE.BufferAttribute(child.geometry.attributes.uv.array, 2));
 
-                    child.material = new THREE.MeshStandardMaterial(
-                        { color: color, 
-                        map: texture.albedo,
-                        normalMap: texture.normal,
-                        roughnessMap: texture.roughness,
-                        metalnessMap: texture.metallic,
-                        aoMap: texture.ao,
+                rock.traverse(child => {
+                    if (child.isMesh) {
+
+                        // For AO
+                        if (child.geometry.attributes.uv) {
+                            child.geometry.setAttribute(
+                                'uv2',
+                                new THREE.BufferAttribute(child.geometry.attributes.uv.array, 2)
+                            );
+                        }
+
+                        child.material = new THREE.MeshStandardMaterial({
+                            color: color,
+                            map: texture.albedo,
+                            normalMap: texture.normal,
+                            roughnessMap: texture.roughness,
+                            metalnessMap: texture.metallic,
+                            aoMap: texture.ao
                         });
-                    child.material.needsUpdate = true;
-                }
-            }
-            )
-            midLODRock.traverse(
-                child => {
-                if (child.isMesh) {
-                    child.material = new THREE.MeshStandardMaterial(
-                        { color: color, 
-                        
 
-                        });
-                    child.material.needsUpdate = true;
-                }
-            }
-            )
-            
-            let cellWidth = baseCellWidth;
-            let cellDepth = baseCellDepth;
-            if(overlap){
-                cellWidth = THREE.MathUtils.lerp(baseWidth * minScale + minSpace, baseCellWidth, Math.random());
-                cellDepth = THREE.MathUtils.lerp(baseDepth * minScale + minSpace, baseCellDepth, Math.random());
-            }
-            
-            const worldX = this.position.x + cellWidth * x;
-            const worldZ = this.position.z + cellDepth * y;
-            const worldY = floorHeightPosition(worldX, worldZ);
-            lod.position.set(cellWidth * x, worldY, cellDepth * y);
+                        child.material.needsUpdate = true;
+                    }
+                });
 
-            lod.addLevel(rock, 30);
-            lod.addLevel(highLODRock,0);
-            lod.addLevel(midLODRock,15);
-            this.add(lod);
-            this.rocks.push(lod);
-            rockCount++;
+                let cellWidth = baseCellWidth;
+                let cellDepth = baseCellDepth;
+
+                if (overlap) {
+                    cellWidth = THREE.MathUtils.lerp(
+                        baseWidth * minScale + minSpace,
+                        baseCellWidth,
+                        Math.random()
+                    );
+                    cellDepth = THREE.MathUtils.lerp(
+                        baseDepth * minScale + minSpace,
+                        baseCellDepth,
+                        Math.random()
+                    );
+                }
+
+                const worldX = this.position.x + cellWidth * gx;
+                const worldZ = this.position.z + cellDepth * gy;
+                const worldY = floorHeightPosition(worldX, worldZ);
+
+                rock.position.set(cellWidth * gx, worldY, cellDepth * gy);
+
+                this.add(rock);
+                this.rocks.push(rock);
+
+                rockCount++;
             }
-            
-        
         }
     }
 }
 
-export{ MyRockGroup};
+export { MyRockGroup };

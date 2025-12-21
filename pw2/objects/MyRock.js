@@ -1,98 +1,138 @@
 import * as THREE from 'three';
-import { generateRandom } from '../utils.js';
 import { MeshBVHHelper } from '../index.module.js';
 
 /**
- * This class represents a rock with different levels of detail
+ * This class represents a sea rock
  */
-class MyRock extends THREE.Object3D {
+class MyRock extends THREE.LOD {
+
     /**
      * 
-     * @param {number} radius Rock base radius
-     * @param {*} color Rock color
-     * @param {*} rockTexture Rock texture
-     * @param {string} LOD Level of detail ("L", "M", "H") 
+     * @param {*} radius Base radius of the rock
+     * @param {*} color Color of the rock
+     * @param {*} rockTexture Texture applied to the rock
      */
-    constructor(radius, color = "#000000", rockTexture, LOD){
+    constructor(radius = 1, color = "#000000", rockTexture = null) {
         super();
 
         this.radius = radius;
-        this.rockTexture = rockTexture;
         this.color = color;
-        this.helper = null;
-        
-        switch (LOD){
-            case "L":
-                this.initLowLOD();
-                break;
-            case "M":
-                this.initMidLOD();
-                break;
-            case "H":
-                this.initHighLOD();
-                break;
-            default:
-                this.initLowLOD();
+        this.rockTexture = rockTexture;
+
+        this.helpers = [];
+
+        this.init();
+    }
+
+
+    addBVHHelper(mesh) {
+        const helper = new MeshBVHHelper(mesh);
+        helper.visible = false;
+        mesh.add(helper);
+        this.helpers.push(helper);
+    }
+
+
+    init() {
+        const high = this.initHighLOD();
+        this.addLevel(high, 0);
+
+        const medium = this.initMidLOD();
+        this.addLevel(medium, 10);
+
+        const low = this.initLowLOD();
+        this.addLevel(low, 20);
+    }
+
+    initLowLOD() {
+        const rock = new THREE.Object3D();
+
+        const geo = new THREE.BoxGeometry(this.radius, this.radius, this.radius);
+        const mat = new THREE.MeshPhongMaterial({
+            color: this.color,
+            map: this.rockTexture || null
+        });
+
+        const mesh = new THREE.Mesh(geo, mat);
+        geo.computeBoundsTree();
+
+        rock.add(mesh);
+
+        // Add BVH helpers once
+        rock.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
+
+        return rock;
+    }
+
+    initMidLOD() {
+        const rock = new THREE.Object3D();
+
+        const geo = new THREE.DodecahedronGeometry(this.radius * 0.8);
+        const mat = new THREE.MeshPhongMaterial({
+            color: this.color,
+            map: this.rockTexture || null
+        });
+
+        const mesh = new THREE.Mesh(geo, mat);
+        geo.computeBoundsTree();
+
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        rock.add(mesh);
+
+        // Add BVH helpers once
+        rock.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
+
+        return rock;
+    }
+
+    initHighLOD() {
+        const rock = new THREE.Object3D();
+
+        let geo = new THREE.SphereGeometry(this.radius, 30, 30);
+
+        // Apply random plane cuts
+        for (let i = 0; i < 20; i++) {
+            const normal = new THREE.Vector3(
+                THREE.MathUtils.randFloat(-1, 1),
+                THREE.MathUtils.randFloat(-1, 1),
+                THREE.MathUtils.randFloat(-1, 1)
+            ).normalize();
+
+            geo = this.scrapeWithPlane(
+                geo,
+                normal,
+                THREE.MathUtils.randFloat(this.radius / 10, this.radius),
+                THREE.MathUtils.randFloat(0.2, 0.8)
+            );
         }
-         
+
+        const mat = new THREE.MeshPhongMaterial({
+            color: this.color,
+            map: this.rockTexture || null
+        });
+
+        const mesh = new THREE.Mesh(geo, mat);
+        geo.computeBoundsTree();
+
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        rock.add(mesh);
+
+        // Add BVH helpers once
+        rock.traverse(obj => {
+            if (obj.isMesh) this.addBVHHelper(obj);
+        });
+
+        return rock;
     }
 
-    initLowLOD(){
-        
-        //simple box for low LOD
-        const rockGeometry = new THREE.BoxGeometry(this.radius, this.radius, this.radius);
-        const rockMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.rockTexture ? this.rockTexture : null});
-        const rock = new THREE.Mesh(rockGeometry, rockMaterial);
-        rockGeometry.computeBoundsTree();
-        this.helper = new MeshBVHHelper(rock);
-        this.helper.visible = false;
-        this.add(this.helper);
-
-
-        this.add(rock);
-    }
-
-     initMidLOD(){
-        
-        //More complex spahe for MID LOD
-        const rockGeometry = new THREE.DodecahedronGeometry(this.radius * 0.8);
-        const rockMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.rockTexture ? this.rockTexture : null});
-        const rock = new THREE.Mesh(rockGeometry, rockMaterial);
-        rockGeometry.computeBoundsTree();
-        this.helper = new MeshBVHHelper(rock);
-        this.helper.visible = false;
-        this.add(this.helper);
-
-        rock.castShadow = true;    
-        rock.receiveShadow = true;
-    
-
-        this.add(rock);
-    }
-
-
-    initHighLOD(){
-        //use a sphere as the base geometry for High LOD
-        let geometry = new THREE.SphereGeometry(this.radius, 30, 30);
-
-        //cuts the sphere with a plane to create a random shape rock
-        for(let i = 0; i < 20; i++){
-            const normal = new THREE.Vector3(generateRandom(-1, 1), generateRandom(-1,1), generateRandom(-1,1)).normalize();
-            geometry = this.scrapeWithPlane(geometry, normal, generateRandom(this.radius / 10, this.radius), generateRandom(0.2,0.8));
-        }
-
-        const rockMaterial = new THREE.MeshPhongMaterial({color: this.color, map: this.rockTexture ? this.rockTexture : null});
-        const rock = new THREE.Mesh(geometry, rockMaterial);
-        geometry.computeBoundsTree();
-        this.helper = new MeshBVHHelper(rock);
-        this.helper.visible = false;
-        this.add(this.helper);
-
-        rock.castShadow = true;    
-        rock.receiveShadow = true;
-        
-        this.add(rock)
-    }
 
     scrapeWithPlane(geometry, planeNormal, planeOffset, strength = 1) {
         const pos = geometry.attributes.position;
@@ -101,11 +141,9 @@ class MyRock extends THREE.Object3D {
         for (let i = 0; i < pos.count; i++) {
             vect.fromBufferAttribute(pos, i);
 
-            // Signed distance from plane (n·p - d)
             const dist = planeNormal.dot(vect) - planeOffset;
 
             if (dist > 0) {
-                // Push vertex back toward the plane
                 vect.addScaledVector(planeNormal, -dist * strength);
                 pos.setXYZ(i, vect.x, vect.y, vect.z);
             }
@@ -115,7 +153,6 @@ class MyRock extends THREE.Object3D {
         geometry.computeVertexNormals();
         return geometry;
     }
-
 }
 
-export{ MyRock};
+export { MyRock };
