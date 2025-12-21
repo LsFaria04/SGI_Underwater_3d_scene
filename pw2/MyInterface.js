@@ -81,6 +81,11 @@ class MyInterface  {
              if (this.contents) this.contents.setBVHHelper(value);
         })
 
+        const boxFolder = this.datgui.addFolder('Bounding Box');
+        const boxParams = {boxHelper: false};
+        boxFolder.add(boxParams, "boxHelper").name("Bounding Box Helper").onChange((value =>{
+            if(this.contents) this.contents.setBoxHelper(value);
+        }))
 
         // submarine light controls
         const submarineFolder = this.datgui.addFolder('Submarine')

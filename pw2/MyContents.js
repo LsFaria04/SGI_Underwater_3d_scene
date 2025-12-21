@@ -120,7 +120,9 @@ class MyContents  {
             }
             });
             this.boat.box = new THREE.Box3().setFromObject(this.boat, true);
-
+            this.boat.boxHelper = new THREE.Box3Helper(this.boat.box, 0xff0000);
+            this.boat.boxHelper.visible = false;
+            this.app.scene.add(this.boat.boxHelper);
 
             this.app.scene.add(this.boat);
         }, undefined, (error) => {
@@ -224,6 +226,9 @@ class MyContents  {
         this.sign.position.set(0,floorHeightPosition(0, 15),15);
         this.sign.scale.set(2,2,2);
         this.sign.box = new THREE.Box3().setFromObject(this.sign, true);
+        this.sign.boxHelper = new THREE.Box3Helper(this.sign.box, 0xff0000);
+        this.sign.boxHelper.visible = false;
+        this.app.scene.add(this.sign.boxHelper);
         this.app.scene.add(this.sign); 
 
 
@@ -602,6 +607,20 @@ class MyContents  {
         });
     }
 
+    setBoxHelper(enable){
+        for(const helper of this.coralReef1.helpers){
+            helper.visible = enable;
+        }
+
+        for(const helper of this.coralReef2.helpers){
+            helper.visible = enable;
+        }
+
+        this.boat.boxHelper.visible = enable;
+        this.sign.boxHelper.visible = enable;
+
+    }
+
     setBVHMode(enable){
         for(const fishGroup of this.fishGroups){
             fishGroup.bvh = enable;
@@ -663,8 +682,15 @@ class MyContents  {
                 helper.visible = enable;
         }
         
-
         for(const helper of this.boat.helpers){
+            helper.visible = enable;
+        }
+
+        for(const helper of this.coralReef1.helpers){
+            helper.visible = enable;
+        }
+
+        for(const helper of this.coralReef2.helpers){
             helper.visible = enable;
         }
             

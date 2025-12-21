@@ -168,14 +168,14 @@ class MySchoolfOfFish extends THREE.Group {
             //find the neighbours using bvh 
             if(this.bvh){
                  this.neighbors = this.findNeighbors(fish,this.fishes, this.minSpace / 2 + this.maxScale / 2);
-                 this.neighborEnemies = this.findNeighbors(fish, this.enemies, 10);
-                 this.neighborObjects = this.findNeighbors(fish, this.objects, 6);
+                 this.neighborEnemies = this.findNeighbors(fish, this.enemies, 5);
+                 this.neighborObjects = this.findNeighbors(fish, this.objects, 3);
             }
             else{
                 this.neighbors = this.fishes; 
                 this.neighborEnemies = this.enemies;
                 //static objects use a slightly more advanced technique to see if it is in the range of the fish
-                this.neighborObjects = this.findNeighborsSimple(fish, this.objects, 6);
+                this.neighborObjects = this.findNeighborsSimple(fish, this.objects, 3);
             }
 
             
