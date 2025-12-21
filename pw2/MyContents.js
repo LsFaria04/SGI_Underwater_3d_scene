@@ -18,7 +18,7 @@ import { MyShark } from './animals/MyShark.js';
 import { MySwordFish } from './animals/MySwordFish.js';
 import { MyKeyFrameAnimation } from './animations/MyKeyframeAnimation.js';
 import { MySubmarine } from './objects/MySubmarine.js';
-import { MyMarineSnow } from './objects/MyMarineSnow.js';
+import { MyMarineSnow } from './particles/MyMarineSnow.js';
 import { MeshBVHHelper } from './index.module.js';
 import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
 import { floorHeightPosition } from './utils.js';
