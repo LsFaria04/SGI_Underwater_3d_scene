@@ -172,7 +172,7 @@ class MySchoolfOfFish extends THREE.Group {
                  this.neighborObjects = this.findNeighbors(fish, this.objects, 3);
             }
             else{
-                this.neighbors = this.findNeighborsSimple(fish, this.fishes, (this.minSpace / 2 + this.maxScale / 2) * 4); 
+                this.neighbors = this.fishes; 
                 this.neighborEnemies = this.enemies;
                 //static objects use a slightly more advanced technique to see if it is in the range of the fish
                 this.neighborObjects = this.findNeighborsSimple(fish, this.objects, 3);
@@ -189,21 +189,15 @@ class MySchoolfOfFish extends THREE.Group {
             v5 = this.avoid_predators(fish);
             v6 = this.avoid_objects(fish); //it is also used for objects
 
-            
-            //reduce weight of rule with bvh acceleration to make the movements more natural
-            let reduceWeight = 1;
-            if(this.bvh){
-                reduceWeight = 0.5;
-            }
 
             //add acceleration using the rules
             fish.acceleration
-            .addScaledVector(v1, 1 * this.separationW * reduceWeight)
-            .addScaledVector(v2, 0.1 * this.aligmentW * reduceWeight)
-            .addScaledVector(v3, 0.4 * this.cohesionW * reduceWeight)
-            .addScaledVector(v4, 15 * this.separationW * reduceWeight)
-            .addScaledVector(v5, 10 * this.separationW * reduceWeight)
-            .addScaledVector(v6, 10 * this.separationW * reduceWeight);
+            .addScaledVector(v1, 1 * this.separationW)
+            .addScaledVector(v2, 0.1 * this.aligmentW)
+            .addScaledVector(v3, 0.4 * this.cohesionW)
+            .addScaledVector(v4, 15 * this.separationW)
+            .addScaledVector(v5, 10 * this.separationW)
+            .addScaledVector(v6, 10 * this.separationW);
 
 
             

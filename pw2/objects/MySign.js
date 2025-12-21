@@ -122,6 +122,12 @@ class MySign extends THREE.Object3D {
 		
 		this.stick = stick;
 		this.board = board;
+
+		//Add a simple bouding box to use in the simple collision system
+		this.box = new THREE.Box3().setFromObject(this, true);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
+        this.boxHelper.visible = false;
+        this.add(this.boxHelper);
 	}
 }
 

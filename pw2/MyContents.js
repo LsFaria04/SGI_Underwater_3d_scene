@@ -225,13 +225,7 @@ class MyContents  {
         this.sign = new MySign(1.5, 0.05, 1.5, 1, 0.05, 0x8b5a2b, 0xdeb887, "BEWARE OF THE SHARK", this.videoTexture);
         this.sign.position.set(0,floorHeightPosition(0, 15),15);
         this.sign.scale.set(2,2,2);
-        this.sign.box = new THREE.Box3().setFromObject(this.sign, true);
-        this.sign.boxHelper = new THREE.Box3Helper(this.sign.box, 0xff0000);
-        this.sign.boxHelper.visible = false;
-        this.app.scene.add(this.sign.boxHelper);
         this.app.scene.add(this.sign); 
-
-
 
         const twoDShark = new My2DShark();
         twoDShark.scale.set(0.2, 0.2, 0.2);
@@ -578,6 +572,11 @@ class MyContents  {
         }for(const coral of this.coralReef2.corals){
             this.colisionObjects.push(coral)
         }
+        for(const rockGroup of this.rockGroups){
+            for(const rock of rockGroup.rocks){
+                this.colisionObjects.push(rock)
+            }
+        }
         //add the boat only if it is loaded
         if(this.boat){
              this.colisionObjects.push(this.boat);
@@ -619,6 +618,13 @@ class MyContents  {
         for(const fishGroup of this.fishGroups){
             for(const fish of fishGroup.fishes){
                 fish.boxHelper.visible = enable;
+            }
+            
+        }
+
+        for(const rockGroup of this.rockGroups){
+            for(const rock of rockGroup.rocks){
+                rock.boxHelper.visible = enable;
             }
             
         }
