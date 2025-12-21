@@ -17,6 +17,8 @@ class MyCoralReef extends THREE.Group {
 
         this.coralGen = new MyCoral(texture);
         this.type = this.coralGen.coralPresets[type];
+        this.corals = [];
+        this.helpers = [];
 
 
         for (let i = 0; i < numbCorals; i++){
@@ -32,6 +34,15 @@ class MyCoralReef extends THREE.Group {
             const worldZ = this.position.z + z;
             coralMeshGroup.position.set(x, floorHeightPosition(worldX, worldZ), z);
             coralMeshGroup.rotation.y = Math.random() * Math.PI * 2;
+
+            //used for the collision system
+            coralMeshGroup.box = new THREE.Box3().setFromObject(coralMeshGroup, true);
+            const helper = new THREE.Box3Helper(coralMeshGroup.box, 0xff0000);
+            helper.visible = false;
+            this.add(helper)
+            this.helpers.push(helper);
+
+            this.corals.push(coralMeshGroup);
 
             this.add(coralMeshGroup);
         }

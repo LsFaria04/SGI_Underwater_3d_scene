@@ -539,7 +539,7 @@ class MyContents  {
         
 
         // Update coral Perlin noise animation
-        for (var coral of this.coralReef1.children) {
+        for (var coral of this.coralReef1.corals) {
             if (coral.userData.uniforms) {
                 coral.userData.uniforms.uTime.value += delta;
             } else {
@@ -547,7 +547,7 @@ class MyContents  {
             }
         }
         
-        for (var coral of this.coralReef2.children) {
+        for (var coral of this.coralReef2.corals) {
             if (coral.userData.uniforms) {
                 coral.userData.uniforms.uTime.value += delta;
             }
@@ -568,6 +568,11 @@ class MyContents  {
 
         this.colisionObjects = [];
         this.colisionObjects.push(this.sign);
+        for(const coral of this.coralReef1.corals){
+            this.colisionObjects.push(coral)
+        }for(const coral of this.coralReef2.corals){
+            this.colisionObjects.push(coral)
+        }
         //add the boat only if it is loaded
         if(this.boat){
              this.colisionObjects.push(this.boat);

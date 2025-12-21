@@ -241,8 +241,8 @@ export class MyCoral {
                 float noise = cnoise(worldPos.xyz * 0.8 + vec3(uTime * 0.2, 0.0, uTime * 0.15)) * 0.5;
                 
                 // Very subtle global sway - moves entire structure together
-                float swayX = sin(uTime * 0.5 + noise) * 0.05 * swayInfluence;
-                float swayZ = cos(uTime * 0.6 + noise * 0.8) * 0.025 * swayInfluence;
+                float swayX = sin(uTime  + noise) * 0.05 * swayInfluence;
+                float swayZ = cos(uTime + noise ) * 0.025 * swayInfluence;
                 
                 // Apply to transformed position (minimal deformation to maintain structure)
                 transformed.x += swayX;
