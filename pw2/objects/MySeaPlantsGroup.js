@@ -1,99 +1,88 @@
 import * as THREE from 'three';
-import {floorHeightPosition, getRandomInt} from '../utils.js';
+import { floorHeightPosition, getRandomInt } from '../utils.js';
 import { MySeaPlant } from './MySeaPlant.js';
 
-
 class MySeaPlantGroup extends THREE.Group {
-    constructor(numbSeaPlants,x, z, minSpace,maxScale, minScale, colors, overlap){
+
+    constructor(
+        numbSeaPlants,
+        x, z,
+        minSpace,
+        maxScale,
+        minScale,
+        colors,
+        overlap
+    ) {
         super();
-        
+
         this.position.set(x, 0, z);
 
-        //default plant
         const gridSide = Math.ceil(Math.sqrt(numbSeaPlants));
         let plantCount = 0;
 
-        const baseWidth = 0.05 ;
-        const baseDepth = 0.05 ;
+        const baseWidth = 0.05;
+        const baseDepth = 0.05;
 
-        let baseCellWidth = baseWidth * maxScale + minSpace;
-        let baseCellDepth = baseDepth * maxScale + minSpace;
+        const baseCellWidth = baseWidth * maxScale + minSpace;
+        const baseCellDepth = baseDepth * maxScale + minSpace;
 
-        for (let x = 0; x < gridSide && plantCount < numbSeaPlants; x++) {
-            for (let y = 0; y < gridSide && plantCount < numbSeaPlants; y++) {
-            const plant = new MySeaPlant(0.05,1,0.05,null, "L");
-            const highLODPlant = new MySeaPlant(0.05,1,0.05,null, "H");
-            const midLODPlant = new MySeaPlant(0.05,1,0.05,null, "M");
-            const lod = new THREE.LOD();
+        this.plants = [];
 
-            // Random scale
-            const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());
-            plant.scale.set(scaleFactor, scaleFactor, scaleFactor);
-            highLODPlant.scale.set(scaleFactor, scaleFactor,scaleFactor);
-            midLODPlant.scale.set(scaleFactor, scaleFactor,scaleFactor);
+        for (let gx = 0; gx < gridSide && plantCount < numbSeaPlants; gx++) {
+            for (let gy = 0; gy < gridSide && plantCount < numbSeaPlants; gy++) {
 
-            //Random color
-            const randomColor = getRandomInt(0,colors.length - 1);
-            const color = colors[randomColor];
-            plant.traverse(child => {
-                if (child instanceof MySeaPlant) {
-                    child.updateColor(color);
+                // Pick random color
+                const colorIndex = getRandomInt(0, colors.length - 1);
+                const color = colors[colorIndex];
+
+                // Create one plant; LOD is handled internally by MySeaPlant
+                const plant = new MySeaPlant(0.05, 1, 0.05, color);
+
+                // Random scale
+                const scaleFactor = THREE.MathUtils.lerp(minScale, maxScale, Math.random());
+                plant.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+                // Cell spacing
+                let cellWidth = baseCellWidth;
+                let cellDepth = baseCellDepth;
+
+                if (overlap) {
+                    cellWidth = THREE.MathUtils.lerp(
+                        baseWidth * minScale + minSpace,
+                        baseCellWidth,
+                        Math.random()
+                    );
+                    cellDepth = THREE.MathUtils.lerp(
+                        baseDepth * minScale + minSpace,
+                        baseCellDepth,
+                        Math.random()
+                    );
                 }
-            });
-            highLODPlant.traverse(
-                child => {
-                if (child instanceof MySeaPlant) {
-                    child.updateColor(color);
-                }
-            }
-            )
-            midLODPlant.traverse(
-                child => {
-                if (child instanceof MySeaPlant) {
-                    child.updateColor(color);
-                }
-            }
-            )
-            
-            let cellWidth = baseCellWidth;
-            let cellDepth = baseCellDepth;
-            if(overlap){
-                cellWidth = THREE.MathUtils.lerp(baseWidth * minScale + minSpace, baseCellWidth, Math.random());
-                cellDepth = THREE.MathUtils.lerp(baseDepth * minScale + minSpace, baseCellDepth, Math.random());
-            }
-            
-            const worldX = this.position.x + cellWidth * x;
-            const worldZ = this.position.z + cellDepth * y;
-            const worldY = floorHeightPosition(worldX, worldZ);
-            lod.position.set(cellWidth * x, worldY, cellDepth * y);
 
-            lod.addLevel(plant, 20);
-            lod.addLevel(highLODPlant,0);
-            lod.addLevel(midLODPlant,10);
-            this.add(lod);
-            plantCount++;
-            }         
+                // World/sample position for height
+                const worldX = this.position.x + cellWidth * gx;
+                const worldZ = this.position.z + cellDepth * gy;
+                const worldY = floorHeightPosition(worldX, worldZ);
+
+                // Local position inside the group
+                plant.position.set(cellWidth * gx, worldY, cellDepth * gy);
+
+
+                this.add(plant);
+                this.plants.push(plant)
+                plantCount++;
+            }
         }
     }
 
-    update(delta){
-        //traverse the plant group to 
-        this.traverse(
-             child => {
-                //child is a LOD
-                if (child instanceof THREE.LOD) {
-                    let visibleLevel = child.getObjectForDistance(0);
-                    if (visibleLevel) {
-                        visibleLevel.update(delta);
-                    }
-                    visibleLevel = child.getObjectForDistance(10);
-                    if (visibleLevel) {
-                        visibleLevel.update(delta);
-                    }
-                }
+    update(delta) {
+        // Each child is a MySeaPlant (which is responsible for its own LOD/update)
+        this.children.forEach(child => {
+            if (child instanceof MySeaPlant) {
+                child.updateAnim(delta);
             }
-        );
+        });
     }
 }
 
-export{ MySeaPlantGroup};
+export { MySeaPlantGroup };

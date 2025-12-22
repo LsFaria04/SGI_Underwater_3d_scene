@@ -141,6 +141,7 @@ class MyTurtle extends THREE.Object3D {
         this.box = new THREE.Box3().setFromObject(this, true);
         this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
         this.boxHelper.visible = false;
+        this.boxHelper.layers.set(1);
         this.add(this.boxHelper);
     }
 
@@ -159,7 +160,7 @@ class MyTurtle extends THREE.Object3D {
         for (let i = 0; i < this.legs.length; i++) {
             const pivot = this.legs[i];
             const phase = i % 2 === 0 ? 0 : Math.PI;
-            pivot.rotation.z = Math.sin(this.time * 2 + phase) * 0.1;
+            pivot.rotation.z = Math.sin(this.time * 3 + phase) * 0.1;
         }
 
 

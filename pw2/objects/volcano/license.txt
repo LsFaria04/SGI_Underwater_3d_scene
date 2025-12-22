@@ -1,0 +1,11 @@
+Model Information:
+* title:	Volcano
+* source:	https://sketchfab.com/3d-models/volcano-0aa90a20d5cb47de90ec5d1bcd5aff31
+* author:	k3ddesign (https://sketchfab.com/K3DDesign)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Volcano" (https://sketchfab.com/3d-models/volcano-0aa90a20d5cb47de90ec5d1bcd5aff31) by k3ddesign (https://sketchfab.com/K3DDesign) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
