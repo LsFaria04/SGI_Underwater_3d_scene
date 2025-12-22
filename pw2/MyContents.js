@@ -142,7 +142,7 @@ class MyContents  {
         this.seaPlantGroups = [];
         for(let i = 0; i < plantGroupsPosSize.length; i++){
             const pos = plantGroupsPosSize[i];
-            const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[0], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e" ], true);
+            const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[0], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e", "#44cf25"], true);
 
             this.app.scene.add(seaPlantGroup);
             this.seaPlantGroups.push(seaPlantGroup);
@@ -287,7 +287,7 @@ class MyContents  {
         const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
 
         if (intersects.length > 0) {
-            console.log(intersects)
+        
             const hit = intersects[0].object;
 
             // Walk up from the clicked mesh until we find the object registered in bvhMeshes
