@@ -240,9 +240,10 @@ class MyContents  {
         this.submarine.position.set(5,4,5);
         this.app.scene.add(this.submarine);
 
-        this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2, 50, 30);
-        this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
-        this.animationTurtle = new MyKeyFrameAnimation(this.turtle, "random", 10, 100, 100);
+        this.shark.scale.set(-1, 1,1);
+        this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 15, 100, 100, Math.PI / 2);
+        this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60, Math.PI / 2);
+        this.animationTurtle = new MyKeyFrameAnimation(this.turtle, "random", 10, 100, 100, 0);
 
         this.marineSnow = new MyMarineSnow([0.1], ["#FFFFFF"], [this.snowTexture1], 0.01);
         this.marineSnow.position.set(0,10,0);
