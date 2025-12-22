@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 class MyBubbleParticles{
-  constructor(sourcePositions = [{ x: 0, z: 0 }], numParticles = 1000, texture = null) {
+  constructor(sourcePositions = [{ x: 0, z: 0 }], numParticles = 400, texture = null, options = {}) {
 
     this.bubbleTexture = texture || new THREE.TextureLoader().load("./textures/bubble.png");
     
@@ -11,8 +11,13 @@ class MyBubbleParticles{
     this.currentParticles = this.fullParticles;
     this.lodEnabled = false;          
 
-    this.surfaceY = 30;
-    this.sourceY = 1.5;
+    this.sourceY  = options.sourceY  ?? 1.5;
+    this.surfaceY = options.surfaceY ?? 30;
+
+    this.spawnArea = {
+      x: options.spawnAreaX ?? 2,
+      z: options.spawnAreaZ ?? 2
+    };
 
     this.buoyancy = 0.002;       // buoyancy is similar to upward acceleration
     this.wobbleStrength = 0.5;   // wobble is similar to horizontal movement
@@ -72,8 +77,8 @@ class MyBubbleParticles{
   createBubble() {
     const source = this.sources[Math.floor(Math.random() * this.sources.length)];
 
-    const x0 = source.x + this.randomRange(-2, 2);
-    const z0 = source.z + this.randomRange(-2, 2);
+    const x0 = source.x + this.randomRange(-this.spawnArea.x, this.spawnArea.x);
+    const z0 = source.z + this.randomRange(-this.spawnArea.z, this.spawnArea.z);
 
     return {
       x0, z0, // initial position
