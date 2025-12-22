@@ -346,7 +346,6 @@ class MyContents  {
         const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
 
         if (intersects.length > 0) {
-        
             const hit = intersects[0].object;
 
             // Walk up from the clicked mesh until we find the object registered in bvhMeshes
