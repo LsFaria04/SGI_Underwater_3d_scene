@@ -209,7 +209,7 @@ class MyContents  {
         this.seaUrchin.position.set(4, floorHeightPosition(4,-10) + 0.2, -10);
         this.app.scene.add(this.seaUrchin);
 
-        this.turtle = new MyTurtle(0.5, 0.15);
+        this.turtle = new MyTurtle(0.5, 0.15,  0x228B22,  0x556B2F, this.turtleTexture);
         this.turtle.position.set(-4, floorHeightPosition(-4,1) + 0.3 , 1);
         this.app.scene.add(this.turtle);
 
@@ -487,7 +487,9 @@ class MyContents  {
         this.sharkTexture.minFilter = THREE.LinearMipmapLinearFilter;
         this.sharkTexture.magFilter = THREE.LinearFilter;
         this.sharkTexture.generateMipmaps = true;
-        this.sharkTexture.needsUpdate = true;
+
+        this.turtleTexture = new THREE.TextureLoader().load("./textures/turtle.jpg");
+        this.turtleTexture.generateMipmaps = true;
 
         // Video texture
 
