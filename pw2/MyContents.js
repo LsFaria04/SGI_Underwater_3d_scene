@@ -84,6 +84,10 @@ class MyContents  {
        
         this.app.scene.add(directionalLight);
 
+        //volcano light
+        this.volvanoLight = new THREE.PointLight(0xCf1020, 5);
+        this.app.scene.add(this.volvanoLight);
+
     }
 
     initObjects() {
@@ -132,11 +136,12 @@ class MyContents  {
         });
 
         // Load the volcano model
+        const volcanoPosition = [13, floorHeightPosition(13,7) - 0.6, 7]
         loader.load('objects/volcano/scene.gltf', (gltf) => {
 
             this.volcano = gltf.scene
             this.volcano.scale.set(0.1, 0.1, 0.1);
-            this.volcano.position.set(13,-0.5,7);
+            this.volcano.position.set(volcanoPosition[0],volcanoPosition[1],volcanoPosition[2]);
             this.volcano.traverse((child) => {
                 if (child.isMesh && child.material) {
                     child.material.emissive.set(0x000000);
@@ -166,6 +171,8 @@ class MyContents  {
             console.error(error);
         });
 
+        //move the volcano light to the volvano position
+        this.volvanoLight.position.set(volcanoPosition[0] + 1, 2,volcanoPosition[2] - 8)
         // Add lava plane above volcano
         const lavaGeometry = new THREE.PlaneGeometry(1, 1);
         const lavaMaterial = new THREE.ShaderMaterial({
