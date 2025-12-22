@@ -287,6 +287,7 @@ class MyContents  {
         const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
 
         if (intersects.length > 0) {
+            console.log(intersects)
             const hit = intersects[0].object;
 
             // Walk up from the clicked mesh until we find the object registered in bvhMeshes
@@ -375,8 +376,12 @@ class MyContents  {
                         mat.color.set(0xff0000);
                     });
                 } else {
-                    if (!child.userData.originalColor) child.userData.originalColor = child.material.color.clone();
-                    child.material.color.set(0xff0000);
+                    if (!child.userData.originalColor){
+                    
+                        child.userData.originalColor = child.material.color ? child.material.color.clone() : 0x000000;
+                    } 
+                    if(child.material.color)
+                        child.material.color.set(0xff0000);
                 }
             }
         });

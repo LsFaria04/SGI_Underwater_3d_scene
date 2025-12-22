@@ -659,6 +659,7 @@ class MySwordFish extends THREE.Object3D {
         this.box = new THREE.Box3().setFromObject(this, true);
         this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
         this.boxHelper.visible = false;
+        this.boxHelper.layers.set(1);
         this.add(this.boxHelper);
 
     }
