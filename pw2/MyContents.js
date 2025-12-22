@@ -196,11 +196,17 @@ class MyContents  {
         this.app.scene.add(water);
 
         //plant position and size [x, z, number of plants]
-        const plantGroupsPosSize = [[-20, -1, 100], [-4, 9, 50], [10,5, 10]];
+        const plantGroupsPosSize = [
+            [-20, -1, 100], [-4, 9, 50], [10,5, 10],
+
+            //sea plants ousid the scene
+            [-30, 15, 10], [-4, -30, 100], [25,0, 20],
+
+        ];
         this.seaPlantGroups = [];
         for(let i = 0; i < plantGroupsPosSize.length; i++){
             const pos = plantGroupsPosSize[i];
-            const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[0], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e", "#44cf25"], true);
+            const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[1], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e", "#44cf25"], true);
 
             this.app.scene.add(seaPlantGroup);
             this.seaPlantGroups.push(seaPlantGroup);
@@ -238,7 +244,17 @@ class MyContents  {
 
         //rock position and size [x, z, number of rocks]
         this.rockGroups = [];
-        const rockPosSize = [[15, -15, 4], [-10, -10, 6], [5, 8, 2], [-12, 15, 10], [-1, 15, 1], [4, 4, 3], [-10, 4, 8], [5, -4, 3], [15, 15, 10], [20, 5, 10], [-20, -6, 10], [0, -20, 20]];
+        const rockPosSize = [
+            //Rock groups inside the scene
+            [15, -15, 4], [-10, -10, 6], [5, 8, 2],
+            [-12, 15, 10], [-1, 15, 1], [4, 4, 3],
+            [-10, 4, 8], [5, -4, 3], [15, 15, 10],
+            [20, 5, 10], [-20, -6, 10], [0, -20, 20],
+
+            //rock groups that are ouside the scene for scenery
+             [-30, -15, 4], [-25, 0, 5], [-20, 5, 10],
+            [-30, -15, 4], [-35, 3, 20], [-30, -20, 3],
+        ];
         for(let i = 0; i < rockPosSize.length; i++){
             const pos = rockPosSize[i];
             const rockGroup = new MyRockGroup(pos[2],pos[0], pos[1], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], false, [this.rockTexture]);
@@ -392,7 +408,6 @@ class MyContents  {
         const intersects = this.raycaster.intersectObjects(bvhMeshes, true);
 
         if (intersects.length > 0) {
-        
             const hit = intersects[0].object;
 
             // Walk up from the clicked mesh until we find the object registered in bvhMeshes

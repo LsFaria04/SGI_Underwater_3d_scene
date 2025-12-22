@@ -328,6 +328,7 @@ class MySubmarine extends THREE.Object3D {
         this.shield = new THREE.Mesh(shieldGeometry, shieldMaterial);
         this.shield.visible = false;
         this.add(this.shield);
+        this.shield.layers.set(1);
 
         
     }

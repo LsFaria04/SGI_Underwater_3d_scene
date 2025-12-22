@@ -19,6 +19,7 @@ import { CrosshairShader } from './shaders/CrosshairShader.js';
 import { TextureOverlayShader } from './shaders/TextureOverlayShader.js';
 import { CircularClipShader } from './shaders/CircularClipShader.js';
 import { SpritesheetHUDShader } from './shaders/SpritesheetHUDShader.js';
+import { floorHeightPosition } from './utils.js';
 
 
 /**
@@ -68,6 +69,16 @@ class MyApp  {
         this.forwardSpeed = 8;  
         this.verticalSpeed = 3; 
         this.rotationSpeed = 2; 
+
+        //camera bounds (under water camera)
+        this.bounds = {
+            minX: -30,
+            minY:  0,
+            minZ: -30,
+            maxX: 30,
+            maxY: 30,
+            maxZ: 30,
+        }
     }
     
     /**
@@ -170,6 +181,15 @@ class MyApp  {
         } 
         else {
             if (this.controls) this.controls.enabled = true;
+
+            //check camera bounds
+            const cam = this.cameras[this.activeCameraName];
+
+            cam.position.x = THREE.MathUtils.clamp(cam.position.x, this.bounds.minX, this.bounds.maxX);
+            cam.position.z = THREE.MathUtils.clamp(cam.position.z, this.bounds.minZ, this.bounds.maxZ);
+            cam.position.y = THREE.MathUtils.clamp(cam.position.y, floorHeightPosition(cam.position.x, cam.position.z) + 1, this.bounds.maxY);
+
+            
         }
 
         // camera changed?
