@@ -215,16 +215,6 @@ class MyContents  {
         this.app.scene.add(this.crab);
         this.crab.position.set(5,floorHeightPosition(5,1),1);
 
-        this.bubbles = new MyBubbleParticles([
-        { x: 14, z: -1 }
-        ],
-        200,
-        this.bubbleTexture,
-        { sourceY: 1.8, surfaceY: 30, spawnAreaX: 0.4, spawnAreaZ: 0.4 }
-        );
-
-        this.app.scene.add(this.bubbles.points);
-
         this.sandPuff = new SandPuffSystem(this.app.scene, 500);
 
         
@@ -307,6 +297,61 @@ class MyContents  {
         this.marineSnow = new MyMarineSnow([0.1], ["#FFFFFF"], [this.snowTexture1], 0.01);
         this.marineSnow.position.set(0,10,0);
         this.app.scene.add(this.marineSnow);
+
+        
+        this.volcanoBubbles = new MyBubbleParticles([
+        { x: 14, z: -1 }
+        ],
+        200,
+        this.bubbleTexture,
+        { sourceY: 1.8, surfaceY: 20, spawnAreaX: 0.4, spawnAreaZ: 0.4, spawnRate: 70 }
+        );
+
+        this.app.scene.add(this.volcanoBubbles.points);
+
+        this.coralBubbles1 = [];
+        for (const coral of this.coralReef1.corals) {
+            const coralPos = new THREE.Vector3();
+            coral.getWorldPosition(coralPos);
+            
+            const bubbleSystem = new MyBubbleParticles(
+                [{ x: coralPos.x, z: coralPos.z }],
+                50, 
+                this.bubbleTexture,
+                { 
+                    sourceY: coralPos.y + 0.5, 
+                    surfaceY: 20, 
+                    spawnAreaX: 0.3, 
+                    spawnAreaZ: 0.3, 
+                    spawnRate: 0.5,
+                    speedFactor: 0.5
+                }
+            );
+            this.app.scene.add(bubbleSystem.points);
+            this.coralBubbles1.push(bubbleSystem);
+        }
+
+        this.coralBubbles2 = [];
+        for (const coral of this.coralReef2.corals) {
+            const coralPos = new THREE.Vector3();
+            coral.getWorldPosition(coralPos);
+            
+            const bubbleSystem = new MyBubbleParticles(
+                [{ x: coralPos.x, z: coralPos.z }],
+                50, 
+                this.bubbleTexture,
+                { 
+                    sourceY: coralPos.y + 0.5,
+                    surfaceY: 20, 
+                    spawnAreaX: 0.3, 
+                    spawnAreaZ: 0.3, 
+                    spawnRate: 0.5,
+                    speedFactor: 0.5
+                }
+            );
+            this.app.scene.add(bubbleSystem.points);
+            this.coralBubbles2.push(bubbleSystem);
+        }
     }
 
     onMouseClick(mousePos) {
@@ -604,8 +649,18 @@ class MyContents  {
             this.submarine.rotation.y += Math.PI / 2; 
         }
 
-        this.bubbles.updateLOD(this.app.activeCamera.position);
-        this.bubbles.update();
+        this.volcanoBubbles.updateLOD(this.app.activeCamera.position);
+        this.volcanoBubbles.update(delta);
+
+        for (const bubbleSystem of this.coralBubbles1) {
+            bubbleSystem.updateLOD(this.app.activeCamera.position);
+            bubbleSystem.update(delta);
+        }
+
+        for (const bubbleSystem of this.coralBubbles2) {
+            bubbleSystem.updateLOD(this.app.activeCamera.position);
+            bubbleSystem.update(delta);
+        }
 
         this.sandPuff.update(delta);
         this.swordFish.update(delta);

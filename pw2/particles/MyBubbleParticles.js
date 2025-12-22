@@ -1,23 +1,28 @@
 import * as THREE from "three";
 
 class MyBubbleParticles{
-  constructor(sourcePositions = [{ x: 0, z: 0 }], numParticles = 400, texture = null, options = {}) {
+  constructor(sourcePositions = [{ x: 0, z: 0 }], maxParticles = 400, texture = null, options = {}) {
 
     this.bubbleTexture = texture || new THREE.TextureLoader().load("./textures/bubble.png");
     
-    this.fullParticles = numParticles;   
-    this.lowParticles = Math.floor(numParticles / 4);            
+    this.maxParticles = maxParticles;   
+    this.fullParticles = maxParticles;
+    this.lowParticles = Math.floor(maxParticles / 4);            
     this.lodDistance = 20;     
-    this.currentParticles = this.fullParticles;
     this.lodEnabled = false;          
 
     this.sourceY  = options.sourceY  ?? 1.5;
-    this.surfaceY = options.surfaceY ?? 30;
+    this.surfaceY = options.surfaceY ?? 20;
 
     this.spawnArea = {
       x: options.spawnAreaX ?? 2,
       z: options.spawnAreaZ ?? 2
     };
+
+    this.spawnRate = options.spawnRate ?? 10; // bubbles per second
+    this.spawnAccumulator = Math.random(); 
+
+    this.speedFactor = options.speedFactor ?? 1.0;
 
     this.buoyancy = 0.002;       // buoyancy is similar to upward acceleration
     this.wobbleStrength = 0.5;   // wobble is similar to horizontal movement
@@ -26,27 +31,37 @@ class MyBubbleParticles{
     this.sources = sourcePositions;
 
     this.data = [];
+    this.activeBubbles = 0;
     this.init();
   }
 
-  init(particleCount = this.currentParticles) {
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-    const sizes = new Float32Array(particleCount);
+  init() {
+    const positions = new Float32Array(this.maxParticles * 3);
+    const colors = new Float32Array(this.maxParticles * 3);
+    const sizes = new Float32Array(this.maxParticles);
 
-    for (let i = 0; i < particleCount; i++) {
-      const bubble = this.createBubble();
-      this.data.push(bubble);
+    for (let i = 0; i < this.maxParticles; i++) {
+      this.data.push({
+        active: false,
+        x0: 0, z0: 0,
+        x: 0, y: 0, z: 0,
+        vy: 0,
+        life: 0,
+        maxLife: 0,
+        wobbleOffset: 0,
+        scale: 0,
+        color: new THREE.Color(0, 0, 0)
+      });
 
-      positions[i * 3] = bubble.x;
-      positions[i * 3 + 1] = bubble.y;
-      positions[i * 3 + 2] = bubble.z;
+      positions[i * 3] = 0;
+      positions[i * 3 + 1] = 0;
+      positions[i * 3 + 2] = 0;
 
-      colors[i * 3] = bubble.color.r;
-      colors[i * 3 + 1] = bubble.color.g;
-      colors[i * 3 + 2] = bubble.color.b;
+      colors[i * 3] = 0;
+      colors[i * 3 + 1] = 0;
+      colors[i * 3 + 2] = 0;
 
-      sizes[i] = bubble.scale;
+      sizes[i] = 0;
     }
 
     this.geometry = new THREE.BufferGeometry();
@@ -54,17 +69,36 @@ class MyBubbleParticles{
     this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     this.geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-    this.geometry.setDrawRange(0, this.fullParticles);
+    this.geometry.setDrawRange(0, 0); // start with zero drawn particles
 
-    this.material = new THREE.PointsMaterial({
-      map: this.bubbleTexture,
-      vertexColors: true,
-      size: 0.3,
+    this.material = new THREE.ShaderMaterial({
+      uniforms: {
+        pointTexture: { value: this.bubbleTexture }
+      },
+      vertexShader: `
+        attribute float size;
+        varying float vAlpha;
+        void main() {
+          vAlpha = 1.0 - position.y / 20.0; // fade towards top
+          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = size * (100.0 / -mvPosition.z);
+          gl_Position = projectionMatrix * mvPosition;
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D pointTexture;
+        varying float vAlpha;
+        void main() {
+          vec4 texColor = texture2D(pointTexture, gl_PointCoord);
+          vec3 bubbleColor = vec3(0.8, 0.9, 1.0);
+          gl_FragColor = vec4(bubbleColor, texColor.a * vAlpha * 0.6);
+          // soft edges
+          float dist = distance(gl_PointCoord, vec2(0.5));
+          gl_FragColor.a *= smoothstep(0.5, 0.45, dist);
+        }
+      `,
       transparent: true,
-      alphaTest: 0.01,
-      opacity: 0.6,
-      depthWrite: false,
-      sizeAttenuation: true
+      depthWrite: false
     });
 
     this.points = new THREE.Points(this.geometry, this.material);
@@ -81,11 +115,12 @@ class MyBubbleParticles{
     const z0 = source.z + this.randomRange(-this.spawnArea.z, this.spawnArea.z);
 
     return {
-      x0, z0, // initial position
+      active: true,
+      x0, z0,
       x: x0, 
       y: this.sourceY,
       z: z0,
-      vy: this.randomRange(0.05, 0.12), //upward speed
+      vy: this.randomRange(0.05, 0.12) * this.speedFactor,
       life: 0,
       maxLife: this.randomRange(200, 400),
       wobbleOffset: Math.random() * Math.PI * 2,
@@ -94,16 +129,47 @@ class MyBubbleParticles{
     };
   }
 
-  update() {
-    const drawCount = this.geometry.drawRange.count;
+  spawnBubble() {
+    for (let i = 0; i < this.maxParticles; i++) {
+      if (!this.data[i].active) {
+        const newBubble = this.createBubble();
+        this.data[i] = newBubble;
+        this.activeBubbles++;
+        
+        const currentMax = this.lodEnabled ? this.lowParticles : this.fullParticles;
+        const newDrawCount = Math.min(this.activeBubbles, currentMax);
+        this.geometry.setDrawRange(0, newDrawCount);
+        
+        return true;
+      }
+    }
+    return false;
+  }
+
+  update(deltaTime = 1/60) {
     const positions = this.geometry.attributes.position.array;
     const colors = this.geometry.attributes.color.array;
+    const sizes = this.geometry.attributes.size.array;
 
-    for (let i = 0; i < drawCount; i++) {
+    this.spawnAccumulator += this.spawnRate * deltaTime;
+    while (this.spawnAccumulator >= 1 && this.activeBubbles < this.maxParticles) {
+      this.spawnBubble();
+      this.spawnAccumulator -= 1;
+    }
+
+    for (let i = 0; i < this.maxParticles; i++) {
       const b = this.data[i];
+      
+      if (!b.active) {
+        positions[i * 3] = 0;
+        positions[i * 3 + 1] = 0;
+        positions[i * 3 + 2] = 0;
+        sizes[i] = 0;
+        continue;
+      }
 
       // buoyancy
-      b.vy += this.buoyancy;
+      b.vy += this.buoyancy * this.speedFactor;
       b.y += b.vy;
 
       // wobbling
@@ -114,7 +180,12 @@ class MyBubbleParticles{
 
       // respawn when surface or maxLife reached
       if (b.y > this.surfaceY || b.life > b.maxLife) {
-        this.data[i] = this.createBubble();
+        b.active = false;
+        this.activeBubbles--;
+        positions[i * 3] = 0;
+        positions[i * 3 + 1] = 0;
+        positions[i * 3 + 2] = 0;
+        sizes[i] = 0;
         continue;
       }
 
@@ -129,12 +200,15 @@ class MyBubbleParticles{
       colors[i * 3] = b.color.r;
       colors[i * 3 + 1] = b.color.g;
       colors[i * 3 + 2] = b.color.b;
+      
+      sizes[i] = b.scale;
     }
 
     this.count += 0.05;
 
     this.geometry.attributes.position.needsUpdate = true;
     this.geometry.attributes.color.needsUpdate = true;
+    this.geometry.attributes.size.needsUpdate = true;
   }
 
   updateLOD(cameraPosition) {
@@ -146,14 +220,20 @@ class MyBubbleParticles{
       )
     );
 
+    const wasEnabled = this.lodEnabled;
+
     if (distance > this.lodDistance && !this.lodEnabled) {
-      this.geometry.setDrawRange(0, this.lowParticles);
       this.lodEnabled = true;
     }
 
     if (distance <= this.lodDistance && this.lodEnabled) {
-      this.geometry.setDrawRange(0, this.fullParticles);
       this.lodEnabled = false;
+    }
+
+    if (wasEnabled !== this.lodEnabled) {
+      const maxDraw = this.lodEnabled ? this.lowParticles : this.fullParticles;
+      const newDrawCount = Math.min(this.activeBubbles, maxDraw);
+      this.geometry.setDrawRange(0, newDrawCount);
     }
   }
 
@@ -161,6 +241,10 @@ class MyBubbleParticles{
     return this.lodEnabled ? "ON" : "OFF";
   }
 
+  getActiveBubbleCount() {
+    return this.activeBubbles;
+  }
+
 }
 
-export { MyBubbleParticles };
+export { MyBubbleParticles }; 

@@ -249,11 +249,11 @@ class MyInterface  {
 
         const bubbleFolder = this.datgui.addFolder("Bubbles");
 
-        const bubbleLODInfo = { status: this.contents.bubbles.getLODStatus() };
+        const bubbleLODInfo = { status: this.contents.volcanoBubbles.getLODStatus() };
         bubbleFolder.add(bubbleLODInfo, "status").name("Bubble LOD Status").listen();
 
         const updateBubbleLODLabel = () => {
-        bubbleLODInfo.status = this.contents.bubbles.getLODStatus();
+        bubbleLODInfo.status = this.contents.volcanoBubbles.getLODStatus();
         requestAnimationFrame(updateBubbleLODLabel);
         };
         updateBubbleLODLabel();
