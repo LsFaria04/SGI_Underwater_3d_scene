@@ -210,7 +210,7 @@ class MyContents  {
         this.app.scene.add(this.seaUrchin);
 
         this.turtle = new MyTurtle(0.5, 0.15,  0x228B22,  0x556B2F, this.turtleTexture);
-        this.turtle.position.set(-4, floorHeightPosition(-4,1) + 0.3 , 1);
+        this.turtle.position.set(8, 6 , 1);
         this.app.scene.add(this.turtle);
 
         this.jellyfish = new MyJellyFish(0.5, 1);
@@ -242,6 +242,7 @@ class MyContents  {
 
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 2, 50, 30);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60);
+        this.animationTurtle = new MyKeyFrameAnimation(this.turtle, "random", 10, 100, 100);
 
         this.marineSnow = new MyMarineSnow([0.1], ["#FFFFFF"], [this.snowTexture1], 0.01);
         this.marineSnow.position.set(0,10,0);
@@ -537,6 +538,7 @@ class MyContents  {
         this.sandPuff.update(delta);
         this.swordFish.update(delta);
         this.shark.update(delta);
+        this.turtle.update(delta)
         
 
         // Update coral Perlin noise animation
@@ -560,6 +562,7 @@ class MyContents  {
         // Update keyframe animations
         this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
+        this.animationTurtle.update(delta);
 
         this.enemies = [] //reset the enemie
         this.enemies.push(this.swordFish);

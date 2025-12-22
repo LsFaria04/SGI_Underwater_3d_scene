@@ -2,14 +2,14 @@ import * as THREE from 'three';
 import { MeshBVHHelper } from '../index.module.js';
 
 class MyTurtle extends THREE.Object3D {
-    /**
-     * 
-     * @param {number} shellRadius Radius of the shell
-     * @param {number} bodyRadius Radius of the head/legs
-     * @param {string|number} colorShell Shell color
-     * @param {string|number} colorBody Body color
-     */
-    constructor(shellRadius = 0.5, bodyRadius = 0.15, colorShell = 0x228B22, colorBody = 0x556B2F, texture) {
+
+    constructor(
+        shellRadius = 0.5,
+        bodyRadius = 0.15,
+        colorShell = 0x228B22,
+        colorBody = 0x556B2F,
+        texture
+    ) {
         super();
 
         this.shellRadius = shellRadius;
@@ -19,100 +19,150 @@ class MyTurtle extends THREE.Object3D {
         this.texture = texture;
 
         this.helpers = [];
+        this.time = 0; // animation clock
+
         this.init();
     }
 
+    // ---------------------------------------------------------
+    // Add BVH helper to a mesh
+    // ---------------------------------------------------------
+    addBVHHelper(mesh) {
+        const helper = new MeshBVHHelper(mesh);
+        helper.visible = false;
+        mesh.add(helper); // attach to mesh, not root
+        this.helpers.push(helper);
+    }
+
+    // ---------------------------------------------------------
+    // Build turtle
+    // ---------------------------------------------------------
     init() {
+
+        // ---------------- SHELL ----------------
         this.texture.wrapS = THREE.MirroredRepeatWrapping;
         this.texture.wrapT = THREE.MirroredRepeatWrapping;
-        this.texture.repeat.set(2 * this.shellRadius / 0.5,2 * this.shellRadius / 0.5);
+        this.texture.repeat.set(
+            2 * this.shellRadius / 0.5,
+            2 * this.shellRadius / 0.5
+        );
 
-        // Shell (slightly flattened sphere)
-        const shellGeom = new THREE.SphereGeometry(this.shellRadius, 10, 8);
-        shellGeom.scale(1, 0.6, 1); // flatten vertically
-        const shellMat = new THREE.MeshStandardMaterial({ color: this.colorShell, map:this.texture});
-        const shellMesh = new THREE.Mesh(shellGeom, shellMat);
-        this.add(shellMesh);
-        shellGeom.computeBoundsTree();
+        const shellGeo = new THREE.SphereGeometry(this.shellRadius, 16, 12);
+        shellGeo.scale(1, 0.5, 1);
 
-        const helper = new MeshBVHHelper(shellMesh);
-        helper.visible = false;
-        this.add(helper);
-        this.helpers.push(helper);
+        const shellMat = new THREE.MeshStandardMaterial({
+            color: this.colorShell,
+            map: this.texture
+        });
 
-        // Head
-        const headGeom = new THREE.SphereGeometry(this.bodyRadius, 16, 8);
+        this.shell = new THREE.Mesh(shellGeo, shellMat);
+        shellGeo.computeBoundsTree();
+        this.add(this.shell);
+        this.addBVHHelper(this.shell);
+
+
+        // ---------------- HEAD ----------------
+        const headGeo = new THREE.SphereGeometry(this.bodyRadius, 16, 12);
         const headMat = new THREE.MeshStandardMaterial({ color: this.colorBody });
-        const headMesh = new THREE.Mesh(headGeom, headMat);
-        headMesh.scale.set(0.8, 1, 1.4);
-        headMesh.position.set(0, 0, this.shellRadius + this.bodyRadius * 0.5);
-        this.add(headMesh);
-        headGeom.computeBoundsTree();
 
-        const helper2 = new MeshBVHHelper(headMesh);
-        helper2.visible = false;
-        this.add(helper2);
-        this.helpers.push(helper2);
+        this.head = new THREE.Mesh(headGeo, headMat);
+        this.head.scale.set(0.8, 1, 1.4);
+        this.head.position.set(0, 0, this.shellRadius + this.bodyRadius * 0.5);
+        headGeo.computeBoundsTree();
+        this.add(this.head);
+        this.addBVHHelper(this.head);
 
-        // Legs
-        const legGeom = new THREE.SphereGeometry(this.bodyRadius, 8, 8);
-        legGeom.computeBoundsTree();
-        legGeom.scale(1 + 1 * this.shellRadius, 0.5, 1 + 1 * this.shellRadius * 0.2); // flatten vertically
+
+        // ---------------- LEGS ----------------
+        const legGeo = new THREE.SphereGeometry(this.bodyRadius, 12, 10);
+        legGeo.computeBoundsTree();
+
         const legPositions = [
-            [ this.shellRadius * 0.7, -this.shellRadius * 0.6 * 0.7,  this.shellRadius * 0.7],
-            [-this.shellRadius * 0.7, -this.shellRadius * 0.6 * 0.7,  this.shellRadius * 0.7],
-            [ this.shellRadius * 0.7, -this.shellRadius * 0.6 * 0.7, -this.shellRadius * 0.7],
-            [-this.shellRadius * 0.7, -this.shellRadius * 0.6 * 0.7, -this.shellRadius * 0.7],
+            [ this.shellRadius * 0.7, -this.shellRadius * 0.3,  this.shellRadius * 0.7], // front right
+            [-this.shellRadius * 0.7, -this.shellRadius * 0.3,  this.shellRadius * 0.7], // front left
+            [ this.shellRadius * 0.7, -this.shellRadius * 0.3, -this.shellRadius * 0.7], // back right
+            [-this.shellRadius * 0.7, -this.shellRadius * 0.3, -this.shellRadius * 0.7], // back left
         ];
-        let i = 0;
-        for (const pos of legPositions) {
-            const legMesh = new THREE.Mesh(legGeom, headMat);
-            if(i < 2){
-                //front legs
-                legMesh.scale.set(1.5,1,0.8)
-            }
-            else{
-                //back legs
-                legMesh.scale.set(1.2,1,0.8)
-                legMesh.rotateY(THREE.MathUtils.DEG2RAD * 90);
-            }
-            i++;
-            legMesh.position.set(...pos);
-            this.add(legMesh);
-            
 
-            const helper = new MeshBVHHelper(legMesh);
-            helper.visible = false;
-            this.add(helper);
-            this.helpers.push(helper);
+        this.legs = [];
+
+        for (let i = 0; i < 4; i++) {
+
+            // 1. Create a pivot at the hip joint
+            const pivot = new THREE.Group();
+            this.add(pivot);
+
+            // 2. Create the leg mesh
+            const leg = new THREE.Mesh(legGeo, headMat);
+
+            if (i < 2) {
+                leg.scale.set(2, 0.4, 0.8); // front legs
+            }
+            else {
+                leg.scale.set(1.2, 0.4, 0.8); // back legs
+                leg.rotateY(THREE.MathUtils.DEG2RAD * 90);
+            }      
+
+            // 3. Move the leg mesh so its top sits at the pivot
+           leg.position.set(...legPositions[i]); // stays centered under pivot
+
+            // 4. Add mesh to pivot
+            pivot.add(leg);
+             
+            // 5. Add BVH helper to mesh
+            this.addBVHHelper(leg);
+
+            // 6. Store pivot for animation
+            this.legs.push(pivot);
         }
 
-        // Eyes
-        const eyeGeom = new THREE.SphereGeometry(this.bodyRadius * 0.1, 8, 8);
+
+
+        // ---------------- EYES ----------------
+        const eyeGeo = new THREE.SphereGeometry(this.bodyRadius * 0.1, 8, 8);
+        eyeGeo.computeBoundsTree();
+
         const eyeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-        const leftEye = new THREE.Mesh(eyeGeom, eyeMat);
-        const rightEye = new THREE.Mesh(eyeGeom, eyeMat);
-        leftEye.position.set(-this.bodyRadius * 0.5, this.bodyRadius * 0.3, this.shellRadius + this.bodyRadius * 1.4);
-        rightEye.position.set(this.bodyRadius * 0.5, this.bodyRadius * 0.3, this.shellRadius + this.bodyRadius * 1.4);
-        this.add(leftEye);
-        this.add(rightEye);
 
-        eyeGeom.computeBoundsTree();
+        this.leftEye = new THREE.Mesh(eyeGeo, eyeMat);
+        this.rightEye = new THREE.Mesh(eyeGeo, eyeMat);
 
-        const helper4 = new MeshBVHHelper(leftEye);
-        helper4.visible = false;
-        this.add(helper4);
-        this.helpers.push(helper4);
+        this.leftEye.position.set(-this.bodyRadius * 0.5, this.bodyRadius * 0.3, this.bodyRadius * 0.7);
+        this.rightEye.position.set(this.bodyRadius * 0.5, this.bodyRadius * 0.3, this.bodyRadius * 0.7);
 
-        const helper5 = new MeshBVHHelper(rightEye);
-        helper5.visible = false;
-        this.add(helper5);
-        this.helpers.push(helper5);
+        this.head.add(this.leftEye);
+        this.head.add(this.rightEye);
 
+        this.addBVHHelper(this.leftEye);
+        this.addBVHHelper(this.rightEye);
+
+
+        // ---------------- BOUNDING BOX ----------------
         this.box = new THREE.Box3().setFromObject(this, true);
         this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
         this.boxHelper.visible = false;
         this.add(this.boxHelper);
+    }
+
+    // ---------------------------------------------------------
+    // Animation update
+    // ---------------------------------------------------------
+    update(delta) {
+        this.time += delta;
+
+        // Head bobbing
+        this.head.position.y = Math.sin(this.time * 1.5) * 0.05;
+
+        // Shell sway
+        this.shell.rotation.z = Math.sin(this.time * 1.5) * 0.05;
+
+        for (let i = 0; i < this.legs.length; i++) {
+            const pivot = this.legs[i];
+            const phase = i % 2 === 0 ? 0 : Math.PI;
+            pivot.rotation.z = Math.sin(this.time * 2 + phase) * 0.1;
+        }
+
+
     }
 }
 
