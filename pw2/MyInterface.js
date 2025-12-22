@@ -246,6 +246,21 @@ class MyInterface  {
         });
 
         depthOfFieldFolder.open();
+
+        const bubbleFolder = this.datgui.addFolder("Bubbles");
+
+        const bubbleLODInfo = { status: this.contents.bubbles.getLODStatus() };
+        bubbleFolder.add(bubbleLODInfo, "status").name("Bubble LOD Status").listen();
+
+        const updateBubbleLODLabel = () => {
+        bubbleLODInfo.status = this.contents.bubbles.getLODStatus();
+        requestAnimationFrame(updateBubbleLODLabel);
+        };
+        updateBubbleLODLabel();
+  
+
+        bubbleFolder.open();
+
     }
 }
 

@@ -157,12 +157,7 @@ class MyContents  {
         this.app.scene.add(this.crab);
         this.crab.position.set(5,floorHeightPosition(5,1),1);
 
-        this.bubbles = new MyBubbleParticles([
-        { x: 5, z: 5 }
-        ],
-        1000,
-        this.bubbleTexture
-        );
+        this.bubbles = new MyBubbleParticles([{ x: 5, z: 5 }],1000,this.bubbleTexture);
 
         this.app.scene.add(this.bubbles.points);
 
@@ -535,7 +530,9 @@ class MyContents  {
             this.submarine.rotation.y += Math.PI / 2; 
         }
 
+        this.bubbles.updateLOD(this.app.activeCamera.position);
         this.bubbles.update();
+
         this.sandPuff.update(delta);
         this.swordFish.update(delta);
         this.shark.update(delta);

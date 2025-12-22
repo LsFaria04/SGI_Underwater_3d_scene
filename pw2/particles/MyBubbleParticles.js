@@ -1,9 +1,16 @@
 import * as THREE from "three";
 
-class MyBubbleParticles {
+class MyBubbleParticles{
   constructor(sourcePositions = [{ x: 0, z: 0 }], numParticles = 1000, texture = null) {
+
     this.bubbleTexture = texture || new THREE.TextureLoader().load("./textures/bubble.png");
-    this.numParticles = numParticles;
+    
+    this.fullParticles = numParticles;   
+    this.lowParticles = Math.floor(numParticles / 4);            
+    this.lodDistance = 20;     
+    this.currentParticles = this.fullParticles;
+    this.lodEnabled = false;          
+
     this.surfaceY = 30;
     this.sourceY = 0;
 
@@ -17,12 +24,12 @@ class MyBubbleParticles {
     this.init();
   }
 
-  init() {
-    const positions = new Float32Array(this.numParticles * 3);
-    const colors = new Float32Array(this.numParticles * 3);
-    const sizes = new Float32Array(this.numParticles);
+  init(particleCount = this.currentParticles) {
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
 
-    for (let i = 0; i < this.numParticles; i++) {
+    for (let i = 0; i < particleCount; i++) {
       const bubble = this.createBubble();
       this.data.push(bubble);
 
@@ -41,6 +48,8 @@ class MyBubbleParticles {
     this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     this.geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+    this.geometry.setDrawRange(0, this.fullParticles);
 
     this.material = new THREE.PointsMaterial({
       map: this.bubbleTexture,
@@ -81,10 +90,11 @@ class MyBubbleParticles {
   }
 
   update() {
+    const drawCount = this.geometry.drawRange.count;
     const positions = this.geometry.attributes.position.array;
     const colors = this.geometry.attributes.color.array;
 
-    for (let i = 0; i < this.data.length; i++) {
+    for (let i = 0; i < drawCount; i++) {
       const b = this.data[i];
 
       // buoyancy
@@ -121,6 +131,31 @@ class MyBubbleParticles {
     this.geometry.attributes.position.needsUpdate = true;
     this.geometry.attributes.color.needsUpdate = true;
   }
+
+  updateLOD(cameraPosition) {
+    const distance = cameraPosition.distanceTo(
+      new THREE.Vector3(
+        this.sources[0].x,
+        this.sourceY,
+        this.sources[0].z
+      )
+    );
+
+    if (distance > this.lodDistance && !this.lodEnabled) {
+      this.geometry.setDrawRange(0, this.lowParticles);
+      this.lodEnabled = true;
+    }
+
+    if (distance <= this.lodDistance && this.lodEnabled) {
+      this.geometry.setDrawRange(0, this.fullParticles);
+      this.lodEnabled = false;
+    }
+  }
+
+  getLODStatus() {
+    return this.lodEnabled ? "ON" : "OFF";
+  }
+
 }
 
 export { MyBubbleParticles };
