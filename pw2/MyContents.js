@@ -218,8 +218,9 @@ class MyContents  {
         this.bubbles = new MyBubbleParticles([
         { x: 14, z: -1 }
         ],
-        300,
-        this.bubbleTexture
+        200,
+        this.bubbleTexture,
+        { sourceY: 1.8, surfaceY: 30, spawnAreaX: 0.4, spawnAreaZ: 0.4 }
         );
 
         this.app.scene.add(this.bubbles.points);
