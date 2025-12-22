@@ -54,7 +54,7 @@ class MySeaPlant extends THREE.LOD {
 
         // Bounding box (same as crab)
         this.box = new THREE.Box3().setFromObject(this, true);
-        this.boxHelper = new THREE.Box3Helper(this.box, 0x00ff00);
+        this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
         this.boxHelper.visible = false;
         this.boxHelper.layers.set(1);
         this.add(this.boxHelper);
@@ -118,6 +118,7 @@ class MySeaPlant extends THREE.LOD {
         }
 
         geo.computeVertexNormals();
+        geo.computeBoundsTree();
 
         const mesh = new THREE.Mesh(geo, this.material);
         mesh.position.y = this.height / 2;
@@ -157,6 +158,7 @@ class MySeaPlant extends THREE.LOD {
         }
 
         geo.computeVertexNormals();
+        geo.computeBoundsTree();
 
         const mesh = new THREE.Mesh(geo, this.material);
         mesh.position.y = this.height / 2;
@@ -208,6 +210,7 @@ class MySeaPlant extends THREE.LOD {
         }
 
         geo.computeVertexNormals();
+        geo.computeBoundsTree();
 
         const mesh = new THREE.Mesh(geo, this.material);
         mesh.position.y = this.height / 2;
@@ -222,6 +225,7 @@ class MySeaPlant extends THREE.LOD {
     // ---------------------------------------------------------
     updateAnim(delta) {
         this.uniforms.uTime.value += delta;
+        
     }
 }
 

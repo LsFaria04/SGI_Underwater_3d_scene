@@ -26,6 +26,8 @@ class MySeaPlantGroup extends THREE.Group {
         const baseCellWidth = baseWidth * maxScale + minSpace;
         const baseCellDepth = baseDepth * maxScale + minSpace;
 
+        this.plants = [];
+
         for (let gx = 0; gx < gridSide && plantCount < numbSeaPlants; gx++) {
             for (let gy = 0; gy < gridSide && plantCount < numbSeaPlants; gy++) {
 
@@ -67,6 +69,7 @@ class MySeaPlantGroup extends THREE.Group {
 
 
                 this.add(plant);
+                this.plants.push(plant)
                 plantCount++;
             }
         }

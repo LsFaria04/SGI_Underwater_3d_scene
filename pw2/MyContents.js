@@ -640,6 +640,11 @@ class MyContents  {
             }
             
         }
+        for(const plantgroup of this.seaPlantGroups){
+            for(const plant of plantgroup.plants){
+                plant.boxHelper.visible = enable;
+            }
+        }
 
         this.boat.boxHelper.visible = enable;
         this.sign.boxHelper.visible = enable;
@@ -723,6 +728,14 @@ class MyContents  {
 
         for(const helper of this.coralReef2.helpers){
             helper.visible = enable;
+        }
+
+        for(const plantgroup of this.seaPlantGroups){
+            for(const plant of plantgroup.plants){
+                for(const helper of plant.helpers){
+                    helper.visible = enable;
+                }
+            }
         }
             
     }
