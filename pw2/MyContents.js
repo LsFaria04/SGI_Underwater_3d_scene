@@ -23,6 +23,7 @@ import { MeshBVHHelper } from './index.module.js';
 import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
 import { floorHeightPosition } from './utils.js';
 import { SandPuffSystem } from './particles/MySandPuffParticles.js';
+import { LavaSimpleMovement } from './shaders/LavaSimpleMovement.js';
 
 
 /**
@@ -95,6 +96,7 @@ class MyContents  {
 
         const loader = new GLTFLoader(); //Used to import objects in the GLTF format that were not moddeled by us 
 
+        // Load the boat model
         loader.load('objects/malletts_bay_old_tour_boat/scene.gltf', (gltf) => {
 
             this.boat = gltf.scene
@@ -129,6 +131,55 @@ class MyContents  {
             console.error(error);
         });
 
+        // Load the volcano model
+        loader.load('objects/volcano/scene.gltf', (gltf) => {
+
+            this.volcano = gltf.scene
+            this.volcano.scale.set(0.1, 0.1, 0.1);
+            this.volcano.position.set(13,-0.5,7);
+            this.volcano.traverse((child) => {
+                if (child.isMesh && child.material) {
+                    child.material.emissive.set(0x000000);
+                    child.material.emissiveIntensity = 0;
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            this.volcano.helpers = [];
+            this.volcano.traverse((child) => {
+            if (child.isMesh) {
+                child.geometry.computeBoundsTree();
+                const helper = new MeshBVHHelper(child);
+                helper.visible = false;
+                child.add(helper);
+                this.volcano.helpers.push(helper);
+                
+            }
+            });
+            this.volcano.box = new THREE.Box3().setFromObject(this.volcano, true);
+            this.volcano.boxHelper = new THREE.Box3Helper(this.volcano.box, 0xff0000);
+            this.volcano.boxHelper.visible = false;
+            this.app.scene.add(this.volcano.boxHelper);
+
+            this.app.scene.add(this.volcano);
+        }, undefined, (error) => {
+            console.error(error);
+        });
+
+        // Add lava plane above volcano
+        const lavaGeometry = new THREE.PlaneGeometry(1, 1);
+        const lavaMaterial = new THREE.ShaderMaterial({
+            uniforms: THREE.UniformsUtils.clone(LavaSimpleMovement.uniforms),
+            vertexShader: LavaSimpleMovement.vertexShader,
+            fragmentShader: LavaSimpleMovement.fragmentShader,
+            side: THREE.DoubleSide
+        });
+        lavaMaterial.uniforms.lavaTexture.value = this.lavaTexture1;
+        this.lavaPlane = new THREE.Mesh(lavaGeometry, lavaMaterial);
+        this.lavaPlane.rotation.x = -Math.PI / 2;
+        this.lavaPlane.position.set(14, 1.4, -1);
+        this.app.scene.add(this.lavaPlane);
+
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
         this.floor = new MyFloor(200, 128, this.sandTexture);
@@ -158,9 +209,9 @@ class MyContents  {
         this.crab.position.set(5,floorHeightPosition(5,1),1);
 
         this.bubbles = new MyBubbleParticles([
-        { x: 5, z: 5 }
+        { x: 14, z: -1 }
         ],
-        1000,
+        300,
         this.bubbleTexture
         );
 
@@ -281,6 +332,7 @@ class MyContents  {
         bvhMeshes.push(this.crab);
         bvhMeshes.push(this.seaStar);
         bvhMeshes.push(this.boat);
+        bvhMeshes.push(this.volcano);
 
 
         // 3. Intersect
@@ -518,6 +570,10 @@ class MyContents  {
         this.snowTexture1 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake1.png");
         this.snowTexture2 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake2.png");
         this.bubbleTexture = new THREE.TextureLoader().load("./textures/bubble.png");
+
+        // Lava Textures
+        this.lavaTexture1 = new THREE.TextureLoader().load("./textures/lava/lavaText1.jpg");
+        this.lavaTexture2 = new THREE.TextureLoader().load("./textures/lava/lavaText2.jpg");
     }
 
     update(delta) {
@@ -565,6 +621,11 @@ class MyContents  {
         //update the animation in the sea plants
         for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
 
+        // Update lava shader animation
+        if (this.lavaPlane && this.lavaPlane.material.uniforms) {
+            this.lavaPlane.material.uniforms.time.value += delta;
+        }
+
         // Update keyframe animations
         this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
@@ -592,6 +653,11 @@ class MyContents  {
         //add the boat only if it is loaded
         if(this.boat){
              this.colisionObjects.push(this.boat);
+        }
+
+        //add the volcano only if it is loaded
+        if(this.volcano){
+             this.colisionObjects.push(this.volcano);
         }
        
 
@@ -642,6 +708,7 @@ class MyContents  {
         }
 
         this.boat.boxHelper.visible = enable;
+        this.volcano.boxHelper.visible = enable;
         this.sign.boxHelper.visible = enable;
         this.turtle.boxHelper.visible = enable;
         this.jellyfish.boxHelper.visible = enable;
@@ -682,9 +749,10 @@ class MyContents  {
                     helper.visible = enable;
                 }
             }
-            
         }
+
         this.shark.helper.visible = enable;
+
         for(const helper of this.swordFish.helpers){
             helper.visible = enable;
         }
@@ -694,26 +762,32 @@ class MyContents  {
         for(const helper of this.submarine.helpers){
             helper.visible = enable;
         }
+
         for(const helper of this.sign.helpers){
             helper.visible = enable;
         }
+
         for(const helper of this.turtle.helpers){
             helper.visible = enable;
         }
+
         for(const helper of this.seaUrchin.helpers){
-                helper.visible = enable;
+            helper.visible = enable;
         }
         
         for(const helper of this.crab.helpers){
-                helper.visible = enable;
-            
+            helper.visible = enable;
         }
 
         for(const helper of this.seaStar.helpers){
-                helper.visible = enable;
+            helper.visible = enable;
         }
         
         for(const helper of this.boat.helpers){
+            helper.visible = enable;
+        }
+
+        for(const helper of this.volcano.helpers){
             helper.visible = enable;
         }
 

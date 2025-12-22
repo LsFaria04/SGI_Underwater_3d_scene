@@ -5,7 +5,7 @@ class MyBubbleParticles {
     this.bubbleTexture = texture || new THREE.TextureLoader().load("./textures/bubble.png");
     this.numParticles = numParticles;
     this.surfaceY = 30;
-    this.sourceY = 0;
+    this.sourceY = 1.5;
 
     this.buoyancy = 0.002;       // buoyancy is similar to upward acceleration
     this.wobbleStrength = 0.5;   // wobble is similar to horizontal movement
