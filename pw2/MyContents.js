@@ -230,8 +230,7 @@ class MyContents  {
             [-5,floorHeightPosition(-5,-8),-8],
             [18,floorHeightPosition(18,12),12],
             [-12,floorHeightPosition(-12,-10),-10],
-            [8,floorHeightPosition(8,-15),-15],
-            [-20,floorHeightPosition(-20,5),5]
+            [8,floorHeightPosition(8,-15),-15]
         ];
         const seaStarColors = ["#a73c3c", "#b97106", "#ffc400", "#ff003c"];
         for(let i = 0; i < seaStarsPosSize.length; i++){
@@ -354,7 +353,20 @@ class MyContents  {
 
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 15, 100, 100, Math.PI / 2);
         this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60, Math.PI / 2);
-        this.animationTurtle = new MyKeyFrameAnimation(this.turtle, "random", 10, 100, 100, 0);
+        
+        // Animate all turtles with varying parameters for diversity
+        this.turtleAnimations = [];
+        for(let i = 0; i < this.turtles.length; i++){
+            const animationType = i % 2 === 0 ? "random" : "circle";
+            const duration = 8 + (i * 2);
+            const radiusX = 80 + (i * 10);
+            const radiusZ = 80 + (i * 10);
+            const turtleAnimation = new MyKeyFrameAnimation(this.turtles[i], animationType, duration, radiusX, radiusZ, 0);
+            this.turtleAnimations.push(turtleAnimation);
+        }
+        
+        // Keep reference to first turtle animation for compatibility
+        this.animationTurtle = this.turtleAnimations[0];
 
         // ----------------------------- PARTICLES AND EFFECTS ---------------------------------
 
@@ -729,13 +741,16 @@ class MyContents  {
         this.sandPuff.update(delta);
 
 
-       
         //UPDATE ALL THE DEDICATED ANIMATION SYSTEMS ---------------------------
 
         // Update keyframe animations
         this.animationShark.update(delta);
         this.animationSwordFish.update(delta);
-        this.animationTurtle.update(delta);
+        
+        // Update all turtle animations
+        for(let i = 0; i < this.turtleAnimations.length; i++){
+            this.turtleAnimations[i].update(delta);
+        }
 
 
 
@@ -814,7 +829,7 @@ class MyContents  {
         bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(...this.jellyfishes);
-        bvhMeshes.push(this.turtle);
+        bvhMeshes.push(...this.turtles);
         bvhMeshes.push(this.boat);
         bvhMeshes.push(this.volcano);
 
