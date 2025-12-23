@@ -38,6 +38,10 @@ class MyJellyFish extends THREE.LOD {
         this.init();
     }
 
+    /**
+     * Adds a BVH helper to the given mesh for visualization.
+     * @param {THREE.Mesh} mesh 
+     */
     addBVHHelper(mesh) {
         const helper = new MeshBVHHelper(mesh);
         helper.visible = false;
@@ -62,6 +66,10 @@ class MyJellyFish extends THREE.LOD {
         this.add(this.boxHelper);
     }
 
+    /**
+     * Creates the high detail LOD model of the jellyfish.
+     * @returns {THREE.Object3D} High detail jellyfish model
+     */
     createHighLOD() {
         const jelly = new THREE.Group();
 
@@ -123,6 +131,10 @@ class MyJellyFish extends THREE.LOD {
         return jelly;
     }
 
+    /**
+     * Creates the medium detail LOD model of the jellyfish.
+     * @returns {THREE.Object3D} Medium detail jellyfish model
+     */
     createMediumLOD() {
         const jelly = new THREE.Group();
 
@@ -191,6 +203,10 @@ class MyJellyFish extends THREE.LOD {
         return jelly;
     }
 
+    /**
+     * Creates the low detail LOD model of the jellyfish.
+     * @returns {THREE.Object3D} Low detail jellyfish model
+     */
     createLowLOD() {
         const jelly = new THREE.Group();
 
@@ -258,7 +274,12 @@ class MyJellyFish extends THREE.LOD {
         return jelly;
     }
 
-
+    /**
+     * Creates the high detail tentacles for the jellyfish.
+     * @param {THREE.Object3D} jelly The jellyfish object to which tentacles are added
+     * @param {THREE.Material} material The material to use for the tentacles
+     * @returns {THREE.Group} The group containing the tentacles
+     */
     createHighTentacles(jelly, material) {
         const tentacles = new THREE.Group();
         tentacles.name = "tentacles";
@@ -299,6 +320,10 @@ class MyJellyFish extends THREE.LOD {
         return tentacles;
     }
 
+    /**
+     * Updates the animation of the jellyfish.
+     * @param {number} delta The time delta since the last update
+     */
     updateAnimation(delta) {
         this.elapsedTime += delta;
 
@@ -329,6 +354,10 @@ class MyJellyFish extends THREE.LOD {
         }
     }
 
+    /**
+     * Finds the currently visible tentacles group.
+     * @returns {THREE.Group|null} The group containing the current tentacles or null if none are visible
+     */
     findCurrentTentacles() {
         for (const level of this.levels) {
             const obj = level.object;

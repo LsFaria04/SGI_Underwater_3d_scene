@@ -38,6 +38,12 @@ class MyCarp extends THREE.Object3D {
         this.init();
     }
 
+    /**
+     * Creates the fish mesh with options for small fins and skinned mesh (for LODs 0 and 1)
+     * @param {boolean} includeSmallFins Whether to include small fins in the mesh
+     * @param {boolean} useSkinnedMesh Whether to create a skinned mesh for animation
+     * @returns {THREE.Mesh|THREE.SkinnedMesh} The created fish mesh
+     */
     createFishMesh(includeSmallFins = true, useSkinnedMesh = false) {
         // Scaling factors
         const bw = this.widthBody;
@@ -330,7 +336,7 @@ class MyCarp extends THREE.Object3D {
     }
 
     /**
-     * Update method to animate the fish skeleton
+     * Update method to animate the fish skeleton and the BVH
      * @param {number} delta Time elapsed since last frame
      */
     update(delta) {

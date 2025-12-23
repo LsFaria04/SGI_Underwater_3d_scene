@@ -26,6 +26,10 @@ class MyCrab extends THREE.LOD {
         this.init();   
     }
 
+    /**
+     * Method to add a BVH helper to a mesh for visualization.
+     * @param {THREE.Mesh} mesh 
+     */
     addBVHHelper(mesh) {
         const helper = new MeshBVHHelper(mesh);
         helper.visible = false;
@@ -56,6 +60,10 @@ class MyCrab extends THREE.LOD {
         
     }
 
+    /**
+     *  Low detail crab model
+     * @returns {THREE.Object3D} Low detail crab model
+     */
     initLowLOD() {
         const crab = new THREE.Object3D();
 
@@ -84,6 +92,10 @@ class MyCrab extends THREE.LOD {
         return crab;
     }
 
+    /**
+     * Medium detail crab model
+     * @returns {THREE.Object3D} Medium detail crab model
+     */
     initMediumLOD() {
         const crab = new THREE.Object3D();
 
@@ -230,6 +242,10 @@ class MyCrab extends THREE.LOD {
         return crab;
     }
 
+    /**
+     * High detail crab model
+     * @returns {THREE.Object3D} High detail crab model
+     */
     initHighLOD() {
         const crab = new THREE.Object3D();
 

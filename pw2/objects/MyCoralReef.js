@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { MyCoral } from './MyCoral.js';
 import { floorHeightPosition, generateRandom } from '../utils.js';
 
+/**
+ * This class creates a coral reef composed of multiple coral structures.
+ */
 class MyCoralReef extends THREE.Group {
       /**
      * 
@@ -51,6 +54,9 @@ class MyCoralReef extends THREE.Group {
         
     }
 
+    /**
+     * Disposes of the coral reef's resources.
+     */ 
     dispose() {
         this.traverse(child => {
             if (child.geometry) child.geometry.dispose();

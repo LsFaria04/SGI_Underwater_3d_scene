@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { floorHeightPosition } from '../utils.js';
+
 /**
  * This class represents the sea floor
  */

@@ -24,7 +24,10 @@ class MyRock extends THREE.LOD {
         this.init();
     }
 
-
+    /**
+     * Adds a BVH helper to the given mesh for visualization.
+     * @param {*} mesh
+     */
     addBVHHelper(mesh) {
         const helper = new MeshBVHHelper(mesh);
         helper.visible = false;
@@ -50,6 +53,10 @@ class MyRock extends THREE.LOD {
         this.add(this.boxHelper)
     }
 
+    /**
+     * Initializes the low level of detail rock.
+     * @returns {THREE.Object3D} Low LOD rock object.
+     */
     initLowLOD() {
         const rock = new THREE.Object3D();
 
@@ -72,6 +79,10 @@ class MyRock extends THREE.LOD {
         return rock;
     }
 
+    /**
+     * Initializes the medium level of detail rock.
+     * @returns {THREE.Object3D} Medium LOD rock object.
+     */
     initMidLOD() {
         const rock = new THREE.Object3D();
 
@@ -97,6 +108,10 @@ class MyRock extends THREE.LOD {
         return rock;
     }
 
+    /**
+     * Initializes the high level of detail rock.
+     * @returns {THREE.Object3D} High LOD rock object.
+     */
     initHighLOD() {
         const rock = new THREE.Object3D();
 
@@ -139,7 +154,14 @@ class MyRock extends THREE.LOD {
         return rock;
     }
 
-
+    /**
+     * Scrapes the geometry with a plane defined by its normal and offset.
+     * @param {THREE.BufferGeometry} geometry Geometry to scrape.
+     * @param {THREE.Vector3} planeNormal Normal vector of the plane.
+     * @param {number} planeOffset Offset of the plane from the origin.
+     * @param {number} strength Strength of the scraping effect.
+     * @return {THREE.BufferGeometry} Scraped geometry.
+     */
     scrapeWithPlane(geometry, planeNormal, planeOffset, strength = 1) {
         const pos = geometry.attributes.position;
         const vect = new THREE.Vector3();

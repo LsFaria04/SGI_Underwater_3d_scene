@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 
+/**
+ * This class represents a 2D Shark model using Three.js, this was a failed attempt at making a 3D shark, but we reused it as a 2D shark.
+ */
+
 class My2DShark extends THREE.Object3D {
     /**
      * 
@@ -169,6 +173,13 @@ class My2DShark extends THREE.Object3D {
             4, 2, 5 ,
         ];
 
+        /**
+         * Creates a mesh part of the shark using given vertices, indices, and color.
+         * @param {Float32Array} vertices - The vertices of the part.
+         * @param {Array} indices - The indices defining the faces.
+         * @param {string} color - The color of the part.
+         * @returns {THREE.Mesh} The created mesh part.
+         */
         function createPart(vertices, indices, color = "#2244aa") {
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));

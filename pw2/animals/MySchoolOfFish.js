@@ -236,6 +236,7 @@ class MySchoolfOfFish extends THREE.Group {
         }
         
     }
+
     /**
      * Flocking Rule 1: Separation
      */
@@ -257,6 +258,7 @@ class MySchoolfOfFish extends THREE.Group {
         return positionDisplacement;
         
     }
+
     /**
      * Flocking Rule 2: Alignment
      */
@@ -278,6 +280,7 @@ class MySchoolfOfFish extends THREE.Group {
 
         return steer;
     }
+
     /**
      * Flocking Rule 3: Cohesion
      */
@@ -336,6 +339,7 @@ class MySchoolfOfFish extends THREE.Group {
         return v;
         
     }
+
     /**
      * Extra Rule to avoid predators. Similar to the rule 2 but more intense
      */
@@ -379,7 +383,12 @@ class MySchoolfOfFish extends THREE.Group {
         return positionDisplacement;
     }
 
-    
+    /**
+     * Updates the school of fish
+     * @param {*} delta Time difference between frames
+     * @param {*} enemies List of enemies to avoid
+     * @param {*} objects List of objects to avoid
+     */
     update(delta, enemies, objects){
         // Update each fish in the school
         for (const fish of this.fishes) {
@@ -392,10 +401,17 @@ class MySchoolfOfFish extends THREE.Group {
         this.flocking(delta);
     }
 
+    /**  * Returns the animations of the fish group
+     * @returns List of animations
+     */
     getAnimations(){
         return this.fishGroupsAnimations;
     }
 
+    /**
+     * Updates the flocking parameters
+     * @param {*} flockingParams New flocking parameters
+     */
     updateFlockingParams(flockingParams){
         this.aligmentW = flockingParams.alignment;
         this.separationW = flockingParams.separation;

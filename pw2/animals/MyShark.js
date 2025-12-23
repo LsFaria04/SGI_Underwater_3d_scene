@@ -5,6 +5,9 @@ import {
     StaticGeometryGenerator, MeshBVHHelper
 } from '../index.module.js';
 
+/*
+* This class creates a shark model with a skinned mesh and a simple swimming animation.
+*/
 class MyShark extends THREE.Object3D {
     /**
      * 
@@ -136,6 +139,13 @@ class MyShark extends THREE.Object3D {
         this.add(this.boxHelper);
     }
 
+    /**
+     * Creates merged geometry for the shark body (tail, body, head, fins).
+     * @param {number} tailWidth Width of the tail section
+     * @param {number} bodyWidth Width of the body section
+     * @param {number} headWidth Width of the head section
+     * @returns {THREE.BufferGeometry} Merged geometry 
+     */
     createMergedBodyGeometry(tailWidth, bodyWidth, headWidth) {
         const allVertices = [];
         const allIndices = [];
@@ -611,6 +621,10 @@ class MyShark extends THREE.Object3D {
         return geometry;
     }
 
+    /**
+     * Applies skinning attributes to the merged shark geometry.
+     * @param {*} mesh 
+     */
     applyMergedSkinning(mesh) {
         const skinIndices = [];
         const skinWeights = [];
@@ -660,6 +674,10 @@ class MyShark extends THREE.Object3D {
         );
     }
 
+    /**
+     * Updates the shark animation.
+     * @param {number} delta Time delta
+     */
     update(delta) {
         if (!this.elapsed) this.elapsed = 0;
         this.elapsed += delta;

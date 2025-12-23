@@ -25,6 +25,10 @@ class MySeaUrchin extends THREE.LOD {
         this.init();
     }
 
+    /**
+     * Adds a BVH helper to the given mesh for visualization and debugging.
+     * @param {THREE.Mesh} mesh The mesh to which the BVH helper will be added.
+     */
     addBVHHelper(mesh) {
         const helper = new MeshBVHHelper(mesh);
         helper.visible = false;
@@ -52,7 +56,9 @@ class MySeaUrchin extends THREE.LOD {
         this.add(this.boxHelper);
     }
 
-
+    /**
+     *  Creates the low level of detail sea urchin
+     */
     initLowLOD() {
         const urchin = new THREE.Object3D();
 
@@ -75,7 +81,9 @@ class MySeaUrchin extends THREE.LOD {
         return urchin;
     }
 
-
+    /**
+     * Creates the medium level of detail sea urchin
+     * */
     initMediumLOD() {
         const urchin = new THREE.Object3D();
 
@@ -122,6 +130,9 @@ class MySeaUrchin extends THREE.LOD {
         return urchin;
     }
 
+    /**
+     * Creates the high level of detail sea urchin
+     * */
     initHighLOD() {
         const urchin = new THREE.Object3D();
 

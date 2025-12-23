@@ -3,8 +3,15 @@ import {
     MeshBVHHelper
 } from '../index.module.js';
 
-
+/**
+ * Submarine object with movement, lighting, collision detection, and shield effect.
+ */
 class MySubmarine extends THREE.Object3D {
+
+    /**
+     * 
+     * @param {*} videoTexture Texture for submarine windows (optional)
+     */
     constructor(videoTexture = null) {
         super();
 
@@ -357,6 +364,11 @@ class MySubmarine extends THREE.Object3D {
         this.shield.layers.set(1);
     }
 
+    /**
+     * Set movement state for the submarine
+     * @param {*} key Movement direction key ('forward', 'backward', 'left', 'right', 'up', 'down')
+     * @param {*} isPressed True if the key is pressed, false if released
+     */
     setMoveState(key, isPressed) {
         switch (key) {
             case 'forward': this.moveState.forward = isPressed; break;
@@ -368,6 +380,10 @@ class MySubmarine extends THREE.Object3D {
         }
     }
 
+    /**
+     * Update submarine movement based on current move state
+     * @param {*} delta Time elapsed since last update
+     */
     updateMovement(delta) {
         this.acceleration.set(0, 0, 0);
 
@@ -428,6 +444,11 @@ class MySubmarine extends THREE.Object3D {
         }
     }
 
+    /**
+     * Check for collisions with given objects using BVH
+     * @param {*} collisionObjects Array of objects to check collisions against
+     * @return Collision info if a collision is detected, null otherwise
+     */
     checkCollisions(collisionObjects) {
         if (!this.bvh || !collisionObjects || collisionObjects.length === 0) {
             return null;
@@ -492,6 +513,10 @@ class MySubmarine extends THREE.Object3D {
         return null;
     }
 
+    /**
+     * Handle collision response
+     * @param {*} collision Collision info
+     */
     handleCollision(collision) {
         // repel submarine away from collision surface
         if (!collision || !this.collisionResponse) return;
@@ -501,6 +526,11 @@ class MySubmarine extends THREE.Object3D {
         return;
     }
 
+    /**
+     * Update submarine state
+     * @param {*} delta Time elapsed since last update
+     * @param {*} collisionObjects Array of objects to check collisions against
+     */
     update(delta, collisionObjects = []) {
         this.box.setFromObject(this.getObjectByName('submarineGroup') || this.children[0], true);
         
@@ -589,6 +619,10 @@ class MySubmarine extends THREE.Object3D {
         }
     }
 
+    /**
+     * Toggle front light on/off
+     * @return Current state of front light (true=on, false=off)
+     */
     toggleFrontLight() {
         this.frontLightEnabled = !this.frontLightEnabled;
         this.frontLight.visible = this.frontLightEnabled;
@@ -605,7 +639,11 @@ class MySubmarine extends THREE.Object3D {
         
         return this.frontLightEnabled;
     }
-    
+
+    /**
+     * Set front light intensity
+     * @param {*} value New intensity value
+     */
     setFrontLightIntensity(value) {
         this.frontLightIntensity = value;
         this.frontLight.intensity = value;
@@ -615,17 +653,29 @@ class MySubmarine extends THREE.Object3D {
         }
     }
 
+    /**
+     * Set front light color
+     * @param {*} value New color value (hex)
+     */
     setFrontLightColor(value) {
         this.frontLightColor = value;
         this.frontLight.color.setHex(value);
         this.frontLightBulb.material.color.set(value);
     }
 
+    /**
+     * Set front light decay
+     * @param {*} value New decay value
+     */
     setFrontLightDecay(value) {
         this.frontLightDecay = value;
         this.frontLight.decay = value;
     }
 
+    /**
+     * Toggle warning light on/off
+     * @return Current state of warning light (true=on, false=off)
+     */
     toggleWarningLight() {
         this.warningLightEnabled = !this.warningLightEnabled;
         this.warningLight.visible = this.warningLightEnabled && this.isWarningLightOn;
@@ -642,57 +692,104 @@ class MySubmarine extends THREE.Object3D {
         
         return this.warningLightEnabled;
     }
-    
+
+    /**
+     * Set warning light intensity
+     * @param {*} value New intensity value
+     */
     setWarningLightIntensity(value) {
         this.warningLightIntensity = value;
         this.warningLight.intensity = value;
     }
 
+    /**
+     * Set warning light flash rate
+     * @param {*} value New flash rate value
+     */
     setWarningFlashRate(value) {
         this.warningFlashRate = value;
         this.warningLightFlashRate = value;
     }
 
+    /**
+     * Toggle shield on/off
+     * @return Current state of shield (true=on, false=off)
+     */
     toggleShield() {
         this.shieldEnabled = !this.shieldEnabled;
         this.shield.visible = this.shieldEnabled;
         return this.shieldEnabled;
     }
 
+    /**
+     * Set shield 'c' parameter
+     * @param {*} value New 'c' value
+     */
     setShieldC(value) {
         this.shieldC = value;
         this.shield.material.uniforms.c.value = value;
     }
-
+    /**
+     * Set shield 'p' parameter
+     * @param {*} value New 'p' value
+     */
     setShieldP(value) {
         this.shieldP = value;
         this.shield.material.uniforms.p.value = value;
     }
 
+    /**
+     * Set shield color
+     * @param {*} color New shield color
+     */
     setShieldColor(color) {
         this.shield.material.uniforms.glowColor.value.set(color);
     }
 
+    /**
+     * Enable or disable collision response
+     * @param {*} enabled True to enable, false to disable
+     */
     setCollisionResponse(enabled) {
         this.collisionResponse = enabled;
     }
 
+    /**
+     * Set collision damping factor
+     * @param {*} value New damping value (0 to 1)
+     */
     setCollisionDamping(value) {
         this.collisionDamping = Math.max(0, Math.min(1, value));
     }
 
+    /**
+     * Set maximum speed
+     * @param {*} value New maximum speed value
+     */
     setMaxSpeed(value) {
         this.maxSpeed = value;
     }
 
+    /**
+     * Set acceleration rate
+     * @param {*} value New acceleration rate value
+     */
     setAccelerationRate(value) {
         this.accelerationRate = value;
     }
 
+    /**
+     * Set deceleration rate
+     * @param {*} value New deceleration rate value
+     */
     setDecelerationRate(value) {
         this.decelerationRate = value;
     }
 
+    /**
+     * Set rotation speed
+     * @param {*} value New rotation speed value
+     */
     setRotationSpeed(value) {
         this.rotationSpeed = value;
     }

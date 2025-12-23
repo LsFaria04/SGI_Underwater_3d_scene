@@ -25,6 +25,10 @@ class MySeaStar extends THREE.LOD {
         this.init();
     }
 
+    /**
+     * Adds a BVH helper to the given mesh for visualization and debugging.
+     * @param {THREE.Mesh} mesh The mesh to which the BVH helper will be added.
+     */
     addBVHHelper(mesh) {
         const helper = new MeshBVHHelper(mesh);
         helper.visible = false;
@@ -52,7 +56,9 @@ class MySeaStar extends THREE.LOD {
         this.add(this.boxHelper);
     }
 
-
+    /*
+    * Creates the low level of detail sea star
+    */
     initLowLOD() {
         const star = new THREE.Object3D();
 
@@ -78,9 +84,9 @@ class MySeaStar extends THREE.LOD {
         return star;
     }
 
-    // ---------------------------------------------------------
-    // MEDIUM LOD
-    // ---------------------------------------------------------
+    /*
+    * Creates the medium level of detail sea star
+    */
     initMediumLOD() {
         const star = new THREE.Object3D();
 
@@ -125,9 +131,9 @@ class MySeaStar extends THREE.LOD {
         return star;
     }
 
-    // ---------------------------------------------------------
-    // HIGH LOD
-    // ---------------------------------------------------------
+    /*
+    * Creates the high level of detail sea star
+    */
     initHighLOD() {
         const star = new THREE.Object3D();
 

@@ -664,6 +664,10 @@ class MySwordFish extends THREE.Object3D {
 
     }
 
+    /**
+     * Updates the swordfish animation.
+     * @param {number} delta Time delta
+     */
     update(delta){
         // Accumulate elapsed time
         if (!this.elapsed) this.elapsed = 0;

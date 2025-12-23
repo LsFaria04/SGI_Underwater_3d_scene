@@ -1,6 +1,10 @@
 import * as THREE from 'three';
 import { MeshBVHHelper } from '../index.module.js';
 
+/*
+* This class creates a turtle model with a shell, head, legs, and eyes.
+* It includes simple animation for head bobbing and leg movement.
+*/
 class MyTurtle extends THREE.Object3D {
 
     constructor(
@@ -24,9 +28,10 @@ class MyTurtle extends THREE.Object3D {
         this.init();
     }
 
-    // ---------------------------------------------------------
-    // Add BVH helper to a mesh
-    // ---------------------------------------------------------
+    /**
+     * Adds a BVH helper to the given mesh for visualization.
+     * @param {*} mesh 
+     */
     addBVHHelper(mesh) {
         const helper = new MeshBVHHelper(mesh);
         helper.visible = false;
@@ -34,9 +39,6 @@ class MyTurtle extends THREE.Object3D {
         this.helpers.push(helper);
     }
 
-    // ---------------------------------------------------------
-    // Build turtle
-    // ---------------------------------------------------------
     init() {
 
         // ---------------- SHELL ----------------
@@ -151,9 +153,10 @@ class MyTurtle extends THREE.Object3D {
         this.add(this.boxHelper);
     }
 
-    // ---------------------------------------------------------
-    // Animation update
-    // ---------------------------------------------------------
+    /**
+     * Updates the turtle animation.
+     * @param {number} delta Time delta
+     */
     update(delta) {
         this.time += delta;
 

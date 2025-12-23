@@ -2,8 +2,18 @@ import * as THREE from 'three';
 import { MeshBVHHelper } from '../index.module.js';
 import { generateRandom } from '../utils.js';
 
+/**
+ * Sea Plant object with 3 LODs and sway animation
+ */
 class MySeaPlant extends THREE.LOD {
 
+    /**
+     * 
+     * @param {*} width Width of the sea plant
+     * @param {*} height Height of the sea plant
+     * @param {*} depth Depth of the sea plant
+     * @param {*} color Color of the sea plant
+     */
     constructor(width = 0.2, height = 0.5, depth = 0.05, color = "#00aa55") {
         super();
 
@@ -23,7 +33,10 @@ class MySeaPlant extends THREE.LOD {
         this.init();
     }
 
-
+    /**
+     * Add BVH helper to mesh for visualization
+     * @param {*} mesh 
+     */
     addBVHHelper(mesh) {
         const helper = new MeshBVHHelper(mesh);
         helper.visible = false;
@@ -55,9 +68,10 @@ class MySeaPlant extends THREE.LOD {
         this.add(this.boxHelper);
     }
 
-    // ---------------------------------------------------------
-    // Shared material with sway shader
-    // ---------------------------------------------------------
+    /**
+     * Create custom shared material with sway shader
+     * @return {THREE.ShaderMaterial}
+     */
     createMaterial() {
         const mat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(this.color)
@@ -95,9 +109,10 @@ class MySeaPlant extends THREE.LOD {
         return mat;
     }
 
-    // ---------------------------------------------------------
-    // LOW LOD
-    // ---------------------------------------------------------
+    /**
+     * Create low LOD geometry for the sea plant
+     * @returns {THREE.Object3D}
+     */
     initLowLOD() {
         const plant = new THREE.Object3D();
 
@@ -123,9 +138,10 @@ class MySeaPlant extends THREE.LOD {
         return plant;
     }
 
-    // ---------------------------------------------------------
-    // MID LOD
-    // ---------------------------------------------------------
+    /**
+     * Create mid LOD geometry for the sea plant
+     * @returns {THREE.Object3D}
+     */
     initMidLOD() {
         const plant = new THREE.Object3D();
 
@@ -163,9 +179,10 @@ class MySeaPlant extends THREE.LOD {
         return plant;
     }
 
-    // ---------------------------------------------------------
-    // HIGH LOD
-    // ---------------------------------------------------------
+    /**
+     * Create high LOD geometry for the sea plant
+     * @returns {THREE.Object3D}
+     */
     initHighLOD() {
         const plant = new THREE.Object3D();
 
@@ -215,9 +232,10 @@ class MySeaPlant extends THREE.LOD {
         return plant;
     }
 
-    // ---------------------------------------------------------
-    // UPDATE
-    // ---------------------------------------------------------
+    /**
+     * Update animation uniforms for shader
+     * @param {*} delta 
+     */
     updateAnim(delta) {
         this.uniforms.uTime.value += delta;
         

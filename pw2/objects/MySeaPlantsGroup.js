@@ -2,8 +2,22 @@ import * as THREE from 'three';
 import { floorHeightPosition, getRandomInt } from '../utils.js';
 import { MySeaPlant } from './MySeaPlant.js';
 
+/**
+ * Group of sea plants arranged in a grid with random spacing, scale, and color.
+ */
 class MySeaPlantGroup extends THREE.Group {
 
+    /**
+     * 
+     * @param {*} numbSeaPlants Number of sea plants in the group
+     * @param {*} x Position X of the group
+     * @param {*} z Position Z of the group
+     * @param {*} minSpace Minimum spacing between sea plants
+     * @param {*} maxScale Maximum scale of sea plants
+     * @param {*} minScale Minimum scale of sea plants
+     * @param {*} colors Array of colors for the sea plants
+     * @param {*} overlap If true, allows overlapping of sea plants by randomizing spacing
+     */
     constructor(
         numbSeaPlants,
         x, z,
@@ -75,6 +89,10 @@ class MySeaPlantGroup extends THREE.Group {
         }
     }
 
+    /**
+     * Update all sea plants in the group
+     * @param {*} delta Time elapsed since last update
+     */
     update(delta) {
         // Each child is a MySeaPlant (which is responsible for its own LOD/update)
         this.children.forEach(child => {

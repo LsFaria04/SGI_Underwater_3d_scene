@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 
+/*
+* This class provides keyframe animations for 3D objects.
+* It supports circular and random movement patterns.
+*/
 class MyKeyFrameAnimation {
     constructor(object, type, radius, segments, duration, rotationOffset = Math.PI / 2) {
         this.type = type;
@@ -28,6 +32,9 @@ class MyKeyFrameAnimation {
         }
     }
 
+    /**
+     * Initializes a circular keyframe animation.
+     */
     initCircle() {
         const times = [];
         const values = [];
@@ -54,6 +61,9 @@ class MyKeyFrameAnimation {
         this.startMixer(positionTrack, 'swim');
     }
 
+    /**
+     * Initializes a random keyframe animation.
+     */
     initRandom() {
         const controlPoints = [];
         // Generate random points
@@ -90,6 +100,11 @@ class MyKeyFrameAnimation {
         this.startMixer(track, 'loopSwim');
     }
 
+    /**
+     * Starts the animation mixer with the given track and name.
+     * @param {THREE.KeyframeTrack} track 
+     * @param {string} name 
+     */
     startMixer(track, name) {
         this.clip = new THREE.AnimationClip(name, -1, [track]);
         this.mixer = new THREE.AnimationMixer(this.object);
@@ -97,6 +112,10 @@ class MyKeyFrameAnimation {
         this.action.play();
     }
 
+    /**
+     * Updates the animation and adjusts object rotation based on movement direction.
+     * @param {number} delta Time delta
+     */
     update(delta) {
         if (!this.mixer) return;
 

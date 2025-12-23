@@ -5,9 +5,6 @@ import * as THREE from 'three';
  * This class represents snow particles falling down into the sea bed
  * 
 **/
-
-
-
 export class MyMarineSnow extends THREE.Object3D {
     /**
      *  
@@ -50,7 +47,13 @@ export class MyMarineSnow extends THREE.Object3D {
         this.add(...this.particles);
     }
 
-
+    /**
+     * Build materials for the particles
+     * @param {*} colors Array of colors
+     * @param {*} sprites Array of textures
+     * @param {*} sizes Array of sizes
+     * @return Array of THREE.PointsMaterial
+     */
     buildMaterials(colors, sprites, sizes){
         var materials = [];
 
@@ -69,10 +72,18 @@ export class MyMarineSnow extends THREE.Object3D {
         return materials;
     }
 
+    /**
+     * Get materials used for the particles
+     * @return Array of THREE.PointsMaterial
+     */
     getMaterials(){
         return this.materials;
     }
 
+    /**
+     * Update particle positions
+     * @param {*} delta Time elapsed since last update
+     */
     update(delta){
         this.time += delta;
 

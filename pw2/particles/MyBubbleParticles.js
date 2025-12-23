@@ -1,6 +1,17 @@
 import * as THREE from "three";
 
+/**
+ * Bubble particle system with buoyancy and wobble effects.
+ * */
 class MyBubbleParticles{
+
+  /**
+   * 
+   * @param {*} sourcePositions Start position of the bubbles
+   * @param {*} maxParticles Maximum number of bubbles
+   * @param {*} texture Texture of the bubbles
+   * @param {*} options Additional options for bubble behavior and appearance
+   */
   constructor(sourcePositions = [{ x: 0, z: 0 }], maxParticles = 400, texture = null, options = {}) {
 
     this.bubbleTexture = texture || new THREE.TextureLoader().load("./textures/bubble.png");
@@ -104,10 +115,20 @@ class MyBubbleParticles{
     this.points = new THREE.Points(this.geometry, this.material);
   }
 
+  /**
+   * Generate a random number in range [min, max)
+   * @param {*} min Minimum value
+   * @param {*} max Maximum value
+   * @return Random number in the specified range
+   */
   randomRange(min, max) {
     return min + Math.random() * (max - min);
   }
 
+  /**
+   * Create a new bubble with randomized properties
+   * @return New bubble object
+   */
   createBubble() {
     const source = this.sources[Math.floor(Math.random() * this.sources.length)];
 
@@ -129,6 +150,10 @@ class MyBubbleParticles{
     };
   }
 
+  /**
+   * Spawn a new bubble if there is an inactive slot
+   * @return True if a bubble was spawned, false otherwise
+   */
   spawnBubble() {
     for (let i = 0; i < this.maxParticles; i++) {
       if (!this.data[i].active) {
@@ -146,6 +171,10 @@ class MyBubbleParticles{
     return false;
   }
 
+  /**
+   * Update bubble positions and states
+   * @param {*} deltaTime Time elapsed since last update
+   */
   update(deltaTime = 1/60) {
     const positions = this.geometry.attributes.position.array;
     const colors = this.geometry.attributes.color.array;
@@ -211,6 +240,10 @@ class MyBubbleParticles{
     this.geometry.attributes.size.needsUpdate = true;
   }
 
+  /**
+   * Update LOD based on camera distance
+   * @param {*} cameraPosition Position of the camera
+   */
   updateLOD(cameraPosition) {
     const distance = cameraPosition.distanceTo(
       new THREE.Vector3(
@@ -237,10 +270,18 @@ class MyBubbleParticles{
     }
   }
 
+  /**
+   * Get current LOD status
+   * @return "ON" if LOD is enabled, "OFF" otherwise
+   */
   getLODStatus() {
     return this.lodEnabled ? "ON" : "OFF";
   }
 
+  /**
+   * Get current active bubble count
+   * @return Number of active bubbles
+   */
   getActiveBubbleCount() {
     return this.activeBubbles;
   }

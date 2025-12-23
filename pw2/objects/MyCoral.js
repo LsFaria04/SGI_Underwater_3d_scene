@@ -3,9 +3,15 @@ import { generateRandom } from '../utils.js';
 import { perlinNoiseGLSL } from '../shaders/PerlinNoiseGLSL.js';
 
 /**
- * This class creates a coral
+ * This class creates two types of coral using L-systems: fan coral and branching coral.
+ * It includes custom shaders for organic movement and color effects.
  */
 export class MyCoral {
+
+    /**
+     * 
+     * @param {*} texture Texture of the coral
+     */
     constructor(texture) {
         this.texture = texture;
         this.helpers = [];
@@ -45,6 +51,11 @@ export class MyCoral {
         };
     }
 
+    /**
+     * Chooses the next rule based on weighted probabilities.
+     * @param {Array} options Array of rule options with probabilities.
+     * @returns {string} Selected rule.
+     */
     chooseNextRule(options) {
         //Sum the weights (probabilities) of all options.
         const total = options.reduce((sum, o) => sum + o.prob, 0);
@@ -62,6 +73,12 @@ export class MyCoral {
         //default: return the last option.
         return options[options.length - 1].rule;
     }
+
+    /**
+     * Creates a coral object based on the specified complexity.
+     * @param {number} complexity Level of detail for the coral.
+     * @returns {THREE.LOD} Level of Detail coral object.
+     */
     createObject(complexity) {
         const defaultCoral = this.coralPresets.fanCoral;
         const coral = this.generateCoralMesh(defaultCoral, complexity);
@@ -70,6 +87,13 @@ export class MyCoral {
         return coral;
     }
 
+    /**
+     * Generates a coral mesh using L-system rules and turtle graphics.
+     * @param {Object} coralType Coral preset type.
+     * @param {number} complexity Level of detail for the coral.
+     * @param {number} radius Base radius for coral branches.
+     * @returns {THREE.LOD} Level of Detail coral mesh.
+     */
     generateCoralMesh(coralType, complexity, radius = 0.05) {
         const iterations = complexity;
         const baseAngle = coralType.angle * THREE.MathUtils.DEG2RAD;
@@ -339,6 +363,10 @@ export class MyCoral {
         return LOD;
     }   
 
+    /** 
+     * Disposes of the coral object's geometries and materials.
+     * @param {THREE.Object3D} object Coral object to dispose.
+     */
     dispose(object) {
         object.children.forEach(child => {
             if (child.geometry) child.geometry.dispose();

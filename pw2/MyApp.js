@@ -233,6 +233,10 @@ class MyApp  {
         }
     }
 
+    /**
+     * updates the submarine camera movement
+     * @param {number} delta time delta
+     */
     updateSubmarineMovement(delta) {
         if (this.activeCameraName !== 'Submarine') return;
         
@@ -286,6 +290,7 @@ class MyApp  {
             }
         }
     }
+    
     /**
      * 
      * @param {MyContents} contents the contents object 

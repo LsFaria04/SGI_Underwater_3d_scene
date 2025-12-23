@@ -60,6 +60,9 @@ class MyContents  {
         this.initObjects(); 
     }
 
+    /**
+     * Initializes the lights of the scene
+     * */
     initLights() {
 
         //Ambient light of the scene
@@ -92,6 +95,9 @@ class MyContents  {
 
     }
 
+    /**
+     * Initializes the objects of the scene
+     * */
     initObjects() {
         // create once 
         if (this.axis === null) {
@@ -464,7 +470,9 @@ class MyContents  {
         this.volcanoIncluded = false;
     }
 
-
+    /**
+     * Initializes the textures of the scene
+     * */
     initTextures() {
         //Rocks textures
 
@@ -585,6 +593,10 @@ class MyContents  {
         this.lavaTexture2 = new THREE.TextureLoader().load("./textures/lava/lavaText2.jpg");
     }
 
+    /**
+     * Updates the scene contents
+     * @param {number} delta The time delta since the last update
+     * */
     update(delta) {
         if (!delta) return;
         this.collisionObjects = [];
@@ -699,6 +711,10 @@ class MyContents  {
        
     }
 
+    /**
+     * Handles mouse click events for object selection
+     * @param {Object} mousePos The mouse position with clientX and clientY properties
+     * */
     onMouseClick(mousePos) {
         // 1. Setup Raycaster
         this.mouse.x = (mousePos.clientX / window.innerWidth) * 2 - 1;
@@ -779,6 +795,10 @@ class MyContents  {
         }
     }
 
+    /**
+     * Handles mouse click events for spawning sand puff particles
+     * @param {Object} mousePos The mouse position with clientX and clientY properties
+     * */
     onMouseClickSandPuff(mousePos){
         // 1. Setup Raycaster
         this.mouse.x = (mousePos.clientX / window.innerWidth) * 2 - 1;
@@ -795,6 +815,10 @@ class MyContents  {
 
     }
 
+    /**
+     * Highlights the given object by changing its material color to red
+     * @param {THREE.Object3D} rootObject The root object to highlight
+     * */
     highlightObject(rootObject) {
         rootObject.traverse((child) => {
             if (child.isMesh && child.material) {
@@ -846,6 +870,10 @@ class MyContents  {
         });
     }
 
+    /**
+     * Restores the original material colors of the given object
+     * @param {THREE.Object3D} rootObject The root object to restore
+     * */
     restoreObject(rootObject) {
         rootObject.traverse((child) => {
             if (child.isMesh && child.material) {
@@ -862,6 +890,10 @@ class MyContents  {
         });
     }
 
+    /**
+     * Enables or disables wireframe mode for all mesh materials in the scene
+     * @param {*} enabled 
+     */
     setWireframeMode(enabled) {
         this.app.scene.traverse((child) => {
             if (child.isMesh && child.material) {
@@ -874,6 +906,10 @@ class MyContents  {
         });
     }
 
+    /**
+     * Enables or disables the box helpers for all objects in the scene
+     * @param {boolean} enable
+     * */
     setBoxHelper(enable){
 
 
@@ -926,6 +962,10 @@ class MyContents  {
         this.submarine.boxHelper.visible = enable;
     }
 
+    /**
+     * Enables or disables BVH for all objects in the scene
+     * @param {boolean} enable
+     * */
     setBVHMode(enable){
         //Used to set bvh in objects with movement to avoid wasting resources in updating the tree when the bvh is off
         for(const fishGroup of this.fishGroups){
@@ -941,6 +981,10 @@ class MyContents  {
         this.swordFish.bvh = enable;
     }
 
+    /**
+     * Enables or disables BVH helpers for all objects in the scene
+     * @param {boolean} enable
+     * */
     setBVHHelper(enable){
         for(const fishGroup of this.fishGroups){
             for(const fish of fishGroup.fishes){
@@ -1040,6 +1084,10 @@ class MyContents  {
         }
     }
 
+    /**
+     * Toggles the axis helper in the scene
+     * @param {boolean} enabled
+     *  */
     toggleAxis(enabled) {
         this.axisEnabled = enabled;
 

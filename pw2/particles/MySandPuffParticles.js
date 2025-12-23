@@ -1,7 +1,16 @@
 import * as THREE from 'three';
 import { floorHeightPosition } from '../utils.js';
 
+/**
+ * Sand puff particle system simulating sand disturbance in water.
+ */
 class SandPuffSystem {
+
+  /**
+   * 
+   * @param {*} scene active scene
+   * @param {*} maxParticles maximum number of particles
+   */
   constructor(scene, maxParticles = 5000) {
     this.maxParticles = maxParticles;
 
@@ -35,6 +44,12 @@ class SandPuffSystem {
     
   }
 
+  /**
+   * Spawn sand puff particles at a given origin and normal direction
+   * @param {*} origin Origin position
+   * @param {*} normal Normal direction
+   * @param {*} count Number of particles to spawn
+   */
   spawn(origin, normal = new THREE.Vector3(0, 1, 0), count = 80) {
     for (let i = 0; i < this.maxParticles && count > 0; i++) {
       if (!this.alive[i]) {
@@ -59,21 +74,30 @@ class SandPuffSystem {
     }
   }
 
-    randomHemisphereVector(normal) {
-        const dir = new THREE.Vector3(
-            normal.x + Math.random() - 1,
-            normal.y + Math.random() * 2, 
-            normal.z + Math.random() - 1
-        ).normalize();
+  /**
+   * Generate a random vector within a hemisphere defined by the normal
+   * @param {*} normal Normal vector defining the hemisphere
+   * @return Random vector within the hemisphere
+   */
+  randomHemisphereVector(normal) {
+      const dir = new THREE.Vector3(
+          normal.x + Math.random() - 1,
+          normal.y + Math.random() * 2, 
+          normal.z + Math.random() - 1
+      ).normalize();
 
-        //Avoid particles starting going down in the beggining
-        if (dir.dot(normal) < 0) dir.negate();
-        if(dir.y < 0) dir.y = -dir.y;
+      //Avoid particles starting going down in the beggining
+      if (dir.dot(normal) < 0) dir.negate();
+      if(dir.y < 0) dir.y = -dir.y;
 
 
-        return dir;
-    }
+      return dir;
+  }
 
+  /**
+   * Update particle positions and states
+   * @param {*} dt Time elapsed since last update
+   */
   update(dt) {
     for (let i = 0; i < this.maxParticles; i++) {
       if (!this.alive[i]) continue;
