@@ -164,9 +164,9 @@ class MyContents  {
         //Coral reef radius, position, type, number of corals [numb, x, z, type, radius]
         this.corals = [];
         const coralsPosSize = [
-            [4, -8, 0, "fanCoral", 4], [4,8, 1, "branchingCoral", 4],
-            [10, 10, -11, "fanCoral", 8], [10,-8, -20, "branchingCoral", 6],
-            [20, 10, 20, "fanCoral", 6], [10,-15, 0, "branchingCoral", 6],
+            [4, -8, 0, "fanCoral", 10], [4,8, 1, "branchingCoral", 10],
+            [10, 10, -11, "fanCoral", 10], [10,-8, -20, "branchingCoral", 10],
+            [20, 10, 20, "fanCoral", 10], [10,-15, 0, "branchingCoral", 10],
         ];
 
         for(let i = 0; i < coralsPosSize.length; i++){
@@ -200,6 +200,17 @@ class MyContents  {
             //near volcano
             [12, floorHeightPosition(12,2) + 0.2, 2],[14, floorHeightPosition(14,4) + 0.2, 4],
             [20, floorHeightPosition(20,2) + 0.2, 2],[19, floorHeightPosition(19,0) + 0.2, 0],
+            //additional urchins scattered throughout
+            [3, floorHeightPosition(3,1) + 0.2, 1],
+            [-9, floorHeightPosition(-9,6) + 0.2, 6],
+            [8, floorHeightPosition(8,-3) + 0.2, -3],
+            [-6, floorHeightPosition(-6,-8) + 0.2, -8],
+            [11, floorHeightPosition(11,5) + 0.2, 5],
+            [-15, floorHeightPosition(-15,3) + 0.2, 3],
+            [5, floorHeightPosition(5,-12) + 0.2, -12],
+            [-11, floorHeightPosition(-11,-6) + 0.2, -6],
+            [16, floorHeightPosition(16,9) + 0.2, 9],
+            [-18, floorHeightPosition(-18,7) + 0.2, 7]
         ];
         for(let i = 0; i < seaUrchinsPosSize.length; i++){
             const pos = seaUrchinsPosSize[i];
@@ -211,7 +222,16 @@ class MyContents  {
 
         this.seaStars = [];
         const seaStarsPosSize = [
-            [4,floorHeightPosition(4,2),2]
+            [4,floorHeightPosition(4,2),2],
+            [-8,floorHeightPosition(-8,5),5],
+            [12,floorHeightPosition(12,8),8],
+            [-15,floorHeightPosition(-15,10),10],
+            [2,floorHeightPosition(2,-5),-5],
+            [-5,floorHeightPosition(-5,-8),-8],
+            [18,floorHeightPosition(18,12),12],
+            [-12,floorHeightPosition(-12,-10),-10],
+            [8,floorHeightPosition(8,-15),-15],
+            [-20,floorHeightPosition(-20,5),5]
         ];
         const seaStarColors = ["#a73c3c", "#b97106", "#ffc400", "#ff003c"];
         for(let i = 0; i < seaStarsPosSize.length; i++){
@@ -225,7 +245,16 @@ class MyContents  {
 
         this.crabs = [];
         const crabPosSize = [
-            [5,floorHeightPosition(5,1),1]
+            [5,floorHeightPosition(5,1),1],
+            [-6,floorHeightPosition(-6,3),3],
+            [10,floorHeightPosition(10,7),7],
+            [-3,floorHeightPosition(-3,-2),-2],
+            [14,floorHeightPosition(14,-5),-5],
+            [-12,floorHeightPosition(-12,2),2],
+            [7,floorHeightPosition(7,-10),-10],
+            [-8,floorHeightPosition(-8,-7),-7],
+            [15,floorHeightPosition(15,10),10],
+            [-15,floorHeightPosition(-15,-12),-12]
         ];
         const crabColors = ["#a73c3c", "#b97106", "#72420b", "#ff003c"];
         for(let i = 0; i < crabPosSize.length; i++){
@@ -245,9 +274,26 @@ class MyContents  {
         this.swordFish.position.set(0,3,0);
         this.app.scene.add(this.swordFish);
         
-        this.turtle = new MyTurtle(0.5, 0.15,  0x228B22,  0x556B2F, this.turtleTexture);
-        this.turtle.position.set(8, 7 , 1);
-        this.app.scene.add(this.turtle);
+        // Add multiple turtles in different locations
+        this.turtles = [];
+        const turtlePositions = [
+            {x: 8, y: 7, z: 1},
+            {x: -10, y: 6, z: 8},
+            {x: 15, y: 5, z: -10},
+            {x: -5, y: 8, z: -5},
+            {x: 12, y: 4, z: 10}
+        ];
+        
+        for(let i = 0; i < turtlePositions.length; i++){
+            const pos = turtlePositions[i];
+            const turtle = new MyTurtle(0.5, 0.15, 0x228B22, 0x556B2F, this.turtleTexture);
+            turtle.position.set(pos.x, pos.y, pos.z);
+            this.turtles.push(turtle);
+            this.app.scene.add(turtle);
+        }
+        
+        // Keep reference to first turtle for animations
+        this.turtle = this.turtles[0];
 
         this.jellyfishes = [];
         const jellyfishPosSize = [
@@ -255,7 +301,16 @@ class MyContents  {
             [0,4,0], [1.5,4,0], [0,5,1.5],
 
             //Left back
-            [-20, 4, -20], [-21,  3, -21], [-19, 5, -20]
+            [-20, 4, -20], [-21,  3, -21], [-19, 5, -20],
+            
+            //Right side
+            [15, 6, 8], [16, 5, 9], [14, 7, 7],
+            
+            //Left side
+            [-12, 5, 5], [-13, 4, 4], [-11, 6, 6],
+            
+            //Back right
+            [20, 8, -15], [21, 7, -14], [19, 9, -16]
         ];
         for(let i = 0; i < jellyfishPosSize.length; i++){
             const pos = jellyfishPosSize[i];
@@ -280,7 +335,12 @@ class MyContents  {
             cohesion: 1.0,
             maxSpeed: 2.0
         }
-        const carpsGroupsPosSize = [[-10, 1, -10, 25], [10, 1, 5, 5]];
+        const carpsGroupsPosSize = [
+            [-10, 1, -10, 20], 
+            [10, 1, 5, 10],
+            [5, 3, -8, 10],
+            [-15, 2, 10, 10]
+        ];
         this.fishGroups = [];
         for(let i = 0; i < carpsGroupsPosSize.length; i++){
             const pos = carpsGroupsPosSize[i];
