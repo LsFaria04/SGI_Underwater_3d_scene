@@ -383,6 +383,244 @@ class MyContents  {
         this.volcanoGroup.add(this.lavaPlane);
         
         this.app.scene.add(this.volcanoGroup);
+
+        // ------------------------------- CREATE COLLISION AVOIDANCE HELPERS ------------------------------
+        //Add enemies of the fish to send for the update
+        this.enemies = [] //reset the enemie
+        this.enemies.push(this.swordFish);
+        this.enemies.push(this.jellyfish);
+        this.enemies.push(this.shark);
+        this.enemies.push(this.submarine);
+
+        //Add objects that the fish can not collide
+        this.colisionObjects = [];
+        this.colisionObjects.push(this.sign);
+        this.colisionObjects.push(this.turtle);
+        for(const rockGroup of this.rockGroups){
+            for(const rock of rockGroup.rocks){
+                this.colisionObjects.push(rock)
+            }
+        }
+        for (const reef of this.corals){
+            for(const coral of reef.corals){
+                this.colisionObjects.push(coral);
+            }
+        }
+        this.boatIncluded = false;
+        this.volcanoIncluded = false;
+    }
+
+
+    initTextures() {
+        //Rocks textures
+
+        //Rock PBR
+        const loader = new THREE.TextureLoader();
+        this.albedoRock = loader.load('./textures/ocean-rock-bl/ocean-rock_albedo_512x512.png');
+        this.normalRock = loader.load('./textures/ocean-rock-bl/ocean-rock_normal-ogl_512x512.png');
+        this.roughnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_roughness_512x512.png');
+        this.metalnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_metallic_512x512.png');
+        this.displacementRock = loader.load("./textures/ocean-rock-bl/ocean-rock_height_512x512.png");
+        this.ambientOcclusionRock = loader.load("./textures/ocean-rock-bl/ocean-rock_ao_512x512.png");
+        //Mips map for the rock texture
+        this.albedoRock.generateMipmaps = true;
+        this.normalRock.generateMipmaps = true;
+        this.roughnessRock.generateMipmaps = true;
+        this.metalnessRock.generateMipmaps = true;
+        this.displacementRock.generateMipmaps = true;
+        this.ambientOcclusionRock.generateMipmaps = true;
+        this.rockTexture = {
+                ao: this.ambientOcclusionRock,
+                albedo: this.albedoRock,
+                displacement: this.displacementRock,
+                normal: this.normalRock,
+                roughness: this.roughnessRock,
+                metallic: this.metalnessRock
+        }
+
+        // Get max anisotropy supported by GPU
+        const maxAnisotropy = this.app.renderer.capabilities.getMaxAnisotropy();
+
+        //Sand PBR
+        this.albedoSand = loader.load('./textures/wavy-sand-bl/wavy-sand_albedo_1024x1024.png');
+        this.normalSand = loader.load('./textures/wavy-sand-bl/wavy-sand_normal-ogl_1024x1024.png');
+        this.roughnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_roughness_1024x1024.png');
+        this.metalnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_metallic_1024x1024.png');
+        this.displacementSand = loader.load("./textures/wavy-sand-bl/wavy-sand_height_1024x1024.png");
+        this.ambientOcclusionSand = loader.load("./textures/wavy-sand-bl/wavy-sand_ao_1024x1024.png");
+        //use anisotropy filter for the sand
+        this.albedoSand.anisotropy = maxAnisotropy;
+        this.normalSand.anisotropy = maxAnisotropy;
+        this.roughnessSand.anisotropy = maxAnisotropy;
+        this.metalnessSand.anisotropy = maxAnisotropy;
+        this.displacementSand.anisotropy = maxAnisotropy;
+        this.ambientOcclusionSand.anisotropy = maxAnisotropy;
+        //ensure mip maps are generated
+        this.albedoSand.generateMipmaps = true;
+        this.normalSand.generateMipmaps = true;
+        this.roughnessSand.generateMipmaps = true;
+        this.metalnessSand.generateMipmaps = true;
+        this.displacementSand.generateMipmaps = true;
+        this.ambientOcclusionSand.generateMipmaps = true;
+        this.sandTexture = {
+                ao: this.ambientOcclusionSand,
+                albedo: this.albedoSand,
+                displacement: this.displacementSand,
+                normal: this.normalSand,
+                roughness: this.roughnessSand,
+                metallic: this.metalnessSand
+        }
+
+        //coral texture pbr
+        this.albedoCoral = loader.load('./textures/coral1-bl/coral1_albedo_512x512.png');
+        this.normalCoral = loader.load('./textures/coral1-bl/coral1_normal-ogl_511x511.png');
+        this.roughnessCoral = loader.load('./textures/coral1-bl/coral1_roughness_512x512.png');
+        this.metalnessCoral = loader.load('./textures/coral1-bl/coral1_metallic_512x512.png');
+        this.displacementCoral = loader.load("./textures/coral1-bl/coral1_height_511x511.png");
+        this.ambientOcclusionCoral = loader.load("./textures/coral1-bl/coral1_ao_512x512.png");
+        //Mip map for the coral texture
+        this.albedoCoral.generateMipmaps = true;
+        this.normalCoral.generateMipmaps = true;
+        this.roughnessCoral.generateMipmaps = true;
+        this.metalnessCoral.generateMipmaps = true;
+        this.displacementCoral.generateMipmaps = true;
+        this.ambientOcclusionCoral.generateMipmaps = true;
+         this.coralTexture = {
+                ao: this.ambientOcclusionCoral,
+                albedo: this.albedoCoral,
+                displacement: this.displacementCoral,
+                normal: this.normalCoral,
+                roughness: this.roughnessCoral,
+                metallic: this.metalnessCoral
+        }
+
+        this.fishTexture1 = new THREE.TextureLoader().load("./textures/fish.jpg");
+        this.fishTexture1.generateMipmaps = true;
+
+        this.sharkTexture = new THREE.TextureLoader().load("./textures/shark-skin.jpg");
+
+        this.sharkTexture.minFilter = THREE.LinearMipmapLinearFilter;
+        this.sharkTexture.magFilter = THREE.LinearFilter;
+        this.sharkTexture.generateMipmaps = true;
+
+        this.turtleTexture = new THREE.TextureLoader().load("./textures/turtle.jpg");
+        this.turtleTexture.generateMipmaps = true;
+
+        // Video texture
+
+        this.video = document.createElement('video');
+        this.video.src = "./textures/videos/jellyfishes.mp4";
+        this.video.muted = true;
+        this.video.loop = true;
+        this.video.play();
+
+        this.videoTexture = new THREE.VideoTexture(this.video);
+        this.videoTexture.minFilter = THREE.LinearFilter;
+        this.videoTexture.magFilter = THREE.LinearFilter;
+        this.videoTexture.colorSpace = THREE.SRGBColorSpace;
+
+        //Store the video element to control playback later if needed
+        this.videoElement = this.video;
+
+        // Marine Snow Textures
+        this.snowTexture1 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake1.png");
+        this.snowTexture2 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake2.png");
+        this.bubbleTexture = new THREE.TextureLoader().load("./textures/bubble.png");
+
+        // Lava Textures
+        this.lavaTexture1 = new THREE.TextureLoader().load("./textures/lava/lavaText1.jpg");
+        this.lavaTexture2 = new THREE.TextureLoader().load("./textures/lava/lavaText2.jpg");
+    }
+
+    update(delta) {
+        if (!delta) return;
+
+        
+        //UPDATE ALL OBJECTS WITH MOVEMENT -------------------
+
+        if (this.seaweedUniforms) {
+            this.seaweedUniforms.uTime.value += delta;
+        }
+
+        // update submarine model to follow submarine camera 
+        if (this.submarine && this.app.activeCameraName === 'Submarine') {
+            this.submarine.position.copy(this.app.activeCamera.position);
+            this.submarine.rotation.copy(this.app.activeCamera.rotation);
+
+            // rotate submarine to match camera direction
+            this.submarine.rotation.y += Math.PI / 2; 
+        }
+        //update the submarine position and light animation
+        this.submarine.update(delta);
+
+        // Update coral Perlin noise animation
+        for (const reef of this.corals){
+            for(const coral of reef.corals){
+                coral.userData.uniforms.uTime.value += delta;
+            }
+        }
+        
+        //update the animation in the sea plants
+        for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
+
+        // Update lava shader animation
+        if (this.lavaPlane && this.lavaPlane.material.uniforms) {
+            this.lavaPlane.material.uniforms.time.value += delta;
+        }
+
+
+
+        // UPDATE ALL THE PARTICLE SYSTEMS -------------------------
+
+        if (this.marineSnow) {
+            this.marineSnow.update(delta);
+        }
+        this.volcanoBubbles.updateLOD(this.app.activeCamera.position);
+        this.volcanoBubbles.update(delta);
+        for (const bubbleSystem of this.coralBubbles) {
+            bubbleSystem.updateLOD(this.app.activeCamera.position);
+            bubbleSystem.update(delta);
+        }
+        this.sandPuff.update(delta);
+
+
+       
+        //UPDATE ALL THE DEDICATED ANIMATION SYSTEMS ---------------------------
+
+        // Update keyframe animations
+        this.animationShark.update(delta);
+        this.animationSwordFish.update(delta);
+        this.animationTurtle.update(delta);
+
+
+
+        //CHECK IF IMPORTED MODELS ALREADY LOADED TO INCLUDED THEM IN THE COLLISION SYSTEM ------------
+
+        //add the boat only if it is loaded and is not already in the collision objects
+        if(this.boat && !this.boatIncluded){
+             this.colisionObjects.push(this.boat);
+             this.boatIncluded = true;
+        }
+
+        //add the volcano only if it is loaded and is not already in the collision objects
+        if(this.volcano && !this.volcanoIncluded){
+             this.colisionObjects.push(this.volcano);
+             this.volcanoIncluded = true;
+        }
+       
+
+        //UPDATE THE ANIMALS WITH MOVEMENT -------------------
+
+        // Update all fish groups (carps) - skeletal animation
+        for(const fishGroup of this.fishGroups) {
+            fishGroup.update(delta, this.enemies, this.colisionObjects);
+        }
+        this.swordFish.update(delta);
+        this.shark.update(delta);
+        this.turtle.update(delta);
+        
+        //Update jellyfish animation
+        this.jellyfish.updateAnimation(delta);
     }
 
     onMouseClick(mousePos) {
@@ -540,224 +778,6 @@ class MyContents  {
                 }
             }
         });
-    }
-
-    initTextures() {
-        //Rocks textures
-
-        //Rock PBR
-        const loader = new THREE.TextureLoader();
-        this.albedoRock = loader.load('./textures/ocean-rock-bl/ocean-rock_albedo_512x512.png');
-        this.normalRock = loader.load('./textures/ocean-rock-bl/ocean-rock_normal-ogl_512x512.png');
-        this.roughnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_roughness_512x512.png');
-        this.metalnessRock = loader.load('./textures/ocean-rock-bl/ocean-rock_metallic_512x512.png');
-        this.displacementRock = loader.load("./textures/ocean-rock-bl/ocean-rock_height_512x512.png");
-        this.ambientOcclusionRock = loader.load("./textures/ocean-rock-bl/ocean-rock_ao_512x512.png");
-        //Mips map for the rock texture
-        this.albedoRock.generateMipmaps = true;
-        this.normalRock.generateMipmaps = true;
-        this.roughnessRock.generateMipmaps = true;
-        this.metalnessRock.generateMipmaps = true;
-        this.displacementRock.generateMipmaps = true;
-        this.ambientOcclusionRock.generateMipmaps = true;
-        this.rockTexture = {
-                ao: this.ambientOcclusionRock,
-                albedo: this.albedoRock,
-                displacement: this.displacementRock,
-                normal: this.normalRock,
-                roughness: this.roughnessRock,
-                metallic: this.metalnessRock
-        }
-
-        // Get max anisotropy supported by GPU
-        const maxAnisotropy = this.app.renderer.capabilities.getMaxAnisotropy();
-
-        //Sand PBR
-        this.albedoSand = loader.load('./textures/wavy-sand-bl/wavy-sand_albedo_1024x1024.png');
-        this.normalSand = loader.load('./textures/wavy-sand-bl/wavy-sand_normal-ogl_1024x1024.png');
-        this.roughnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_roughness_1024x1024.png');
-        this.metalnessSand = loader.load('./textures/wavy-sand-bl/wavy-sand_metallic_1024x1024.png');
-        this.displacementSand = loader.load("./textures/wavy-sand-bl/wavy-sand_height_1024x1024.png");
-        this.ambientOcclusionSand = loader.load("./textures/wavy-sand-bl/wavy-sand_ao_1024x1024.png");
-        //use anisotropy filter for the sand
-        this.albedoSand.anisotropy = maxAnisotropy;
-        this.normalSand.anisotropy = maxAnisotropy;
-        this.roughnessSand.anisotropy = maxAnisotropy;
-        this.metalnessSand.anisotropy = maxAnisotropy;
-        this.displacementSand.anisotropy = maxAnisotropy;
-        this.ambientOcclusionSand.anisotropy = maxAnisotropy;
-        //ensure mip maps are generated
-        this.albedoSand.generateMipmaps = true;
-        this.normalSand.generateMipmaps = true;
-        this.roughnessSand.generateMipmaps = true;
-        this.metalnessSand.generateMipmaps = true;
-        this.displacementSand.generateMipmaps = true;
-        this.ambientOcclusionSand.generateMipmaps = true;
-        this.sandTexture = {
-                ao: this.ambientOcclusionSand,
-                albedo: this.albedoSand,
-                displacement: this.displacementSand,
-                normal: this.normalSand,
-                roughness: this.roughnessSand,
-                metallic: this.metalnessSand
-        }
-
-        //coral texture pbr
-        this.albedoCoral = loader.load('./textures/coral1-bl/coral1_albedo_512x512.png');
-        this.normalCoral = loader.load('./textures/coral1-bl/coral1_normal-ogl_511x511.png');
-        this.roughnessCoral = loader.load('./textures/coral1-bl/coral1_roughness_512x512.png');
-        this.metalnessCoral = loader.load('./textures/coral1-bl/coral1_metallic_512x512.png');
-        this.displacementCoral = loader.load("./textures/coral1-bl/coral1_height_511x511.png");
-        this.ambientOcclusionCoral = loader.load("./textures/coral1-bl/coral1_ao_512x512.png");
-        //Mip map for the coral texture
-        this.albedoCoral.generateMipmaps = true;
-        this.normalCoral.generateMipmaps = true;
-        this.roughnessCoral.generateMipmaps = true;
-        this.metalnessCoral.generateMipmaps = true;
-        this.displacementCoral.generateMipmaps = true;
-        this.ambientOcclusionCoral.generateMipmaps = true;
-         this.coralTexture = {
-                ao: this.ambientOcclusionCoral,
-                albedo: this.albedoCoral,
-                displacement: this.displacementCoral,
-                normal: this.normalCoral,
-                roughness: this.roughnessCoral,
-                metallic: this.metalnessCoral
-        }
-
-        this.fishTexture1 = new THREE.TextureLoader().load("./textures/fish.jpg");
-        this.fishTexture1.generateMipmaps = true;
-
-        this.sharkTexture = new THREE.TextureLoader().load("./textures/shark-skin.jpg");
-
-        this.sharkTexture.minFilter = THREE.LinearMipmapLinearFilter;
-        this.sharkTexture.magFilter = THREE.LinearFilter;
-        this.sharkTexture.generateMipmaps = true;
-
-        this.turtleTexture = new THREE.TextureLoader().load("./textures/turtle.jpg");
-        this.turtleTexture.generateMipmaps = true;
-
-        // Video texture
-
-        this.video = document.createElement('video');
-        this.video.src = "./textures/videos/jellyfishes.mp4";
-        this.video.muted = true;
-        this.video.loop = true;
-        this.video.play();
-
-        this.videoTexture = new THREE.VideoTexture(this.video);
-        this.videoTexture.minFilter = THREE.LinearFilter;
-        this.videoTexture.magFilter = THREE.LinearFilter;
-        this.videoTexture.colorSpace = THREE.SRGBColorSpace;
-
-        // 3. Store the video element to control playback later if needed
-        this.videoElement = this.video;
-
-        // Marine Snow Textures
-        this.snowTexture1 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake1.png");
-        this.snowTexture2 = new THREE.TextureLoader().load("./textures/marine-snow/snowflake2.png");
-        this.bubbleTexture = new THREE.TextureLoader().load("./textures/bubble.png");
-
-        // Lava Textures
-        this.lavaTexture1 = new THREE.TextureLoader().load("./textures/lava/lavaText1.jpg");
-        this.lavaTexture2 = new THREE.TextureLoader().load("./textures/lava/lavaText2.jpg");
-    }
-
-    update(delta) {
-        if (!delta) return;
-
-        if (this.marineSnow) {
-            this.marineSnow.update(delta);
-        }
-
-        if (this.seaweedUniforms) {
-            this.seaweedUniforms.uTime.value += delta;
-        }
-
-        // update submarine model to follow submarine camera 
-        if (this.submarine && this.app.activeCameraName === 'Submarine') {
-            this.submarine.position.copy(this.app.activeCamera.position);
-            this.submarine.rotation.copy(this.app.activeCamera.rotation);
-
-            // rotate submarine to match camera direction
-            this.submarine.rotation.y += Math.PI / 2; 
-        }
-
-        this.volcanoBubbles.updateLOD(this.app.activeCamera.position);
-        this.volcanoBubbles.update(delta);
-
-
-        
-        for (const bubbleSystem of this.coralBubbles) {
-            bubbleSystem.updateLOD(this.app.activeCamera.position);
-            bubbleSystem.update(delta);
-        }
-        this.sandPuff.update(delta);
-        this.swordFish.update(delta);
-        this.shark.update(delta);
-        this.turtle.update(delta)
-        
-
-        // Update coral Perlin noise animation
-
-        for (const reef of this.corals){
-            for(const coral of reef.corals){
-                coral.userData.uniforms.uTime.value += delta;
-            }
-        }
-        
-        //update the animation in the sea plants
-        for(const plantGroup of this.seaPlantGroups) plantGroup.update(delta);
-
-        // Update lava shader animation
-        if (this.lavaPlane && this.lavaPlane.material.uniforms) {
-            this.lavaPlane.material.uniforms.time.value += delta;
-        }
-
-        // Update keyframe animations
-        this.animationShark.update(delta);
-        this.animationSwordFish.update(delta);
-        this.animationTurtle.update(delta);
-
-        this.enemies = [] //reset the enemie
-        this.enemies.push(this.swordFish);
-        this.enemies.push(this.jellyfish);
-        this.enemies.push(this.shark);
-        this.enemies.push(this.submarine);
-
-        this.colisionObjects = [];
-        this.colisionObjects.push(this.sign);
-        this.colisionObjects.push(this.turtle);
-        for(const rockGroup of this.rockGroups){
-            for(const rock of rockGroup.rocks){
-                this.colisionObjects.push(rock)
-            }
-        }
-        for (const reef of this.corals){
-            for(const coral of reef.corals){
-                this.colisionObjects.push(coral);
-            }
-        }
-        //add the boat only if it is loaded
-        if(this.boat){
-             this.colisionObjects.push(this.boat);
-        }
-
-        //add the volcano only if it is loaded
-        if(this.volcano){
-             this.colisionObjects.push(this.volcano);
-        }
-       
-
-        // Update all fish groups (carps) - skeletal animation
-        for(const fishGroup of this.fishGroups) {
-            fishGroup.update(delta, this.enemies, this.colisionObjects);
-        }
-        
-
-        this.submarine.update(delta);
-
-        this.jellyfish.updateAnimation(delta);
     }
 
     setWireframeMode(enabled) {
