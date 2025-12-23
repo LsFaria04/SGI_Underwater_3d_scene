@@ -116,6 +116,18 @@ class MyContents  {
         twoDShark.position.set(-0.8, 0.5, this.sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
         this.sign.board.add(twoDShark);
 
+        this.signBoat = new MySign(1.5, 0.05, 2, 1, 0.05, "#8b5a2b", "#deb887", "SUNKEN BOAT. CAUTION!");
+        this.signBoat.position.set(-4,floorHeightPosition(-4, -3),-3);
+        this.signBoat.scale.set(0.5,0.5,0.5);
+        this.signBoat.rotateY(THREE.MathUtils.degToRad(-90))
+        this.app.scene.add(this.signBoat); 
+
+        this.signVolcano = new MySign(1.5, 0.05, 2, 1, 0.05, "#8b5a2b", "#deb887", "DANGER! LAVA!");
+        this.signVolcano.position.set(20,floorHeightPosition(20, -2),-2);
+        this.signVolcano.scale.set(0.5,0.5,0.5);
+        this.signVolcano.rotateY(THREE.MathUtils.degToRad(90))
+        this.app.scene.add(this.signVolcano);
+
         //rock position and size [x, z, number of rocks]
         this.rockGroups = [];
         const rockPosSize = [
@@ -432,6 +444,8 @@ class MyContents  {
         //Add objects that the fish can not collide
         this.colisionObjects = [];
         this.colisionObjects.push(this.sign);
+        this.colisionObjects.push(this.signBoat);
+        this.colisionObjects.push(this.signVolcano);
         this.colisionObjects.push(this.turtle);
         for(const rockGroup of this.rockGroups){
             for(const rock of rockGroup.rocks){
@@ -696,6 +710,8 @@ class MyContents  {
 
         bvhMeshes.push(this.shark);
         bvhMeshes.push(this.sign);
+        bvhMeshes.push(this.signBoat);
+        bvhMeshes.push(this.signVolcano);
         bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(...this.jellyfishes);
@@ -879,6 +895,8 @@ class MyContents  {
         this.boat.boxHelper.visible = enable;
         this.volcano.boxHelper.visible = enable;
         this.sign.boxHelper.visible = enable;
+        this.signVolcano.boxHelper.visible = enable;
+        this.signBoat.boxHelper.visible = enable;
         this.turtle.boxHelper.visible = enable;
         this.swordFish.boxHelper.visible = enable;
         this.shark.boxHelper.visible = enable;
@@ -934,6 +952,14 @@ class MyContents  {
         }
 
         for(const helper of this.sign.helpers){
+            helper.visible = enable;
+        }
+
+        for(const helper of this.signBoat.helpers){
+            helper.visible = enable;
+        }
+
+        for(const helper of this.signVolcano.helpers){
             helper.visible = enable;
         }
 

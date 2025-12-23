@@ -81,7 +81,7 @@ class MySign extends THREE.Object3D {
 			new THREE.MeshStandardMaterial({ color: boardColor }), // top
 			new THREE.MeshStandardMaterial({ color: boardColor }), // bottom
 			// Front Face (Index 4): Uses the video texture (boardTexture). Color 0xffffff ensures no tinting.
-			new THREE.MeshStandardMaterial({ map: boardTexture, color: 0xffffff }), 
+			boardTexture ? new THREE.MeshStandardMaterial({ map: boardTexture, color: 0xffffff }) : new THREE.MeshStandardMaterial({ color: boardColor }), 
 			new THREE.MeshStandardMaterial({ color: boardColor }), // back
 		];
 
