@@ -304,6 +304,7 @@ class MyContents  {
         this.submarine = new MySubmarine(this.videoTexture);
         this.submarine.position.set(5,4,5);
         this.app.scene.add(this.submarine);
+        this.app.scene.add(this.submarine.boxHelper);
 
         this.shark.scale.set(-1, 1,1);
         this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 15, 100, 100, Math.PI / 2);
@@ -389,17 +390,13 @@ class MyContents  {
                 bvhMeshes.push(plant);
             });
         }
-        this.coralReef1.children.forEach(coral => bvhMeshes.push(coral));
-        this.coralReef2.children.forEach(coral => bvhMeshes.push(coral));
+
         bvhMeshes.push(this.shark);
         bvhMeshes.push(this.sign);
         bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(this.jellyfish);
-        bvhMeshes.push(this.seaUrchin);
         bvhMeshes.push(this.turtle);
-        bvhMeshes.push(this.crab);
-        bvhMeshes.push(this.seaStar);
         bvhMeshes.push(this.boat);
         bvhMeshes.push(this.volcano);
 
@@ -655,15 +652,6 @@ class MyContents  {
             this.seaweedUniforms.uTime.value += delta;
         }
 
-        // update submarine model to follow submarine camera 
-        if (this.submarine && this.app.activeCameraName === 'Submarine') {
-            this.submarine.position.copy(this.app.activeCamera.position);
-            this.submarine.rotation.copy(this.app.activeCamera.rotation);
-
-            // rotate submarine to match camera direction
-            this.submarine.rotation.y += Math.PI / 2; 
-        }
-
         this.volcanoBubbles.updateLOD(this.app.activeCamera.position);
         this.volcanoBubbles.update(delta);
 
@@ -717,33 +705,36 @@ class MyContents  {
         this.enemies.push(this.shark);
         this.enemies.push(this.submarine);
 
-        this.colisionObjects = [];
-        this.colisionObjects.push(this.sign);
-        this.colisionObjects.push(this.turtle);
+        this.collisionObjects = [];
+        this.collisionObjects.push(this.sign);
+        this.collisionObjects.push(this.turtle);
         for(const coral of this.coralReef1.corals){
-            this.colisionObjects.push(coral)
-        }for(const coral of this.coralReef2.corals){
-            this.colisionObjects.push(coral)
+            this.collisionObjects.push(coral)
+        }
+        for(const coral of this.coralReef2.corals){
+            this.collisionObjects.push(coral)
         }
         for(const rockGroup of this.rockGroups){
             for(const rock of rockGroup.rocks){
-                this.colisionObjects.push(rock)
+                this.collisionObjects.push(rock)
             }
+        }
+        if (this.floor) {
+            this.collisionObjects.push(this.floor);
         }
         //add the boat only if it is loaded
         if(this.boat){
-             this.colisionObjects.push(this.boat);
+             this.collisionObjects.push(this.boat);
         }
-
         //add the volcano only if it is loaded
         if(this.volcano){
-             this.colisionObjects.push(this.volcano);
+             this.collisionObjects.push(this.volcano);
         }
        
 
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
-            fishGroup.update(delta, this.enemies, this.colisionObjects);
+            fishGroup.update(delta, this.enemies, this.collisionObjects);
         }
         
 
@@ -799,12 +790,10 @@ class MyContents  {
         this.jellyfish.boxHelper.visible = enable;
         this.swordFish.boxHelper.visible = enable;
         this.shark.boxHelper.visible = enable;
-        this.submarine.boxHelper.visible = enable;
         this.crab.boxHelper.visible = enable;
         this.seaStar.boxHelper.visible = enable;
         this.seaUrchin.boxHelper.visible = enable;
-
-
+        this.submarine.boxHelper.visible = enable;
     }
 
     setBVHMode(enable){

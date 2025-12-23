@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { MyContents } from './MyContents.js';
@@ -156,7 +155,8 @@ class MyApp  {
         // Submarine view
         const freeFlyCam = new THREE.PerspectiveCamera(75, aspect, 1, 500);
         freeFlyCam.position.set(5,4,5);
-        freeFlyCam.layers.set(0);
+        freeFlyCam.layers.enable(0);
+        freeFlyCam.layers.enable(1);
         this.cameras['Submarine'] = freeFlyCam;
     }
 
@@ -479,7 +479,15 @@ class MyApp  {
 
         // submarine camera movement
         if (this.activeCameraName === 'Submarine') {
-            this.updateSubmarineMovement(delta);
+            // move submarine mesh
+            if (this.contents && this.contents.submarine) {
+                // pass collision objects for collision detection
+                this.contents.submarine.update(delta, this.contents.collisionObjects);
+                // move camera to follow submarine
+                this.activeCamera.position.copy(this.contents.submarine.position);
+                this.activeCamera.rotation.copy(this.contents.submarine.rotation);
+                
+            }
             this.updateHUDCoordinates();
         }
 
@@ -514,12 +522,12 @@ class MyApp  {
     // handle keyboard input
     onKeyChange(e, isPressed) {
         switch (e.code) {
-            case 'KeyW': this.move.forward = isPressed; break;
-            case 'KeyS': this.move.backward = isPressed; break;
-            case 'KeyA': this.move.left = isPressed; break;
-            case 'KeyD': this.move.right = isPressed; break;
-            case 'KeyP': this.move.up = isPressed; break;
-            case 'KeyL': this.move.down = isPressed; break;
+            case 'KeyW': this.contents.submarine.setMoveState('forward', isPressed); break;
+            case 'KeyS': this.contents.submarine.setMoveState('backward', isPressed); break;
+            case 'KeyA': this.contents.submarine.setMoveState('left', isPressed); break;
+            case 'KeyD': this.contents.submarine.setMoveState('right', isPressed); break;
+            case 'KeyP': this.contents.submarine.setMoveState('up', isPressed); break;
+            case 'KeyL': this.contents.submarine.setMoveState('down', isPressed); break;
         }
     }
 }

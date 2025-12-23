@@ -133,12 +133,14 @@ class MySchoolfOfFish extends THREE.Group {
         const neighbors = [];
 
         // Expand fish bounding box by radius
+        if (!fish.box) return neighbors;
         const fishWorldBox = fish.box.clone();
         fishWorldBox.applyMatrix4(fish.matrixWorld);
         fishWorldBox.expandByScalar(radius);
 
         for (const other of others) {
             if (other === fish) continue;
+            if (!other.box) continue;
 
             const otherWorldBox = other.box.clone();
             otherWorldBox.applyMatrix4(other.matrixWorld);
