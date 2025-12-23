@@ -197,8 +197,8 @@ class MySchoolfOfFish extends THREE.Group {
             .addScaledVector(v2, 0.1 * this.aligmentW)
             .addScaledVector(v3, 0.4 * this.cohesionW)
             .addScaledVector(v4, 15 * this.separationW)
-            .addScaledVector(v5, 10 * this.separationW)
-            .addScaledVector(v6, 10 * this.separationW);
+            .addScaledVector(v5, 5 * this.separationW)
+            .addScaledVector(v6, 5 * this.separationW);
 
 
             
@@ -303,12 +303,12 @@ class MySchoolfOfFish extends THREE.Group {
      * Bounds the fish positions so that they do not go out of the aquarium bounds
      */
     bound_position(fish){
-        let maxX = 20;
-        let minX = -20;
+        let maxX = 30;
+        let minX = -30;
         let maxY = 15;
         let minY = 5;
-        let maxZ = 20;
-        let minZ = -20;
+        let maxZ = 30;
+        let minZ = -30;
 
         let v = new THREE.Vector3(fish.velocity.x,fish.velocity.y,fish.velocity.z);
 

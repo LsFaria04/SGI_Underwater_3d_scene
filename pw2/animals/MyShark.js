@@ -129,7 +129,7 @@ class MyShark extends THREE.Object3D {
 
         this.sharkBody = sharkBody;
 
-        this.box = new THREE.Box3().setFromObject(this, true);
+        this.box = new THREE.Box3().setFromObject(this.rootPivot, true);
         this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
         this.boxHelper.visible = false;
         this.boxHelper.layers.set(1);

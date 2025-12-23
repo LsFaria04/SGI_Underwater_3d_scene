@@ -88,11 +88,11 @@ class MyTurtle extends THREE.Object3D {
 
         for (let i = 0; i < 4; i++) {
 
-            // 1. Create a pivot at the hip joint
+            // Create a pivot at the hip joint
             const pivot = new THREE.Group();
             this.add(pivot);
 
-            // 2. Create the leg mesh
+            //Create the leg mesh
             const leg = new THREE.Mesh(legGeo, headMat);
 
             if (i < 2) {
@@ -103,16 +103,16 @@ class MyTurtle extends THREE.Object3D {
                 leg.rotateY(THREE.MathUtils.DEG2RAD * 90);
             }      
 
-            // 3. Move the leg mesh so its top sits at the pivot
+            // Move the leg mesh so its top sits at the pivot
            leg.position.set(...legPositions[i]); // stays centered under pivot
 
-            // 4. Add mesh to pivot
+            // Add mesh to pivot
             pivot.add(leg);
              
-            // 5. Add BVH helper to mesh
+            // Add BVH helper to mesh
             this.addBVHHelper(leg);
 
-            // 6. Store pivot for animation
+            // Store pivot for animation
             this.legs.push(pivot);
         }
 

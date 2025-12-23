@@ -65,11 +65,6 @@ class MyTriangle extends THREE.BufferGeometry {
 			...normal.toArray(),
 		];
 
-/* 		const uvs = [
-			0, 0,
-			a , 0,
-			c * cos_ac, c * sin_ac
-		] */
 
 		const uvs = [
 			0, 0,
