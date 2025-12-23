@@ -20,7 +20,8 @@ class MyBubbleParticles{
     this.fullParticles = maxParticles;
     this.lowParticles = Math.floor(maxParticles / 4);            
     this.lodDistance = 20;     
-    this.lodEnabled = false;          
+    this.lodEnabled = false;  
+    
 
     this.sourceY  = options.sourceY  ?? 1.5;
     this.surfaceY = options.surfaceY ?? 20;
@@ -113,6 +114,7 @@ class MyBubbleParticles{
     });
 
     this.points = new THREE.Points(this.geometry, this.material);
+    this.points.frustumCulled = false;
   }
 
   /**

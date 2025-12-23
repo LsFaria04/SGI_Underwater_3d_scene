@@ -296,7 +296,7 @@ class MySubmarine extends THREE.Object3D {
 
         this.warningLight = new THREE.PointLight(0xff0000, this.warningLightIntensity);
         this.warningLight.position.set(0.3, 1.1, 0);
-        submarineGroup.add(this.warningLight);
+        this.add(this.warningLight);
         this.warningLightBulb = warningLightBulb;
 
         
