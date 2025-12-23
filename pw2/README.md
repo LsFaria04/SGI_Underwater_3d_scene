@@ -181,21 +181,27 @@ This project creates an immersive **underwater marine ecosystem** using Three.js
 
 ### Lucas Faria (202207540)
 **Primary Responsibilities:**
+- Implemented static objects like: rocks, boat, sea star, sea weed, crab, and moving objects like :swordfish, jellyfish. Implemented flocking and bvh. Worked on textures, shaders, particles. Made improvements to others work.
 
 **Contributions:**
+- 33.33%
 
 
 ### Alexandre Lopes (202207015)
 **Primary Responsibilities:**
+- Implemented static objects like: urchin, sign, floor, and moving objects like: tortoise, shark, submarine.Created submarine colisions, some shaders and particles. Made improvements to others work.
 
 
 **Contributions:**
+- 33.33%
 
 
 ### Pedro Borges (202207552)
 **Primary Responsibilities:**
+- Implemented static objects like: corals and volcano with lava, and made the fish. Implemented perlin noise, picking, textures, shaders, particles and readme. Made improvements to others work.
 
 **Contributions:**
+- 33.33%
 
 
 ### Collaborative Work
