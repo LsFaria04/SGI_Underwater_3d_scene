@@ -297,7 +297,7 @@ class MyContents  {
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
-        this.sandPuff = new SandPuffSystem(this.app.scene, 500);
+        this.sandPuff = new SandPuffSystem(this.app.scene, 5000);
 
         this.marineSnow = new MyMarineSnow([0.1], ["#FFFFFF"], [this.snowTexture1], 0.01);
         this.marineSnow.position.set(0,10,0);
@@ -790,7 +790,7 @@ class MyContents  {
         if (hits.length > 0) {
             const hit = hits[0];
 
-            this.sandPuff.spawn(hit.point, hit.face.normal, 500);
+            this.sandPuff.spawn(hit.point, hit.face.normal, 5000);
         }
 
     }

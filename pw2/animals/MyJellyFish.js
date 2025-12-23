@@ -82,6 +82,8 @@ class MyJellyFish extends THREE.LOD {
         this.headGeometry.computeBoundsTree();
 
         const headTop = new THREE.Mesh(this.headGeometry, mat);
+        headTop.castShadow = true;
+        headTop.receiveShadow = true;
 
         // Bell bottom
         const bottomGeo = new THREE.RingGeometry(this.radius * 0.7, this.radius, 24);
@@ -140,6 +142,8 @@ class MyJellyFish extends THREE.LOD {
 
         const headTop = new THREE.Mesh(headGeo, mat);
         headTop.rotation.x = Math.PI / 2;
+        headTop.castShadow = true;
+        headTop.receiveShadow = true;
 
         const bottomGeo = new THREE.CircleGeometry(this.radius, 16);
         const headBottom = new THREE.Mesh(bottomGeo, mat);

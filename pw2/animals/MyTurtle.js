@@ -56,6 +56,8 @@ class MyTurtle extends THREE.Object3D {
         });
 
         this.shell = new THREE.Mesh(shellGeo, shellMat);
+        this.shell.castShadow = true;
+        this.shell.receiveShadow = true;
         shellGeo.computeBoundsTree();
         this.add(this.shell);
         this.addBVHHelper(this.shell);
@@ -68,6 +70,8 @@ class MyTurtle extends THREE.Object3D {
         this.head = new THREE.Mesh(headGeo, headMat);
         this.head.scale.set(0.8, 1, 1.4);
         this.head.position.set(0, 0, this.shellRadius + this.bodyRadius * 0.5);
+        this.head.castShadow = true;
+        this.head.receiveShadow = true;
         headGeo.computeBoundsTree();
         this.add(this.head);
         this.addBVHHelper(this.head);
@@ -94,6 +98,8 @@ class MyTurtle extends THREE.Object3D {
 
             //Create the leg mesh
             const leg = new THREE.Mesh(legGeo, headMat);
+            leg.castShadow = true;
+            leg.receiveShadow = true;
 
             if (i < 2) {
                 leg.scale.set(2, 0.4, 0.8); // front legs
