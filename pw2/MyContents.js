@@ -445,19 +445,19 @@ class MyContents  {
         this.enemies.push(this.submarine);
 
         //Add objects that the fish can not collide
-        this.colisionObjects = [];
-        this.colisionObjects.push(this.sign);
-        this.colisionObjects.push(this.signBoat);
-        this.colisionObjects.push(this.signVolcano);
-        this.colisionObjects.push(this.turtle);
+        this.collisionObjects = [];
+        this.collisionObjects.push(this.sign);
+        this.collisionObjects.push(this.signBoat);
+        this.collisionObjects.push(this.signVolcano);
+        this.collisionObjects.push(this.turtle);
         for(const rockGroup of this.rockGroups){
             for(const rock of rockGroup.rocks){
-                this.colisionObjects.push(rock)
+                this.collisionObjects.push(rock)
             }
         }
         for (const reef of this.corals){
             for(const coral of reef.corals){
-                this.colisionObjects.push(coral);
+                this.collisionObjects.push(coral);
             }
         }
         this.boatIncluded = false;
@@ -587,8 +587,31 @@ class MyContents  {
 
     update(delta) {
         if (!delta) return;
+        this.collisionObjects = [];
+        if (this.sign) this.collisionObjects.push(this.sign);
+        if (this.turtle) this.collisionObjects.push(this.turtle);
+        if (this.submarine) this.collisionObjects.push(this.submarine);
+        if (this.boat) this.collisionObjects.push(this.boat);
+        if (this.volcano) this.collisionObjects.push(this.volcano);
+        if (this.rockGroups) {
+            for (const rockGroup of this.rockGroups) {
+                for (const rock of rockGroup.rocks) {
+                    this.collisionObjects.push(rock);
+                }
+            }
+        }
+        if (this.coralReef1) {
+            for (const coral of this.coralReef1.corals) {
+                this.collisionObjects.push(coral);
+            }
+        }
+        if (this.coralReef2) {
+            for (const coral of this.coralReef2.corals) {
+                this.collisionObjects.push(coral);
+            }
+        }
+        if (this.floor) this.collisionObjects.push(this.floor);
 
-        
         //UPDATE ALL OBJECTS WITH MOVEMENT -------------------
 
         if (this.seaweedUniforms) {
@@ -601,7 +624,7 @@ class MyContents  {
             this.submarine.rotation.copy(this.app.activeCamera.rotation);
         }
         //update the submarine position and light animation
-        this.submarine.update(delta);
+        this.submarine.update(delta, this.collisionObjects);
 
         // Update coral Perlin noise animation
         for (const reef of this.corals){
@@ -648,13 +671,13 @@ class MyContents  {
 
         //add the boat only if it is loaded and is not already in the collision objects
         if(this.boat && !this.boatIncluded){
-             this.colisionObjects.push(this.boat);
+             this.collisionObjects.push(this.boat);
              this.boatIncluded = true;
         }
 
         //add the volcano only if it is loaded and is not already in the collision objects
         if(this.volcano && !this.volcanoIncluded){
-             this.colisionObjects.push(this.volcano);
+             this.collisionObjects.push(this.volcano);
              this.volcanoIncluded = true;
         }
        
@@ -663,7 +686,7 @@ class MyContents  {
 
         // Update all fish groups (carps) - skeletal animation
         for(const fishGroup of this.fishGroups) {
-            fishGroup.update(delta, this.enemies, this.colisionObjects);
+            fishGroup.update(delta, this.enemies, this.collisionObjects);
         }
         this.swordFish.update(delta);
         this.shark.update(delta);
