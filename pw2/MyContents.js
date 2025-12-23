@@ -262,13 +262,20 @@ class MyContents  {
             this.app.scene.add(rockGroup);
         }
         
+        //Coral reef radius, position, type, number of corals [numb, x, z, type, radius]
+        this.corals = [];
+        const coralsPosSize = [
+            [4, -8, 0, "fanCoral", 4], [4,8, 1, "branchingCoral", 4],
+            [10, 10, -11, "fanCoral", 8], [10,-8, -20, "branchingCoral", 6],
+            [20, 10, 20, "fanCoral", 6], [10,-15, 0, "branchingCoral", 6],
+        ];
 
-        this.coralReef1 = new MyCoralReef(10,-10, 1, "fanCoral", 10, 4, this.coralTexture);
-        this.app.scene.add(this.coralReef1);
-
-        this.coralReef2 = new MyCoralReef(10,10, 1, "branchingCoral", 10, 4, this.coralTexture);
-        this.app.scene.add(this.coralReef2);
-
+        for(let i = 0; i < coralsPosSize.length; i++){
+            const pos = coralsPosSize[i];
+            const reef = new MyCoralReef(pos[0], pos[1], pos[2], pos[3], pos[4], 4, this.coralTexture);
+            this.corals.push(reef);
+            this.app.scene.add(reef);
+        }
 
         this.seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
         this.seaUrchin.position.set(4, floorHeightPosition(4,-10) + 0.2, -10);
@@ -325,31 +332,12 @@ class MyContents  {
 
         this.app.scene.add(this.volcanoBubbles.points);
 
-        this.coralBubbles1 = [];
-        for (const coral of this.coralReef1.corals) {
-            const coralPos = new THREE.Vector3();
-            coral.getWorldPosition(coralPos);
-            
-            const bubbleSystem = new MyBubbleParticles(
-                [{ x: coralPos.x, z: coralPos.z }],
-                50, 
-                this.bubbleTexture,
-                { 
-                    sourceY: coralPos.y + 0.5, 
-                    surfaceY: 20, 
-                    spawnAreaX: 0.3, 
-                    spawnAreaZ: 0.3, 
-                    spawnRate: 0.5,
-                    speedFactor: 0.5
-                }
-            );
-            this.app.scene.add(bubbleSystem.points);
-            this.coralBubbles1.push(bubbleSystem);
-        }
 
-        this.coralBubbles2 = [];
-        for (const coral of this.coralReef2.corals) {
-            const coralPos = new THREE.Vector3();
+
+        this.coralBubbles = [];
+        for(const reef of this.corals){
+            for(const coral of reef.corals){
+                const coralPos = new THREE.Vector3();
             coral.getWorldPosition(coralPos);
             
             const bubbleSystem = new MyBubbleParticles(
@@ -365,8 +353,9 @@ class MyContents  {
                     speedFactor: 0.5
                 }
             );
-            this.app.scene.add(bubbleSystem.points);
-            this.coralBubbles2.push(bubbleSystem);
+                this.app.scene.add(bubbleSystem.points);
+                this.coralBubbles.push(bubbleSystem);
+            }
         }
     }
 
@@ -389,8 +378,10 @@ class MyContents  {
                 bvhMeshes.push(plant);
             });
         }
-        this.coralReef1.children.forEach(coral => bvhMeshes.push(coral));
-        this.coralReef2.children.forEach(coral => bvhMeshes.push(coral));
+        for( const reef of this.corals){
+            reef.children.forEach(coral => bvhMeshes.push(coral));
+        }
+
         bvhMeshes.push(this.shark);
         bvhMeshes.push(this.sign);
         bvhMeshes.push(this.swordFish.lod);
@@ -667,16 +658,12 @@ class MyContents  {
         this.volcanoBubbles.updateLOD(this.app.activeCamera.position);
         this.volcanoBubbles.update(delta);
 
-        for (const bubbleSystem of this.coralBubbles1) {
+
+        
+        for (const bubbleSystem of this.coralBubbles) {
             bubbleSystem.updateLOD(this.app.activeCamera.position);
             bubbleSystem.update(delta);
         }
-
-        for (const bubbleSystem of this.coralBubbles2) {
-            bubbleSystem.updateLOD(this.app.activeCamera.position);
-            bubbleSystem.update(delta);
-        }
-
         this.sandPuff.update(delta);
         this.swordFish.update(delta);
         this.shark.update(delta);
@@ -684,16 +671,9 @@ class MyContents  {
         
 
         // Update coral Perlin noise animation
-        for (var coral of this.coralReef1.corals) {
-            if (coral.userData.uniforms) {
-                coral.userData.uniforms.uTime.value += delta;
-            } else {
-                console.warn('Coral missing uniforms:', coral.name, coral.userData);
-            }
-        }
-        
-        for (var coral of this.coralReef2.corals) {
-            if (coral.userData.uniforms) {
+
+        for (const reef of this.corals){
+            for(const coral of reef.corals){
                 coral.userData.uniforms.uTime.value += delta;
             }
         }
@@ -720,14 +700,14 @@ class MyContents  {
         this.colisionObjects = [];
         this.colisionObjects.push(this.sign);
         this.colisionObjects.push(this.turtle);
-        for(const coral of this.coralReef1.corals){
-            this.colisionObjects.push(coral)
-        }for(const coral of this.coralReef2.corals){
-            this.colisionObjects.push(coral)
-        }
         for(const rockGroup of this.rockGroups){
             for(const rock of rockGroup.rocks){
                 this.colisionObjects.push(rock)
+            }
+        }
+        for (const reef of this.corals){
+            for(const coral of reef.corals){
+                this.colisionObjects.push(coral);
             }
         }
         //add the boat only if it is loaded
@@ -765,12 +745,12 @@ class MyContents  {
     }
 
     setBoxHelper(enable){
-        for(const helper of this.coralReef1.helpers){
-            helper.visible = enable;
-        }
 
-        for(const helper of this.coralReef2.helpers){
-            helper.visible = enable;
+
+        for (const reef of this.corals){
+            for(const helper of reef.helpers){
+                helper.visible = enable;
+            }
         }
 
         for(const fishGroup of this.fishGroups){
@@ -876,12 +856,11 @@ class MyContents  {
             helper.visible = enable;
         }
 
-        for(const helper of this.coralReef1.helpers){
-            helper.visible = enable;
-        }
 
-        for(const helper of this.coralReef2.helpers){
-            helper.visible = enable;
+        for (const reef of this.corals){
+            for(const helper of reef.helpers){
+                helper.visible = enable;
+            }
         }
 
         for(const plantgroup of this.seaPlantGroups){
