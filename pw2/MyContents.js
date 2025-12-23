@@ -136,6 +136,7 @@ class MyContents  {
         });
 
         // Load the volcano model
+        this.volcanoGroup = new THREE.Group();
         const volcanoPosition = [13, floorHeightPosition(13,7) - 0.6, 7]
         loader.load('objects/volcano/scene.gltf', (gltf) => {
 
@@ -165,14 +166,16 @@ class MyContents  {
             this.volcano.boxHelper = new THREE.Box3Helper(this.volcano.box, 0xff0000);
             this.volcano.boxHelper.visible = false;
             this.app.scene.add(this.volcano.boxHelper);
+            this.volcanoGroup.add(this.volcano);
 
-            this.app.scene.add(this.volcano);
+            //this.app.scene.add(this.volcano);
         }, undefined, (error) => {
             console.error(error);
         });
 
         //move the volcano light to the volvano position
         this.volvanoLight.position.set(volcanoPosition[0] + 1, 2,volcanoPosition[2] - 8)
+
         // Add lava plane above volcano
         const lavaGeometry = new THREE.PlaneGeometry(1, 1);
         const lavaMaterial = new THREE.ShaderMaterial({
@@ -185,7 +188,11 @@ class MyContents  {
         this.lavaPlane = new THREE.Mesh(lavaGeometry, lavaMaterial);
         this.lavaPlane.rotation.x = -Math.PI / 2;
         this.lavaPlane.position.set(14, 1.4, -1);
-        this.app.scene.add(this.lavaPlane);
+
+        this.volcanoGroup.add(this.volvanoLight);
+        this.volcanoGroup.add(this.lavaPlane);
+        
+        this.app.scene.add(this.volcanoGroup);
 
         this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
 
