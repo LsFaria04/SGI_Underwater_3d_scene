@@ -230,9 +230,24 @@ class MyContents  {
         this.turtle.position.set(8, 7 , 1);
         this.app.scene.add(this.turtle);
 
-        this.jellyfish = new MyJellyFish(0.5, 1);
-        this.app.scene.add(this.jellyfish);
-        this.jellyfish.position.set(0,5,0);
+        this.jellyfishes = [];
+        const jellyfishPosSize = [
+            //Above the boat
+            [0,4,0], [1.5,4,0], [0,5,1.5],
+
+            //Left back
+            [-20, 4, -20], [-21,  3, -21], [-19, 5, -20]
+        ];
+        for(let i = 0; i < jellyfishPosSize.length; i++){
+            const pos = jellyfishPosSize[i];
+            const jellyfish = new MyJellyFish(0.5, 1);
+            const jellyScale = generateRandom(0.5, 2);
+            jellyfish.scale.set(jellyScale, jellyScale, jellyScale);
+            jellyfish.position.set(pos[0], pos[1], pos[2]);
+            this.jellyfishes.push(jellyfish);
+            this.app.scene.add(jellyfish);
+        }
+
         
         this.shark = new MyShark(1, "#2244aa", this.sharkTexture);
         this.shark.position.set(-8, 10, 0);
@@ -410,7 +425,7 @@ class MyContents  {
         //Add enemies of the fish to send for the update
         this.enemies = [] //reset the enemie
         this.enemies.push(this.swordFish);
-        this.enemies.push(this.jellyfish);
+        this.enemies.push(...this.jellyfishes);
         this.enemies.push(this.shark);
         this.enemies.push(this.submarine);
 
@@ -529,7 +544,6 @@ class MyContents  {
         this.turtleTexture.generateMipmaps = true;
 
         // Video texture
-
         this.video = document.createElement('video');
         this.video.src = "./textures/videos/jellyfishes.mp4";
         this.video.muted = true;
@@ -642,7 +656,10 @@ class MyContents  {
         this.turtle.update(delta);
         
         //Update jellyfish animation
-        this.jellyfish.updateAnimation(delta);
+        for(const jellyfish of this.jellyfishes){
+             jellyfish.updateAnimation(delta);
+        }
+       
     }
 
     onMouseClick(mousePos) {
@@ -681,7 +698,7 @@ class MyContents  {
         bvhMeshes.push(this.sign);
         bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
-        bvhMeshes.push(this.jellyfish);
+        bvhMeshes.push(...this.jellyfishes);
         bvhMeshes.push(this.turtle);
         bvhMeshes.push(this.boat);
         bvhMeshes.push(this.volcano);
@@ -854,12 +871,15 @@ class MyContents  {
         for(const crab of this.crabs){
             crab.boxHelper.visible = enable;
         }
+        for(const jellyfish of this.jellyfishes){
+            jellyfish.boxHelper.visible = enable;
+        }
+        
 
         this.boat.boxHelper.visible = enable;
         this.volcano.boxHelper.visible = enable;
         this.sign.boxHelper.visible = enable;
         this.turtle.boxHelper.visible = enable;
-        this.jellyfish.boxHelper.visible = enable;
         this.swordFish.boxHelper.visible = enable;
         this.shark.boxHelper.visible = enable;
         this.submarine.boxHelper.visible = enable;
@@ -874,11 +894,12 @@ class MyContents  {
             for(const fish of fishGroup.fishes){
                 fish.bvh = enable;
             }
-            this.shark.bvh = enable;
-            this.swordFish.bvh = enable;
-            this.jellyfish.bvh = enable;
-
         }
+        for(const jellyfish of this.jellyfishes){
+            jellyfish.bvh = enable;
+        }
+        this.shark.bvh = enable;
+        this.swordFish.bvh = enable;
     }
 
     setBVHHelper(enable){
@@ -902,9 +923,12 @@ class MyContents  {
         for(const helper of this.swordFish.helpers){
             helper.visible = enable;
         }
-        for(const helper of this.jellyfish.helpers){
-            helper.visible = enable;
+        for(const jellyfish of this.jellyfishes){
+            for(const helper of jellyfish.helpers){
+                helper.visible = enable;
+            }
         }
+        
         for(const helper of this.submarine.helpers){
             helper.visible = enable;
         }
