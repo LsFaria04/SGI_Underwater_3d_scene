@@ -153,6 +153,7 @@ class MyContents  {
         this.submarine = new MySubmarine(this.videoTexture);
         this.submarine.position.set(5,4,5);
         this.app.scene.add(this.submarine);
+        this.app.scene.add(this.submarine.boxHelper);
 
         //Coral reef radius, position, type, number of corals [numb, x, z, type, radius]
         this.corals = [];
@@ -311,6 +312,8 @@ class MyContents  {
         );
 
         this.app.scene.add(this.volcanoBubbles.points);
+
+        
 
         this.coralBubbles = [];
         for(const reef of this.corals){
@@ -596,9 +599,6 @@ class MyContents  {
         if (this.submarine && this.app.activeCameraName === 'Submarine') {
             this.submarine.position.copy(this.app.activeCamera.position);
             this.submarine.rotation.copy(this.app.activeCamera.rotation);
-
-            // rotate submarine to match camera direction
-            this.submarine.rotation.y += Math.PI / 2; 
         }
         //update the submarine position and light animation
         this.submarine.update(delta);
@@ -901,8 +901,6 @@ class MyContents  {
         this.swordFish.boxHelper.visible = enable;
         this.shark.boxHelper.visible = enable;
         this.submarine.boxHelper.visible = enable;
-
-
     }
 
     setBVHMode(enable){

@@ -20,6 +20,28 @@ class MySubmarine extends THREE.Object3D {
         this.warningLightIntensity = 1.5;
         this.warningFlashRate = 0.5;
 
+        // movement and physics
+        this.velocity = new THREE.Vector3();
+        this.acceleration = new THREE.Vector3();
+        this.maxSpeed = 3.0;
+        this.accelerationRate = 3.0;
+        this.decelerationRate = 2.0;
+        this.rotationSpeed = 0.5;
+
+        // collision
+        this.collisionResponse = true;
+        this.collisionDamping = 0.5;
+
+        // movement state
+        this.moveState = {
+            forward: false,
+            backward: false,
+            left: false,
+            right: false,
+            up: false,
+            down: false
+        };
+
         const bodyMaterial = new THREE.MeshPhongMaterial({ 
             color: 0x2a4b5e,
             shininess: 80,
@@ -66,18 +88,19 @@ class MySubmarine extends THREE.Object3D {
             });
         }
 
-
+        const submarineGroup = new THREE.Group();
+        submarineGroup.name = 'submarineGroup';
 
         // main body
         this.bodyGeometry = new THREE.CapsuleGeometry(0.5, 3, 8, 16);
         const body = new THREE.Mesh(this.bodyGeometry, bodyMaterial);
         body.rotation.z = Math.PI / 2;
-        this.add(body);
+        submarineGroup.add(body);
         body.castShadow = true;
         body.receiveShadow = true;
         this.bodyGeometry.computeBoundsTree();
         const helper = new MeshBVHHelper(body);
-        this.add(helper);
+        submarineGroup.add(helper);
         helper.visible = false;
         this.helpers.push(helper);
         
@@ -86,12 +109,12 @@ class MySubmarine extends THREE.Object3D {
         this.hatchGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.3, 12);
         const hatch = new THREE.Mesh(this.hatchGeometry, darkMetalMaterial);
         hatch.position.set(0, 0.4, 0);
-        this.add(hatch);
+        submarineGroup.add(hatch);
         hatch.castShadow = true;
         hatch.receiveShadow = true;
         this.hatchGeometry.computeBoundsTree();
         const helper2 = new MeshBVHHelper(hatch);
-        this.add(helper2);
+        submarineGroup.add(helper2);
         helper2.visible = false;
         this.helpers.push(helper2);
         
@@ -109,12 +132,12 @@ class MySubmarine extends THREE.Object3D {
         this.tubeGeometry = new THREE.TubeGeometry(curve, 32, 0.04, 8, false);
         const periscope = new THREE.Mesh(this.tubeGeometry, metalMaterial);
         periscope.position.y = 0.5;
-        this.add(periscope);
+        submarineGroup.add(periscope);
         periscope.castShadow = true;
         periscope.receiveShadow = true;
         this.tubeGeometry.computeBoundsTree();
         const helper3 = new MeshBVHHelper(periscope);
-        this.add(helper3);
+        submarineGroup.add(helper3);
         helper3.visible = false;
         this.helpers.push(helper3);
 
@@ -123,7 +146,7 @@ class MySubmarine extends THREE.Object3D {
         const lens = new THREE.Mesh(lensGeometry, glassMaterial);
         lens.position.set(0.3, 1.1, 0); 
         lens.rotation.y = Math.PI / 2;    
-        this.add(lens);
+        submarineGroup.add(lens);
         lens.castShadow = true;
         lens.receiveShadow = true;
 
@@ -131,7 +154,7 @@ class MySubmarine extends THREE.Object3D {
         const lensHousing = new THREE.Mesh(lensHousingGeometry, darkMetalMaterial);
         lensHousing.position.copy(lens.position);
         lensHousing.rotation.copy(lens.rotation);
-        this.add(lensHousing);
+        submarineGroup.add(lensHousing);
         lensHousing.castShadow = true;
         lensHousing.receiveShadow = true;
 
@@ -147,22 +170,23 @@ class MySubmarine extends THREE.Object3D {
             {x: -0.5, y: 0.2, z: -0.482},  // Middle-right
         ];
 
+        // Group all windows into a parent group
+        const allWindowsGroup = new THREE.Group();
         windowPositions.forEach(pos => {
             const windowGroup = new THREE.Group();
             windowGroup.position.set(pos.x, pos.y, pos.z);
             windowGroup.rotation.y = pos.z > 0 ? 0 : Math.PI;
-            
             const frame = new THREE.Mesh(windowFrameGeometry, woodMaterial);
             windowGroup.add(frame);
-
             const window = new THREE.Mesh(windowGeometry, windowMaterial);
             window.castShadow = true;
             window.receiveShadow = true;
             window.position.z = -0.001;
             windowGroup.add(window);
-            
-            this.add(windowGroup);
+            allWindowsGroup.add(windowGroup);
         });
+        submarineGroup.add(allWindowsGroup);
+        this.add(submarineGroup);
 
         // propeller 
         const propellerGroup = new THREE.Group();
@@ -185,9 +209,9 @@ class MySubmarine extends THREE.Object3D {
         verticalBlade.rotation.set(Math.PI/2, 0, Math.PI/2);
         propellerGroup.add(verticalBlade);
 
-        this.add(propellerGroup);
+        submarineGroup.add(propellerGroup);
+        this.propellerGroup = propellerGroup;
 
-        // rudder
         // rudder
         const rudderGeometry = new THREE.BoxGeometry(0.1, 1.2, 0.3);
         const rudder = new THREE.Mesh(rudderGeometry, bodyMaterial);
@@ -195,7 +219,7 @@ class MySubmarine extends THREE.Object3D {
         rudder.rotation.set(0,Math.PI/2,0);
         rudder.castShadow = true;
         rudder.receiveShadow = true;
-        this.add(rudder);
+        submarineGroup.add(rudder);
 
         // stern planes
         const sternPlaneGeometry = new THREE.BoxGeometry(0.6, 0.1, 0.2);
@@ -204,14 +228,17 @@ class MySubmarine extends THREE.Object3D {
         leftSternPlane.rotation.set(0,Math.PI/2,0);
         leftSternPlane.castShadow = true;
         leftSternPlane.receiveShadow = true;
-        this.add(leftSternPlane);
+        submarineGroup.add(leftSternPlane);
 
         const rightSternPlane = new THREE.Mesh(sternPlaneGeometry, bodyMaterial);
         rightSternPlane.position.set(-1.7, 0, 0.4);
         rightSternPlane.rotation.set(0,Math.PI/2,0);
         rightSternPlane.castShadow = true;
         rightSternPlane.receiveShadow = true;
-        this.add(rightSternPlane);
+        submarineGroup.add(rightSternPlane);
+        
+        submarineGroup.rotation.y = Math.PI/2; //so that it faces the same direction as camera
+        this.add(submarineGroup);
 
         // front light
         const frontLightBulb = new THREE.Mesh(
@@ -224,15 +251,16 @@ class MySubmarine extends THREE.Object3D {
             })
         );
         frontLightBulb.position.set(1.85, -0.3, 0);
-        this.add(frontLightBulb);
+        submarineGroup.add(frontLightBulb);
         this.frontLightBulb = frontLightBulb;
+        frontLightBulb.layers.set(2);
         
 
         this.frontLight = new THREE.SpotLight(0xffffcc, this.frontLightIntensity);
         this.frontLight.position.set(1.8, -0.3, 0); 
         this.frontLight.target.position.set(3, -2, 0);
-        this.add(this.frontLight);
-        this.add(this.frontLight.target);
+        submarineGroup.add(this.frontLight);
+        submarineGroup.add(this.frontLight.target);
 
         this.frontLight.angle = Math.PI / 6;
         this.frontLight.penumbra = 0.3;
@@ -272,15 +300,13 @@ class MySubmarine extends THREE.Object3D {
         this.warningLightFlashRate = 0.5;
         this.isWarningLightOn = true;
 
-        // frontlight on layer 1 so that it is not visible in submarine camera
-        frontLightBulb.layers.set(1);
-
-        //Bounding box used in the simple collision system
-        this.box = new THREE.Box3().setFromObject(this, true);
+        // bounding box for simple collision system
+        this.box = new THREE.Box3();
         this.boxHelper = new THREE.Box3Helper(this.box, 0xff0000);
         this.boxHelper.visible = false;
         this.boxHelper.layers.set(1);
-        this.add(this.boxHelper);
+
+        this.box.setFromObject(submarineGroup, true);
 
         // shield effect
         this.shieldEnabled = false;
@@ -329,24 +355,227 @@ class MySubmarine extends THREE.Object3D {
         this.shield.visible = false;
         this.add(this.shield);
         this.shield.layers.set(1);
-
-        
     }
 
-    update(delta) {
+    setMoveState(key, isPressed) {
+        switch (key) {
+            case 'forward': this.moveState.forward = isPressed; break;
+            case 'backward': this.moveState.backward = isPressed; break;
+            case 'left': this.moveState.left = isPressed; break;
+            case 'right': this.moveState.right = isPressed; break;
+            case 'up': this.moveState.up = isPressed; break;
+            case 'down': this.moveState.down = isPressed; break;
+        }
+    }
+
+    updateMovement(delta) {
+        this.acceleration.set(0, 0, 0);
+
+        const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.quaternion);
+        const up = new THREE.Vector3(0, 1, 0);
+
+        let isAccelerating = false;
+
+        if (this.moveState.forward) {
+            this.acceleration.add(forward.multiplyScalar(this.accelerationRate));
+            isAccelerating = true;
+        }
+        if (this.moveState.backward) {
+            this.acceleration.add(forward.multiplyScalar(-this.accelerationRate));
+            isAccelerating = true;
+        }
+
+        if (this.moveState.left) {
+            this.rotation.y += this.rotationSpeed * delta;
+        }
+        if (this.moveState.right) {
+            this.rotation.y -= this.rotationSpeed * delta;
+        }
+        if (this.moveState.up) {
+            this.acceleration.add(up.multiplyScalar(this.accelerationRate));
+            isAccelerating = true;
+        }
+        if (this.moveState.down) {
+            this.acceleration.add(up.multiplyScalar(-this.accelerationRate));
+            isAccelerating = true;
+        }
+
+        this.velocity.add(this.acceleration.clone().multiplyScalar(delta));
+        if (this.velocity.lengthSq() > 0.0001) {
+            this.lastNonZeroVelocity = this.velocity.clone();
+        }
+
+        if (!isAccelerating) {
+            const decelerationAmount = this.decelerationRate * delta;
+            const currentSpeed = this.velocity.length();
+            
+            if (currentSpeed > 0) {
+                const newSpeed = Math.max(0, currentSpeed - decelerationAmount);
+                this.velocity.normalize().multiplyScalar(newSpeed);
+            }
+        }
+
+        if (this.velocity.length() > this.maxSpeed) {
+            this.velocity.normalize().multiplyScalar(this.maxSpeed);
+        }
+
+        this.position.add(this.velocity.clone().multiplyScalar(delta));
+
+        if (this.propellerGroup) {
+            const speed = this.velocity.length();
+            const propellerSpeed = 5 + (speed / this.maxSpeed) * 15;
+            this.propellerGroup.rotation.x += delta * propellerSpeed;
+        }
+    }
+
+    checkCollisions(collisionObjects) {
+        if (!this.bvh || !collisionObjects || collisionObjects.length === 0) {
+            return null;
+        }
+
+        const submarineWorldPos = new THREE.Vector3();
+        this.getWorldPosition(submarineWorldPos);
+
+        let collision = null;
+        this.collisionGroup.traverse((subMesh) => {
+            if (collision) return;
+            if (!subMesh.isMesh || !subMesh.geometry.boundsTree) return;
+
+            const subWorldMatrix = new THREE.Matrix4();
+            subMesh.getWorldMatrix(subWorldMatrix);
+
+            for (const collisionObj of collisionObjects) {
+                if (collisionObj === this) continue;
+
+                let targetMeshes = [];
+                
+                if (collisionObj.isMesh && collisionObj.geometry.boundsTree) {
+                    targetMeshes.push(collisionObj);
+                } else if (collisionObj.geometry && collisionObj.geometry.boundsTree) {
+                    targetMeshes.push(collisionObj);
+                } else {
+                    collisionObj.traverse((child) => {
+                        if (child.isMesh && child.geometry.boundsTree) {
+                            targetMeshes.push(child);
+                        }
+                    });
+                }
+
+                for (const targetMesh of targetMeshes) {
+                    const targetWorldMatrix = new THREE.Matrix4();
+                    targetMesh.getWorldMatrix(targetWorldMatrix);
+
+                    const result = subMesh.geometry.boundsTree.intersectsGeometry(
+                        targetMesh.geometry,
+                        targetWorldMatrix
+                    );
+
+                    if (result) {
+                        const targetPos = new THREE.Vector3();
+                        targetMesh.getWorldPosition(targetPos);
+                        
+                        const normal = new THREE.Vector3()
+                            .subVectors(submarineWorldPos, targetPos)
+                            .normalize();
+
+                        return {
+                            object: collisionObj,
+                            mesh: targetMesh,
+                            normal: normal,
+                            point: submarineWorldPos.clone()
+                        };
+                    }
+                }
+            }
+        });
+
+        return null;
+    }
+
+    handleCollision(collision) {
+        // repel submarine away from collision surface
+        if (!collision || !this.collisionResponse) return;
+        const repelStrength = 0.1;
+        this.velocity.add(collision.normal.clone().multiplyScalar(repelStrength));
+        this.lastCollisionNormal = collision.normal.clone();
+        return;
+    }
+
+    update(delta, collisionObjects = []) {
+        this.box.setFromObject(this.getObjectByName('submarineGroup') || this.children[0], true);
+        
+        const bounds = {
+            minX: -30,
+            minY: 2, 
+            minZ: -30,
+            maxX: 30,
+            maxY: 20,
+            maxZ: 30
+        };
+
+        this.position.x = Math.max(bounds.minX, Math.min(bounds.maxX, this.position.x));
+        this.position.y = Math.max(bounds.minY, Math.min(bounds.maxY, this.position.y));
+        this.position.z = Math.max(bounds.minZ, Math.min(bounds.maxZ, this.position.z));
         if (!this.elapsed) this.elapsed = 0;
         this.elapsed += delta;
 
-        const propeller = this.children.find(child => child.position.x === -2);
-        if (propeller) {
-            propeller.rotation.x += delta * 5;
+        const prevPosition = this.position.clone();
+
+        this.updateMovement(delta);
+
+        // simple bounding box collision detection
+        if (collisionObjects && collisionObjects.length > 0) {
+            this.box.setFromObject(this.getObjectByName('submarineGroup') || this.children[0], true);
+            let collisionNormal = null;
+            let minDistance = Infinity;
+            
+            for (const obj of collisionObjects) {
+                if (!obj || obj === this) continue;
+                if (!obj.geometry && !obj.box) continue;
+                
+                let objBox;
+                if (obj.box instanceof THREE.Box3) {
+                    objBox = obj.box;
+                } else {
+                    objBox = new THREE.Box3().setFromObject(obj);
+                }
+                
+                if (this.box.intersectsBox(objBox)) {
+                    const objCenter = new THREE.Vector3();
+                    objBox.getCenter(objCenter);
+                    const subCenter = new THREE.Vector3();
+                    this.box.getCenter(subCenter);
+                    
+                    const normal = new THREE.Vector3().subVectors(subCenter, objCenter);
+                    const distance = normal.length();
+                    
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        collisionNormal = normal.normalize();
+                    }
+                }
+            }
+            
+            if (collisionNormal) {
+                this.position.copy(prevPosition);
+                
+                const velocityDot = this.velocity.dot(collisionNormal);
+                
+                if (velocityDot < 0) {
+                    this.velocity.addScaledVector(collisionNormal, -velocityDot);
+                    this.velocity.addScaledVector(collisionNormal, Math.abs(velocityDot) * 0.2);
+                }
+                
+                this.position.addScaledVector(collisionNormal, 0.1);
+                
+                this.lastCollisionNormal = collisionNormal;
+            }
         }
 
         this.warningLightTimer += delta;
         if (this.warningLightTimer >= this.warningLightFlashRate) {
             this.warningLightTimer = 0;
             this.isWarningLightOn = !this.isWarningLightOn;
-            
             if (this.warningLightEnabled) {
                 this.warningLight.visible = this.isWarningLightOn;
                 this.warningLightBulb.visible = this.isWarningLightOn;
@@ -354,9 +583,9 @@ class MySubmarine extends THREE.Object3D {
         }
 
         if((this.elapsed % 4 == 0) && this.bvh){
-            this.bodyGeometry.boundsTree.refit();
-            this.hatchGeometry.boundsTree.refit();
-            this.tubeGeometry.boundsTree.refit();
+            this.bodyGeometry.boundsTree?.refit?.();
+            this.hatchGeometry.boundsTree?.refit?.();
+            this.tubeGeometry.boundsTree?.refit?.();
         }
     }
 
@@ -442,6 +671,30 @@ class MySubmarine extends THREE.Object3D {
 
     setShieldColor(color) {
         this.shield.material.uniforms.glowColor.value.set(color);
+    }
+
+    setCollisionResponse(enabled) {
+        this.collisionResponse = enabled;
+    }
+
+    setCollisionDamping(value) {
+        this.collisionDamping = Math.max(0, Math.min(1, value));
+    }
+
+    setMaxSpeed(value) {
+        this.maxSpeed = value;
+    }
+
+    setAccelerationRate(value) {
+        this.accelerationRate = value;
+    }
+
+    setDecelerationRate(value) {
+        this.decelerationRate = value;
+    }
+
+    setRotationSpeed(value) {
+        this.rotationSpeed = value;
     }
 }
 
