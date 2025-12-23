@@ -1024,14 +1024,15 @@ class MyContents  {
         for(const jellyfish of this.jellyfishes){
             jellyfish.boxHelper.visible = enable;
         }
-        
+        for(const turtle of this.turtles){
+            turtle.boxHelper.visible = enable;
+        }
 
         this.boat.boxHelper.visible = enable;
         this.volcano.boxHelper.visible = enable;
         this.sign.boxHelper.visible = enable;
         this.signVolcano.boxHelper.visible = enable;
         this.signBoat.boxHelper.visible = enable;
-        this.turtle.boxHelper.visible = enable;
         this.swordFish.boxHelper.visible = enable;
         this.shark.boxHelper.visible = enable;
         this.submarine.boxHelper.visible = enable;
@@ -1051,6 +1052,9 @@ class MyContents  {
         }
         for(const jellyfish of this.jellyfishes){
             jellyfish.bvh = enable;
+        }
+        for(const turtle of this.turtles){
+            turtle.bvh = enable;
         }
         this.shark.bvh = enable;
         this.swordFish.bvh = enable;
@@ -1103,8 +1107,10 @@ class MyContents  {
             helper.visible = enable;
         }
 
-        for(const helper of this.turtle.helpers){
-            helper.visible = enable;
+        for(const turtle of this.turtles){
+            for(const helper of turtle.helpers){
+                helper.visible = enable;
+            }
         }
 
         for(const seaStar of this.seaStars){

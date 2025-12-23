@@ -134,7 +134,7 @@ This project creates an immersive **underwater marine ecosystem** using Three.js
 ## Screenshots
 
 ### Main Scene Overview
-![Underwater Scene](screenshots/overview.png)
+![Underwater Scene](screenshots/underwater_scene.png)
 *Complete underwater ecosystem with marine life and geological features*
 
 ### Marine Life
@@ -149,7 +149,7 @@ This project creates an immersive **underwater marine ecosystem** using Three.js
 *Underwater volcano with custom lava shader*
 
 ### Particle Systems
-![Marine Snow](screenshots/particles.png)
+![Marine Snow and Bubbles](screenshots/particles.png)
 *Marine snow and bubble particle effects*
 
 ### Submarine View
