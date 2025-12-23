@@ -45,7 +45,7 @@ class MySeaPlant extends THREE.LOD {
 
         // Low detail
         const low = this.initLowLOD();
-        this.addLevel(low, 10);
+        this.addLevel(low, 15);
 
         // Bounding box (same as crab)
         this.box = new THREE.Box3().setFromObject(this, true);
@@ -101,7 +101,7 @@ class MySeaPlant extends THREE.LOD {
     initLowLOD() {
         const plant = new THREE.Object3D();
 
-        const geo = new THREE.PlaneGeometry(this.width, this.height, 1, 2);
+        const geo = new THREE.BoxGeometry(this.width, this.height,this.depth, 1, 1,1);
         const pos = geo.attributes.position;
         const v = new THREE.Vector3();
 

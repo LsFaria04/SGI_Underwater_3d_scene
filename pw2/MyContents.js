@@ -212,7 +212,9 @@ class MyContents  {
         for(let i = 0; i < crabPosSize.length; i++){
             const pos = crabPosSize[i];
             const color = crabColors[getRandomInt(0, crabColors.length - 1)]
-            const crab = new MyCrab(generateRandom(0.1, 0.3),generateRandom(0.1, 0.3),0.1, color, null);
+            const crab = new MyCrab(0.2,0.2,0.1, color, null);
+            const crabScale = generateRandom(0.5, 2);
+            crab.scale.set(crabScale, crabScale, crabScale);
             crab.position.set(pos[0], pos[1], pos[2]);
             this.crabs.push(crab);
             this.app.scene.add(crab);
@@ -225,7 +227,7 @@ class MyContents  {
         this.app.scene.add(this.swordFish);
         
         this.turtle = new MyTurtle(0.5, 0.15,  0x228B22,  0x556B2F, this.turtleTexture);
-        this.turtle.position.set(8, 6 , 1);
+        this.turtle.position.set(8, 7 , 1);
         this.app.scene.add(this.turtle);
 
         this.jellyfish = new MyJellyFish(0.5, 1);
