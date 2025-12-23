@@ -189,7 +189,7 @@ This project creates an immersive **underwater marine ecosystem** using Three.js
 
 ### Alexandre Lopes (202207015)
 **Primary Responsibilities:**
-- Implemented static objects like: urchin, sign, floor, and moving objects like: tortoise, shark, submarine.Created submarine colisions, some shaders and particles. Made improvements to others work.
+- Implemented static objects like: urchin, sign, floor, and moving objects like: turtle, shark, submarine. Created submarine colisions, some shaders and particles. Made improvements to others work.
 
 
 **Contributions:**
