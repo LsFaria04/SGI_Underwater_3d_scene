@@ -21,7 +21,7 @@ import { MySubmarine } from './objects/MySubmarine.js';
 import { MyMarineSnow } from './particles/MyMarineSnow.js';
 import { MeshBVHHelper } from './index.module.js';
 import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
-import { floorHeightPosition } from './utils.js';
+import { floorHeightPosition, generateRandom } from './utils.js';
 import { SandPuffSystem } from './particles/MySandPuffParticles.js';
 import { LavaSimpleMovement } from './shaders/LavaSimpleMovement.js';
 
@@ -284,9 +284,20 @@ class MyContents  {
             this.app.scene.add(reef);
         }
 
-        this.seaUrchin = new MySeaUrchin(0.1, 0.5, 100, "#000000", "L");
-        this.seaUrchin.position.set(4, floorHeightPosition(4,-10) + 0.2, -10);
-        this.app.scene.add(this.seaUrchin);
+
+        this.seaUrchins = []
+        const seaUrchinsPosSize = [
+            //near volcano
+            [12, floorHeightPosition(12,2) + 0.2, 2],[14, floorHeightPosition(14,4) + 0.2, 4],
+            [20, floorHeightPosition(20,2) + 0.2, 2],[19, floorHeightPosition(19,0) + 0.2, 0],
+        ];
+        for(let i = 0; i < seaUrchinsPosSize.length; i++){
+            const pos = seaUrchinsPosSize[i];
+            const urchin = new MySeaUrchin(generateRandom(0.05, 0.2), generateRandom(0.1,0.8), 100, "#000000");
+            urchin.position.set(pos[0], pos[1], pos[2]);
+            this.seaUrchins.push(urchin);
+            this.app.scene.add(urchin);
+        }
 
         this.turtle = new MyTurtle(0.5, 0.15,  0x228B22,  0x556B2F, this.turtleTexture);
         this.turtle.position.set(8, 6 , 1);
@@ -388,13 +399,15 @@ class MyContents  {
         for( const reef of this.corals){
             reef.children.forEach(coral => bvhMeshes.push(coral));
         }
+        for(const urchin of this.seaUrchins){
+            bvhMeshes.push(urchin)
+        }
 
         bvhMeshes.push(this.shark);
         bvhMeshes.push(this.sign);
         bvhMeshes.push(this.swordFish.lod);
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(this.jellyfish);
-        bvhMeshes.push(this.seaUrchin);
         bvhMeshes.push(this.turtle);
         bvhMeshes.push(this.crab);
         bvhMeshes.push(this.seaStar);
@@ -778,6 +791,9 @@ class MyContents  {
                 plant.boxHelper.visible = enable;
             }
         }
+        for(const urchin of this.seaUrchins){
+            urchin.boxHelper.visible = enable;
+        }
 
         this.boat.boxHelper.visible = enable;
         this.volcano.boxHelper.visible = enable;
@@ -789,12 +805,12 @@ class MyContents  {
         this.submarine.boxHelper.visible = enable;
         this.crab.boxHelper.visible = enable;
         this.seaStar.boxHelper.visible = enable;
-        this.seaUrchin.boxHelper.visible = enable;
 
 
     }
 
     setBVHMode(enable){
+        //Used to set bvh in objects with movement to avoid wasting resources in updating the tree when the bvh is off
         for(const fishGroup of this.fishGroups){
             fishGroup.bvh = enable;
             for(const fish of fishGroup.fishes){
@@ -803,7 +819,7 @@ class MyContents  {
             this.shark.bvh = enable;
             this.swordFish.bvh = enable;
             this.jellyfish.bvh = enable;
-            this.sign.bvh = enable;
+
         }
     }
 
@@ -842,10 +858,6 @@ class MyContents  {
         for(const helper of this.turtle.helpers){
             helper.visible = enable;
         }
-
-        for(const helper of this.seaUrchin.helpers){
-            helper.visible = enable;
-        }
         
         for(const helper of this.crab.helpers){
             helper.visible = enable;
@@ -866,6 +878,12 @@ class MyContents  {
 
         for (const reef of this.corals){
             for(const helper of reef.helpers){
+                helper.visible = enable;
+            }
+        }
+
+        for (const urchin of this.seaUrchins){
+            for(const helper of urchin.helpers){
                 helper.visible = enable;
             }
         }

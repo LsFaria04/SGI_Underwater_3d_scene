@@ -30,7 +30,6 @@ class MySign extends THREE.Object3D {
 		boardTexture = null,
 	) {
 		super();
-		this.bvh = false;
 		this.helpers = [];
 
 		// --- Post ---
