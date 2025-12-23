@@ -398,16 +398,16 @@ class MyApp  {
         if (!this.hudContext || !this.spritesheetImage) return;
         
         const camera = this.cameras['Submarine'];
-        const x = camera.position.x.toFixed(1);
-        const y = camera.position.y.toFixed(1);
-        const z = camera.position.z.toFixed(1);
+        const x = Math.round(camera.position.x * 10);
+        const y = Math.round(camera.position.y * 10);
+        const z = Math.round(camera.position.z * 10);
         
         this.hudContext.clearRect(0, 0, this.hudCanvas.width, this.hudCanvas.height);
         
-        const text = `X:${x} Y:${y} Z:${z}`;
+        const text = `X:${x}Y:${y}Z:${z}`;
         const fontSize = 8; 
         const textWidth = text.length * fontSize * 0.6;
-        const rightX = this.hudCanvas.width - textWidth - 140; // distance in pixels from right edge
+        const rightX = this.hudCanvas.width - textWidth - 180; // distance in pixels from right edge
         const bottomY = this.hudCanvas.height - 40; // distance in pixels from bottom
         
         this.drawSpritesheetText(text, rightX, bottomY, fontSize);
@@ -425,6 +425,8 @@ class MyApp  {
         // Assume 10 digits (0-9) in a single row
         const charWidth = this.spritesheetImage.width / 10;
         const charHeight = this.spritesheetImage.height;
+
+        const spacing = 0.8; // spacing factor between characters
         
         for (let i = 0; i < text.length; i++) {
             const char = text[i];
@@ -439,7 +441,8 @@ class MyApp  {
                 this.hudContext.drawImage(
                     this.spritesheetImage,
                     charIndex * charWidth, 0, charWidth, charHeight,
-                    x + i * size * 0.6, y, size, size
+                    x + i * size * spacing, y,
+                    size, size
                 );
             }
         }
