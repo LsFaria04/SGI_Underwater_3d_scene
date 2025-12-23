@@ -599,9 +599,6 @@ class MyContents  {
         if (this.submarine && this.app.activeCameraName === 'Submarine') {
             this.submarine.position.copy(this.app.activeCamera.position);
             this.submarine.rotation.copy(this.app.activeCamera.rotation);
-
-            // rotate submarine to match camera direction
-            this.submarine.rotation.y += Math.PI / 2; 
         }
         //update the submarine position and light animation
         this.submarine.update(delta);
