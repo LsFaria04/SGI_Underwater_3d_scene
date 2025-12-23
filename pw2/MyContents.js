@@ -197,10 +197,10 @@ class MyContents  {
 
         //plant position and size [x, z, number of plants]
         const plantGroupsPosSize = [
-            [-20, -1, 100], [-4, 9, 50], [10,5, 10],
+            [-20, -1, 10], [-4, 9, 50], [10,5, 10],
 
             //sea plants ousid the scene
-            [-30, 15, 10], [-4, -30, 100], [25,0, 20],
+            [-30, 15, 10], [-4, -30, 10], [25,0, 20],
 
         ];
         this.seaPlantGroups = [];
@@ -247,9 +247,9 @@ class MyContents  {
         const rockPosSize = [
             //Rock groups inside the scene
             [15, -15, 4], [-10, -10, 6], [5, 8, 2],
-            [-12, 15, 10], [-1, 15, 1], [4, 4, 3],
-            [-10, 4, 8], [5, -4, 3], [15, 15, 10],
-            [20, 5, 10], [-20, -6, 10], [0, -20, 20],
+            [-12, 15, 5], [-1, 15, 1], [4, 4, 3],
+            [-10, 4, 8], [5, -4, 3], [15, 15, 6],
+            [20, 5, 10], [-20, -6, 10], [0, -20, 4],
 
             //rock groups that are ouside the scene for scenery
              [-30, -15, 4], [-25, 0, 5], [-20, 5, 10],
