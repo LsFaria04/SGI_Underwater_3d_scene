@@ -62,6 +62,7 @@ class MyContents  {
 
     initLights() {
 
+        //Ambient light of the scene
         const ambientLight = new THREE.AmbientLight(0x88aaff, 0.1);
         this.app.scene.add( ambientLight );
 
@@ -85,6 +86,7 @@ class MyContents  {
         this.app.scene.add(directionalLight);
 
         //volcano light
+        //The light is moved to the correct position after the volcano is loaded
         this.volvanoLight = new THREE.PointLight(0xCf1020, 5);
         this.app.scene.add(this.volvanoLight);
 
@@ -95,11 +97,199 @@ class MyContents  {
         if (this.axis === null) {
             // create and attach the axis to the scene
             this.axis = new MyAxis(this)
-            //this.app.scene.add(this.axis)
         }
 
-        const loader = new GLTFLoader(); //Used to import objects in the GLTF format that were not moddeled by us 
+        //Sand sea floor
+        this.floor = new MyFloor(200, 128, this.sandTexture);
+        this.app.scene.add(this.floor);
 
+        // ----------------------------- STATIC OBJECTS ----------------------------------------
+
+        // Sign with 2D Shark
+        this.sign = new MySign(1.5, 0.05, 1.5, 1, 0.05, 0x8b5a2b, 0xdeb887, "BEWARE OF THE SHARK", this.videoTexture);
+        this.sign.position.set(0,floorHeightPosition(0, 15),15);
+        this.sign.scale.set(2,2,2);
+        this.app.scene.add(this.sign); 
+        //Shark in the sign
+        const twoDShark = new My2DShark();
+        twoDShark.scale.set(0.2, 0.2, 0.2);
+        twoDShark.position.set(-0.8, 0.5, this.sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
+        this.sign.board.add(twoDShark);
+
+        //rock position and size [x, z, number of rocks]
+        this.rockGroups = [];
+        const rockPosSize = [
+            //Rock groups inside the scene
+            [15, -15, 4], [-10, -10, 6], [5, 8, 2],
+            [-12, 15, 5], [-1, 15, 1], [4, 4, 3],
+            [-10, 4, 8], [5, -4, 3], [15, 15, 6],
+            [20, 5, 10], [-20, -6, 10], [0, -20, 4],
+
+            //rock groups that are ouside the scene for scenery
+             [-30, -15, 4], [-25, 0, 5], [-20, 5, 10],
+            [-30, -15, 4], [-35, 3, 20], [-30, -20, 3],
+        ];
+        for(let i = 0; i < rockPosSize.length; i++){
+            const pos = rockPosSize[i];
+            const rockGroup = new MyRockGroup(pos[2],pos[0], pos[1], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], false, [this.rockTexture]);
+            this.rockGroups.push(rockGroup);
+            this.app.scene.add(rockGroup);
+        }
+
+        // ----------------------------- OBJECTS WITH MOVEMENT ---------------------------------
+
+        this.submarine = new MySubmarine(this.videoTexture);
+        this.submarine.position.set(5,4,5);
+        this.app.scene.add(this.submarine);
+
+        //Coral reef radius, position, type, number of corals [numb, x, z, type, radius]
+        this.corals = [];
+        const coralsPosSize = [
+            [4, -8, 0, "fanCoral", 4], [4,8, 1, "branchingCoral", 4],
+            [10, 10, -11, "fanCoral", 8], [10,-8, -20, "branchingCoral", 6],
+            [20, 10, 20, "fanCoral", 6], [10,-15, 0, "branchingCoral", 6],
+        ];
+
+        for(let i = 0; i < coralsPosSize.length; i++){
+            const pos = coralsPosSize[i];
+            const reef = new MyCoralReef(pos[0], pos[1], pos[2], pos[3], pos[4], 4, this.coralTexture);
+            this.corals.push(reef);
+            this.app.scene.add(reef);
+        }
+
+        //plant position and size [x, z, number of plants]
+        const plantGroupsPosSize = [
+            [-20, -1, 10], [-4, 9, 50], [10,5, 10],
+
+            //sea plants ousid the scene
+            [-30, 15, 10], [-4, -30, 10], [25,0, 20],
+
+        ];
+        this.seaPlantGroups = [];
+        for(let i = 0; i < plantGroupsPosSize.length; i++){
+            const pos = plantGroupsPosSize[i];
+            const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[1], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e", "#44cf25"], true);
+
+            this.app.scene.add(seaPlantGroup);
+            this.seaPlantGroups.push(seaPlantGroup);
+        }
+
+        // ----------------------------- STATIC ANIMALS ----------------------------------------
+
+        this.seaUrchins = []
+        const seaUrchinsPosSize = [
+            //near volcano
+            [12, floorHeightPosition(12,2) + 0.2, 2],[14, floorHeightPosition(14,4) + 0.2, 4],
+            [20, floorHeightPosition(20,2) + 0.2, 2],[19, floorHeightPosition(19,0) + 0.2, 0],
+        ];
+        for(let i = 0; i < seaUrchinsPosSize.length; i++){
+            const pos = seaUrchinsPosSize[i];
+            const urchin = new MySeaUrchin(generateRandom(0.05, 0.2), generateRandom(0.1,0.8), 100, "#000000");
+            urchin.position.set(pos[0], pos[1], pos[2]);
+            this.seaUrchins.push(urchin);
+            this.app.scene.add(urchin);
+        }
+
+        this.seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined);
+        this.app.scene.add(this.seaStar);
+        this.seaStar.position.set(4,floorHeightPosition(4,2),2);
+
+        this.crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null);
+        this.app.scene.add(this.crab);
+        this.crab.position.set(5,floorHeightPosition(5,1),1);
+
+        // ---------------------------- ANIMALS WITH MOVEMENT ----------------------------------
+
+        this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f", this.fishTexture1);
+        this.swordFish.position.set(0,3,0);
+        this.app.scene.add(this.swordFish);
+        
+        this.turtle = new MyTurtle(0.5, 0.15,  0x228B22,  0x556B2F, this.turtleTexture);
+        this.turtle.position.set(8, 6 , 1);
+        this.app.scene.add(this.turtle);
+
+        this.jellyfish = new MyJellyFish(0.5, 1);
+        this.app.scene.add(this.jellyfish);
+        this.jellyfish.position.set(0,5,0);
+        
+        this.shark = new MyShark(1, "#2244aa", this.sharkTexture);
+        this.shark.position.set(-8, 10, 0);
+        this.shark.scale.set(-1, 1,1);
+        this.app.scene.add(this.shark);
+
+        //carps position and size [x, y, z, number of carps]
+        this.fishesFlockingParams = {
+            separation: 1.0,
+            alignment: 1.0,
+            cohesion: 1.0,
+            maxSpeed: 2.0
+        }
+        const carpsGroupsPosSize = [[-10, 1, -10, 25], [10, 1, 5, 5]];
+        this.fishGroups = [];
+        for(let i = 0; i < carpsGroupsPosSize.length; i++){
+            const pos = carpsGroupsPosSize[i];
+            const fishGroup = new MySchoolfOfFish(pos[3], 1, 1,0.2, "Carp", 1,1, this.fishTexture1, this.fishesFlockingParams);
+            this.app.scene.add(fishGroup);
+            this.fishGroups.push(fishGroup);
+            fishGroup.position.set(pos[0],pos[1],pos[2]);
+        }
+
+        // ---------------------------- ANIMATIONS ---------------------------------------------
+
+        this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 15, 100, 100, Math.PI / 2);
+        this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60, Math.PI / 2);
+        this.animationTurtle = new MyKeyFrameAnimation(this.turtle, "random", 10, 100, 100, 0);
+
+        // ----------------------------- PARTICLES AND EFFECTS ---------------------------------
+
+        const water = new MyWater(50, 20);
+        this.app.scene.add(water);
+
+        this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
+
+        this.sandPuff = new SandPuffSystem(this.app.scene, 500);
+
+        this.marineSnow = new MyMarineSnow([0.1], ["#FFFFFF"], [this.snowTexture1], 0.01);
+        this.marineSnow.position.set(0,10,0);
+        this.app.scene.add(this.marineSnow);
+
+        this.volcanoBubbles = new MyBubbleParticles([
+        { x: 14, z: -1 }
+        ],
+        200,
+        this.bubbleTexture,
+        { sourceY: 1.8, surfaceY: 20, spawnAreaX: 0.4, spawnAreaZ: 0.4, spawnRate: 70 }
+        );
+
+        this.app.scene.add(this.volcanoBubbles.points);
+
+        this.coralBubbles = [];
+        for(const reef of this.corals){
+            for(const coral of reef.corals){
+                const coralPos = new THREE.Vector3();
+            coral.getWorldPosition(coralPos);
+            
+            const bubbleSystem = new MyBubbleParticles(
+                [{ x: coralPos.x, z: coralPos.z }],
+                50, 
+                this.bubbleTexture,
+                { 
+                    sourceY: coralPos.y + 0.5,
+                    surfaceY: 20, 
+                    spawnAreaX: 0.3, 
+                    spawnAreaZ: 0.3, 
+                    spawnRate: 0.5,
+                    speedFactor: 0.5
+                }
+            );
+                this.app.scene.add(bubbleSystem.points);
+                this.coralBubbles.push(bubbleSystem);
+            }
+        }
+
+        // ---------------------------------- IMPORTED MODELS ---------------------------------------
+
+        const loader = new GLTFLoader(); //Used to import objects in the GLTF format that were not moddeled by us 
         // Load the boat model
         loader.load('objects/malletts_bay_old_tour_boat/scene.gltf', (gltf) => {
 
@@ -193,188 +383,6 @@ class MyContents  {
         this.volcanoGroup.add(this.lavaPlane);
         
         this.app.scene.add(this.volcanoGroup);
-
-        this.app.scene.fog = new THREE.FogExp2(0x003366, 0.03);
-
-        this.floor = new MyFloor(200, 128, this.sandTexture);
-        this.app.scene.add(this.floor);
-
-        const water = new MyWater(50, 20);
-        this.app.scene.add(water);
-
-        //plant position and size [x, z, number of plants]
-        const plantGroupsPosSize = [
-            [-20, -1, 10], [-4, 9, 50], [10,5, 10],
-
-            //sea plants ousid the scene
-            [-30, 15, 10], [-4, -30, 10], [25,0, 20],
-
-        ];
-        this.seaPlantGroups = [];
-        for(let i = 0; i < plantGroupsPosSize.length; i++){
-            const pos = plantGroupsPosSize[i];
-            const seaPlantGroup = new MySeaPlantGroup(pos[2], pos[0], pos[1], 0.2, 1, 0.1, ["#3a6c3a", "#5b6c3a","#6e783e", "#44cf25"], true);
-
-            this.app.scene.add(seaPlantGroup);
-            this.seaPlantGroups.push(seaPlantGroup);
-        }
-        
-
-        this.seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined, "H");
-        this.app.scene.add(this.seaStar);
-        this.seaStar.position.set(4,floorHeightPosition(4,2),2);
-
-        this.crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null);
-        this.app.scene.add(this.crab);
-        this.crab.position.set(5,floorHeightPosition(5,1),1);
-
-        this.sandPuff = new SandPuffSystem(this.app.scene, 500);
-
-        
-        //carps position and size [x, y, z, number of carps]
-        this.fishesFlockingParams = {
-            separation: 1.0,
-            alignment: 1.0,
-            cohesion: 1.0,
-            maxSpeed: 2.0
-        }
-        const carpsGroupsPosSize = [[-10, 1, -10, 25], [10, 1, 5, 5]];
-        this.fishGroups = [];
-        for(let i = 0; i < carpsGroupsPosSize.length; i++){
-            const pos = carpsGroupsPosSize[i];
-            const fishGroup = new MySchoolfOfFish(pos[3], 1, 1,0.2, "Carp", 1,1, this.fishTexture1, this.fishesFlockingParams);
-            this.app.scene.add(fishGroup);
-            this.fishGroups.push(fishGroup);
-            fishGroup.position.set(pos[0],pos[1],pos[2]);
-        }
-
-
-        //rock position and size [x, z, number of rocks]
-        this.rockGroups = [];
-        const rockPosSize = [
-            //Rock groups inside the scene
-            [15, -15, 4], [-10, -10, 6], [5, 8, 2],
-            [-12, 15, 5], [-1, 15, 1], [4, 4, 3],
-            [-10, 4, 8], [5, -4, 3], [15, 15, 6],
-            [20, 5, 10], [-20, -6, 10], [0, -20, 4],
-
-            //rock groups that are ouside the scene for scenery
-             [-30, -15, 4], [-25, 0, 5], [-20, 5, 10],
-            [-30, -15, 4], [-35, 3, 20], [-30, -20, 3],
-        ];
-        for(let i = 0; i < rockPosSize.length; i++){
-            const pos = rockPosSize[i];
-            const rockGroup = new MyRockGroup(pos[2],pos[0], pos[1], 0.1, 1, 0.5, ["#615949", "#292727", "#8c8989"], false, [this.rockTexture]);
-            this.rockGroups.push(rockGroup);
-            this.app.scene.add(rockGroup);
-        }
-        
-        //Coral reef radius, position, type, number of corals [numb, x, z, type, radius]
-        this.corals = [];
-        const coralsPosSize = [
-            [4, -8, 0, "fanCoral", 4], [4,8, 1, "branchingCoral", 4],
-            [10, 10, -11, "fanCoral", 8], [10,-8, -20, "branchingCoral", 6],
-            [20, 10, 20, "fanCoral", 6], [10,-15, 0, "branchingCoral", 6],
-        ];
-
-        for(let i = 0; i < coralsPosSize.length; i++){
-            const pos = coralsPosSize[i];
-            const reef = new MyCoralReef(pos[0], pos[1], pos[2], pos[3], pos[4], 4, this.coralTexture);
-            this.corals.push(reef);
-            this.app.scene.add(reef);
-        }
-
-
-        this.seaUrchins = []
-        const seaUrchinsPosSize = [
-            //near volcano
-            [12, floorHeightPosition(12,2) + 0.2, 2],[14, floorHeightPosition(14,4) + 0.2, 4],
-            [20, floorHeightPosition(20,2) + 0.2, 2],[19, floorHeightPosition(19,0) + 0.2, 0],
-        ];
-        for(let i = 0; i < seaUrchinsPosSize.length; i++){
-            const pos = seaUrchinsPosSize[i];
-            const urchin = new MySeaUrchin(generateRandom(0.05, 0.2), generateRandom(0.1,0.8), 100, "#000000");
-            urchin.position.set(pos[0], pos[1], pos[2]);
-            this.seaUrchins.push(urchin);
-            this.app.scene.add(urchin);
-        }
-
-        this.turtle = new MyTurtle(0.5, 0.15,  0x228B22,  0x556B2F, this.turtleTexture);
-        this.turtle.position.set(8, 6 , 1);
-        this.app.scene.add(this.turtle);
-
-        this.jellyfish = new MyJellyFish(0.5, 1);
-        this.app.scene.add(this.jellyfish);
-        this.jellyfish.position.set(0,5,0);
-        
-        this.shark = new MyShark(1, "#2244aa", this.sharkTexture);
-        this.shark.position.set(-8, 10, 0);
-        this.app.scene.add(this.shark);
-
-        // Sign with 2D Shark
-        this.sign = new MySign(1.5, 0.05, 1.5, 1, 0.05, 0x8b5a2b, 0xdeb887, "BEWARE OF THE SHARK", this.videoTexture);
-        this.sign.position.set(0,floorHeightPosition(0, 15),15);
-        this.sign.scale.set(2,2,2);
-        this.app.scene.add(this.sign); 
-
-        const twoDShark = new My2DShark();
-        twoDShark.scale.set(0.2, 0.2, 0.2);
-        twoDShark.position.set(-0.8, 0.5, this.sign.board.geometry.parameters.depth / 2 + 0.01); //slightly in front of the board
-        this.sign.board.add(twoDShark);
-
-        this.swordFish = new MySwordFish(1,3,1,1.5,"#545f7f", this.fishTexture1);
-        this.swordFish.position.set(0,3,0);
-        this.app.scene.add(this.swordFish); 
-
-        this.submarine = new MySubmarine(this.videoTexture);
-        this.submarine.position.set(5,4,5);
-        this.app.scene.add(this.submarine);
-
-        this.shark.scale.set(-1, 1,1);
-        this.animationShark = new MyKeyFrameAnimation(this.shark, "random", 15, 100, 100, Math.PI / 2);
-        this.animationSwordFish = new MyKeyFrameAnimation(this.swordFish, "circle", 10, 50, 60, Math.PI / 2);
-        this.animationTurtle = new MyKeyFrameAnimation(this.turtle, "random", 10, 100, 100, 0);
-
-        this.marineSnow = new MyMarineSnow([0.1], ["#FFFFFF"], [this.snowTexture1], 0.01);
-        this.marineSnow.position.set(0,10,0);
-        this.app.scene.add(this.marineSnow);
-
-        
-        this.volcanoBubbles = new MyBubbleParticles([
-        { x: 14, z: -1 }
-        ],
-        200,
-        this.bubbleTexture,
-        { sourceY: 1.8, surfaceY: 20, spawnAreaX: 0.4, spawnAreaZ: 0.4, spawnRate: 70 }
-        );
-
-        this.app.scene.add(this.volcanoBubbles.points);
-
-
-
-        this.coralBubbles = [];
-        for(const reef of this.corals){
-            for(const coral of reef.corals){
-                const coralPos = new THREE.Vector3();
-            coral.getWorldPosition(coralPos);
-            
-            const bubbleSystem = new MyBubbleParticles(
-                [{ x: coralPos.x, z: coralPos.z }],
-                50, 
-                this.bubbleTexture,
-                { 
-                    sourceY: coralPos.y + 0.5,
-                    surfaceY: 20, 
-                    spawnAreaX: 0.3, 
-                    spawnAreaZ: 0.3, 
-                    spawnRate: 0.5,
-                    speedFactor: 0.5
-                }
-            );
-                this.app.scene.add(bubbleSystem.points);
-                this.coralBubbles.push(bubbleSystem);
-            }
-        }
     }
 
     onMouseClick(mousePos) {
