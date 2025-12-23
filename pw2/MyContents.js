@@ -21,7 +21,7 @@ import { MySubmarine } from './objects/MySubmarine.js';
 import { MyMarineSnow } from './particles/MyMarineSnow.js';
 import { MeshBVHHelper } from './index.module.js';
 import { GLTFLoader } from '../lib/jsm/loaders/GLTFLoader.js';
-import { floorHeightPosition, generateRandom } from './utils.js';
+import { floorHeightPosition, generateRandom, getRandomInt } from './utils.js';
 import { SandPuffSystem } from './particles/MySandPuffParticles.js';
 import { LavaSimpleMovement } from './shaders/LavaSimpleMovement.js';
 
@@ -176,7 +176,7 @@ class MyContents  {
 
         // ----------------------------- STATIC ANIMALS ----------------------------------------
 
-        this.seaUrchins = []
+        this.seaUrchins = [];
         const seaUrchinsPosSize = [
             //near volcano
             [12, floorHeightPosition(12,2) + 0.2, 2],[14, floorHeightPosition(14,4) + 0.2, 4],
@@ -190,13 +190,33 @@ class MyContents  {
             this.app.scene.add(urchin);
         }
 
-        this.seaStar = new MySeaStar(0.1,0.2,"#ff0000", undefined);
-        this.app.scene.add(this.seaStar);
-        this.seaStar.position.set(4,floorHeightPosition(4,2),2);
+        this.seaStars = [];
+        const seaStarsPosSize = [
+            [4,floorHeightPosition(4,2),2]
+        ];
+        const seaStarColors = ["#a73c3c", "#b97106", "#ffc400", "#ff003c"];
+        for(let i = 0; i < seaStarsPosSize.length; i++){
+            const pos = seaStarsPosSize[i];
+            const color = seaStarColors[getRandomInt(0, seaStarColors.length - 1)]
+            const seaStar = new MySeaStar(generateRandom(0.05, 0.2), generateRandom(0.1,0.5), color, undefined);
+            seaStar.position.set(pos[0], pos[1], pos[2]);
+            this.seaStars.push(seaStar);
+            this.app.scene.add(seaStar);
+        }
 
-        this.crab = new MyCrab(0.2,0.2,0.1, "#FF0000", null);
-        this.app.scene.add(this.crab);
-        this.crab.position.set(5,floorHeightPosition(5,1),1);
+        this.crabs = [];
+        const crabPosSize = [
+            [5,floorHeightPosition(5,1),1]
+        ];
+        const crabColors = ["#a73c3c", "#b97106", "#72420b", "#ff003c"];
+        for(let i = 0; i < crabPosSize.length; i++){
+            const pos = crabPosSize[i];
+            const color = crabColors[getRandomInt(0, crabColors.length - 1)]
+            const crab = new MyCrab(generateRandom(0.1, 0.3),generateRandom(0.1, 0.3),0.1, color, null);
+            crab.position.set(pos[0], pos[1], pos[2]);
+            this.crabs.push(crab);
+            this.app.scene.add(crab);
+        }
 
         // ---------------------------- ANIMALS WITH MOVEMENT ----------------------------------
 
@@ -646,7 +666,13 @@ class MyContents  {
             reef.children.forEach(coral => bvhMeshes.push(coral));
         }
         for(const urchin of this.seaUrchins){
-            bvhMeshes.push(urchin)
+            bvhMeshes.push(urchin);
+        }
+        for(const seaStar of this.seaStars){
+            bvhMeshes.push(seaStar);
+        }
+        for(const crab of this.crabs){
+            bvhMeshes.push(crab);
         }
 
         bvhMeshes.push(this.shark);
@@ -655,8 +681,6 @@ class MyContents  {
         bvhMeshes.push(this.submarine);
         bvhMeshes.push(this.jellyfish);
         bvhMeshes.push(this.turtle);
-        bvhMeshes.push(this.crab);
-        bvhMeshes.push(this.seaStar);
         bvhMeshes.push(this.boat);
         bvhMeshes.push(this.volcano);
 
@@ -822,6 +846,12 @@ class MyContents  {
         for(const urchin of this.seaUrchins){
             urchin.boxHelper.visible = enable;
         }
+        for(const seaStar of this.seaStars){
+            seaStar.boxHelper.visible = enable;
+        }
+        for(const crab of this.crabs){
+            crab.boxHelper.visible = enable;
+        }
 
         this.boat.boxHelper.visible = enable;
         this.volcano.boxHelper.visible = enable;
@@ -831,8 +861,6 @@ class MyContents  {
         this.swordFish.boxHelper.visible = enable;
         this.shark.boxHelper.visible = enable;
         this.submarine.boxHelper.visible = enable;
-        this.crab.boxHelper.visible = enable;
-        this.seaStar.boxHelper.visible = enable;
 
 
     }
@@ -886,13 +914,17 @@ class MyContents  {
         for(const helper of this.turtle.helpers){
             helper.visible = enable;
         }
-        
-        for(const helper of this.crab.helpers){
-            helper.visible = enable;
+
+        for(const seaStar of this.seaStars){
+            for(const helper of seaStar.helpers){
+                helper.visible = enable;
+            }
         }
 
-        for(const helper of this.seaStar.helpers){
-            helper.visible = enable;
+        for(const crab of this.crabs){
+            for(const helper of crab.helpers){
+                helper.visible = enable;
+            }
         }
         
         for(const helper of this.boat.helpers){
