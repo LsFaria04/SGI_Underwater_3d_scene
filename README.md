@@ -1,6 +1,7 @@
 # SGI 2025/2026
 
 **Final Grade PW1: 19.3**
+
 **Final Grade PW2: TBD**
 
 ## Group T03G01
